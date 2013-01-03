@@ -61,6 +61,10 @@ public class SettingsActivity extends PreferenceActivity {
 			setHasOptionsMenu(true);
 			
 			SharedPreferences prefs = getPreferenceManager().getSharedPreferences();
+			prefs.edit()
+				.clear()
+				.putString("default_nickname", "NGJRSJIHRSH")
+				.commit();
 			
 			settingsHeader = getArguments().getString("settings");
 			

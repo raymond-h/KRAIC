@@ -1,22 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
-
-    <PreferenceCategory android:title="@string/settings_general_defaults_category" >
-        <EditTextPreference
-            android:key="default_nickname"
-            android:title="@string/settings_general_default_nick"
-            android:defaultValue="@string/settings_general_default_nick_value" />
-    </PreferenceCategory>
-
-    <PreferenceCategory android:title="@string/settings_general_input_category">
-        <CheckBoxPreference 
-            android:key="auto_correct"
-            android:title="@string/settings_general_input_autocorrect"
-            android:defaultValue="true"/>
-        <CheckBoxPreference 
-            android:key="auto_capitalize"
-            android:title="@string/settings_general_input_autocapitalize"
-            android:defaultValue="true"/>
-    </PreferenceCategory>
     
+    <PreferenceCategory android:title="@string/settings_general_defaults_category"><EditTextPreference android:key="default_nickname" android:title="@string/settings_general_default_nick"/></PreferenceCategory>
+    
+
 </PreferenceScreen>

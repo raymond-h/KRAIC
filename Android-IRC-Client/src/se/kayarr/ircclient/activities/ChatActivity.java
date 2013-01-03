@@ -22,18 +22,15 @@ import se.kayarr.ircclient.shared.Util;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.text.InputType;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -317,14 +314,6 @@ public class ChatActivity extends CompatActionBarActivity
 			
 			outputList.setAdapter(outputAdapter);
 			
-			sendButton = (Button) view.findViewById(R.id.send_btn);
-			
-			sendButton.setOnClickListener(new OnClickListener() {
-				public void onClick(View v) {
-					onSend(!ctrlPressed);
-				}
-			});
-			
 			inputField = (EditText) view.findViewById(R.id.input_field);
 			
 			inputField.setOnKeyListener(new OnKeyListener() {
@@ -350,7 +339,6 @@ public class ChatActivity extends CompatActionBarActivity
 			inputField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 				public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
 					if(actionId == EditorInfo.IME_ACTION_SEND) {
-						sendButton.performClick();
 						return true;
 					}
 					
@@ -358,11 +346,13 @@ public class ChatActivity extends CompatActionBarActivity
 				}
 			});
 			
-			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
-			inputField.setInputType(InputType.TYPE_CLASS_TEXT | 
-					(prefs.getBoolean("auto_correct", true)?InputType.TYPE_TEXT_FLAG_AUTO_CORRECT:0) |
-					(prefs.getBoolean("auto_capitalize", true)?InputType.TYPE_TEXT_FLAG_CAP_SENTENCES:0)
-							);
+			sendButton = (Button) view.findViewById(R.id.send_btn);
+			
+			sendButton.setOnClickListener(new OnClickListener() {
+				public void onClick(View v) {
+					onSend(!ctrlPressed);
+				}
+			});
 			
 			return view;
 		}
