@@ -414,6 +414,8 @@ public class ChatActivity extends CompatActionBarActivity
 				TextView mainText = (TextView) convertView.findViewById(R.id.maintext);
 				mainText.setText( getItem(position).getOutput(), BufferType.SPANNABLE );
 				
+				TextView timestampText = (TextView) convertView.findViewById(R.id.timestamp_text);
+				timestampText.setText( getItem(position).timestamp() );
 				mainText.setMovementMethod(LinkMovementMethod.getInstance());
 				
 				return convertView;
