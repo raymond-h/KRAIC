@@ -89,6 +89,9 @@ public final class R {
         public static final int settings_general_input_autocapitalize=0x7f050017;
         public static final int settings_general_input_autocorrect=0x7f050016;
         public static final int settings_general_input_category=0x7f050015;
+        public static final int settings_general_output_category=0x7f050018;
+        public static final int settings_general_output_enable_timestamp=0x7f050019;
+        public static final int settings_general_output_enable_timestamp_summary=0x7f05001a;
         public static final int settings_header_general=0x7f050009;
         public static final int settings_header_serverlist=0x7f05000a;
     }

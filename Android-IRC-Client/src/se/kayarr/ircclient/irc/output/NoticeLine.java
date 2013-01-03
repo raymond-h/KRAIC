@@ -1,5 +1,6 @@
 package se.kayarr.ircclient.irc.output;
 
+import org.pircbotx.Colors;
 import org.pircbotx.hooks.events.NoticeEvent;
 
 import se.kayarr.ircclient.shared.Util;
@@ -32,7 +33,7 @@ public class NoticeLine extends OutputLine {
 	@Override
 	protected CharSequence outputString() {
 		return new SpannableStringBuilder(super.outputString())
-				.append((wasReceived ? "-> " : "") + "-" + sender + "- ")
-				.append(Util.parseForSpans(getContext(), message)); //TODO Make it use a global format
+				.append((wasReceived ? "-> " : ""))
+				.append(Util.parseForSpans(getContext(), "-" + Colors.BOLD + sender + Colors.BOLD + "- " + message)); //TODO Make it use a global format
 	}
 }

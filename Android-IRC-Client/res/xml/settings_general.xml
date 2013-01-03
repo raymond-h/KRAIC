@@ -19,4 +19,12 @@
             android:defaultValue="true"/>
     </PreferenceCategory>
     
+    <PreferenceCategory android:title="@string/settings_general_output_category">
+        <CheckBoxPreference 
+            android:key="enable_timestamp"
+            android:title="@string/settings_general_output_enable_timestamp"
+            android:summary="@string/settings_general_output_enable_timestamp_summary"
+            android:defaultValue="true"/>
+    </PreferenceCategory>
+    
 </PreferenceScreen>
