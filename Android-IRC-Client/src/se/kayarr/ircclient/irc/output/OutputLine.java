@@ -28,7 +28,8 @@ public class OutputLine {
 	}
 
 	protected CharSequence outputString() {
-		return timestamp();
+//		return timestamp();
+		return "";
 	};
 	
 	public String timestamp() {
