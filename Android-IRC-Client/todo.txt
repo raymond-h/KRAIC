@@ -1,0 +1,6 @@
+TODO Add line subclasses for all events in a channel
+TODO Add settings menu
+TODO Externalize all strings
+TODO Add formats for all event lines
+TODO Parse URLs in messages SORT OF DONE
+TODO Nick list

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent" >
+
+    <RelativeLayout
+        android:id="@+id/control_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:nextFocusUp="@+id/output_list" >
+
+        <Button
+            android:id="@+id/send_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="@string/chat_send"
+            android:textSize="16sp" />
+
+        <EditText
+            android:id="@+id/input_field"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBaseline="@+id/send_btn"
+            android:layout_alignBottom="@+id/send_btn"
+            android:layout_alignParentLeft="true"
+            android:layout_toLeftOf="@+id/send_btn"
+            android:ems="10"
+            android:imeOptions="actionSend"
+            android:inputType="text" >
+
+            <requestFocus />
+
+        </EditText>
+
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/output_list"
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/control_layout"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0px"
+        android:nextFocusDown="@id/input_field"
+        android:stackFromBottom="true"
+        android:transcriptMode="normal"
+        tools:listitem="@layout/chat_line" >
+    </ListView>
+
+</RelativeLayout>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp" >
+
+    <EditText
+        android:id="@+id/addserver_server_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:ems="10"
+        android:hint="@string/addserver_name_hint"
+        android:inputType="none" >
+
+        <requestFocus />
+    </EditText>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right" >
+
+        <EditText
+            android:id="@+id/addserver_address"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="@string/addserver_address_hint"
+            android:inputType="none" />
+
+        <EditText
+            android:id="@+id/addserver_port"
+            android:layout_width="76dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            android:ems="10"
+            android:gravity="center"
+            android:hint="@string/addserver_port_hint"
+            android:inputType="number" />
+
+    </LinearLayout>
+
+    <CheckBox
+        android:id="@+id/addserver_server_specific_user_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:gravity="center|left|right"
+        android:text="@string/addserver_use_server_specific_user_info" />
+
+</LinearLayout>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    
+    <PreferenceCategory android:title="@string/settings_general_defaults_category"><EditTextPreference android:key="default_nickname" android:title="@string/settings_general_default_nick"/></PreferenceCategory>
+    
+
+</PreferenceScreen>

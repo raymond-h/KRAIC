@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="serverlist_label">IRC Server List</string><string name="serverlist_connect">Connect to…</string>
+    <string name="serverlist_disconnect_all">Disconnect all</string>
+    <string name="serverlist_settings">Settings</string>
+    
+
+</resources>
