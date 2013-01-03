@@ -83,7 +83,11 @@ public final class R {
         public static final int serverlist_menu_add=0x7f05000b;
         public static final int serverlist_settings=0x7f050008;
         public static final int settings_general_default_nick=0x7f050013;
+        public static final int settings_general_default_nick_value=0x7f050014;
         public static final int settings_general_defaults_category=0x7f050012;
+        public static final int settings_general_input_autocapitalize=0x7f050017;
+        public static final int settings_general_input_autocorrect=0x7f050016;
+        public static final int settings_general_input_category=0x7f050015;
         public static final int settings_header_general=0x7f050009;
         public static final int settings_header_serverlist=0x7f05000a;
     }
