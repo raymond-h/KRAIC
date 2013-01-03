@@ -57,7 +57,7 @@ public class Settings {
 	@Getter private List<ServerSettingsItem> serverSettings = new ArrayList<ServerSettingsItem>();
 	
 	@Getter private boolean usingTimestamps = true;
-	@Getter private SimpleDateFormat timestampFormat = new SimpleDateFormat("[HH:mm:ss]", Locale.US);
+	@Getter private SimpleDateFormat timestampFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
 	
 	@Getter private SparseIntArray colorMap = new SparseIntArray();
 	

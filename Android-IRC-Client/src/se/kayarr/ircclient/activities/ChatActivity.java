@@ -414,8 +414,16 @@ public class ChatActivity extends CompatActionBarActivity
 				TextView mainText = (TextView) convertView.findViewById(R.id.maintext);
 				mainText.setText( getItem(position).getOutput(), BufferType.SPANNABLE );
 				
-				mainText.setMovementMethod(LinkMovementMethod.getInstance());
+				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+				TextView timestampText = (TextView) convertView.findViewById(R.id.timestamp_text);
+				timestampText.setText( getItem(position).timestamp() );
 				
+				if(!prefs.getBoolean("enable_timestamp", true))
+				{
+					timestampText.setVisibility(View.GONE);
+				}
+				
+				mainText.setMovementMethod(LinkMovementMethod.getInstance());
 				return convertView;
 			}
 

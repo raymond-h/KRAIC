@@ -1,9 +1,9 @@
 package se.kayarr.ircclient.irc.output;
 
+import org.pircbotx.Colors;
 import org.pircbotx.hooks.events.ActionEvent;
 
 import se.kayarr.ircclient.shared.Util;
-
 import android.content.Context;
 import android.text.SpannableStringBuilder;
 
@@ -34,7 +34,6 @@ public class ActionLine extends OutputLine {
 	@Override
 	protected CharSequence outputString() {
 		return new SpannableStringBuilder(super.outputString())
-			.append("* " + nick + " ")
-			.append(Util.parseForSpans(getContext(), action)); //TODO Make it use a global format
+			.append(Util.parseForSpans(getContext(), "* " + Colors.BOLD + nick + Colors.BOLD + " " + action)); //TODO Make it use a global format
 	}
 }
