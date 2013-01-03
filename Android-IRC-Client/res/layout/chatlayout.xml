@@ -29,7 +29,7 @@
             android:layout_toLeftOf="@+id/send_btn"
             android:ems="10"
             android:imeOptions="actionSend"
-            android:inputType="text" >
+            android:inputType="text">
 
             <requestFocus />
 
