@@ -32,7 +32,7 @@
             android:ems="10"
             android:hint="@string/addserver_address_hint"
             android:inputType="none" />
-
+        
         <EditText
             android:id="@+id/addserver_port"
             android:layout_width="76dp"
@@ -44,7 +44,7 @@
             android:inputType="number" />
 
     </LinearLayout>
-
+    
     <CheckBox
         android:id="@+id/addserver_server_specific_user_info"
         android:layout_width="match_parent"
