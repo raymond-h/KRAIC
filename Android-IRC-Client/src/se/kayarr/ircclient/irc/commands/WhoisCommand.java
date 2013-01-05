@@ -57,7 +57,7 @@ public class WhoisCommand extends Command {
 			long agoS = (System.currentTimeMillis() - signOnMs) / 1000;
 			
 			window.output("* " + event.getNick() + " signed on " +
-					new SimpleDateFormat().format(new Date(signOnMs))
+					SimpleDateFormat.getDateTimeInstance().format(new Date(signOnMs))
 					+ " ( " + outputTime(agoS) + " ago ) ");
 		}
 		
