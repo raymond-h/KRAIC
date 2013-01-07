@@ -34,6 +34,6 @@ public class ActionLine extends OutputLine {
 	@Override
 	protected CharSequence outputString() {
 		return new SpannableStringBuilder(super.outputString())
-			.append(Util.parseForSpans(getContext(), "* " + Colors.BOLD + nick + Colors.BOLD + " " + action)); //TODO Make it use a global format
+			.append(Util.parseForSpans(getContext(), Colors.BOLD + nick + Colors.BOLD + " " + action)); //TODO Make it use a global format
 	}
 }

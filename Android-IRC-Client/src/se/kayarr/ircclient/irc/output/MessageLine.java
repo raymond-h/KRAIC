@@ -38,6 +38,6 @@ public class MessageLine extends OutputLine {
 
 	protected CharSequence outputString() {
 		return new SpannableStringBuilder(super.outputString())
-			.append(Util.parseForSpans(getContext(), Colors.BOLD + nick + Colors.BOLD + "  " + message)); //TODO Make it use a global format
+			.append(Util.parseForSpans(getContext(), Colors.BOLD + nick + Colors.BOLD + " :  " + message)); //TODO Make it use a global format
 	}
 }
