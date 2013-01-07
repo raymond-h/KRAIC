@@ -411,7 +411,7 @@ public class ChatActivity extends CompatActionBarActivity
 					convertView = getActivity().getLayoutInflater().inflate(R.layout.chat_line, parent, false);
 				}
 				
-				TextView mainText = (TextView) convertView.findViewById(R.id.maintext);
+				TextView mainText = (TextView) convertView.findViewById(R.id.message_text);
 				mainText.setText( getItem(position).getOutput(), BufferType.SPANNABLE );
 				
 				SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());

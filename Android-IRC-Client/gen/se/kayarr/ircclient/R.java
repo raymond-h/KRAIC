@@ -10,6 +10,10 @@ package se.kayarr.ircclient;
 public final class R {
     public static final class attr {
     }
+    public static final class dimen {
+        public static final int message_size=0x7f050001;
+        public static final int timestamp_size=0x7f050000;
+    }
     public static final class drawable {
         public static final int appicon_bg=0x7f020000;
         public static final int holo_blue=0x7f020001;
@@ -21,36 +25,36 @@ public final class R {
         public static final int notification_icon=0x7f020007;
     }
     public static final class id {
-        public static final int LinearLayout1=0x7f070008;
-        public static final int RelativeLayout1=0x7f07000d;
-        public static final int action_buttons=0x7f070012;
-        public static final int activity_subtitle=0x7f070011;
-        public static final int activity_title=0x7f070010;
-        public static final int activity_titles=0x7f07000f;
-        public static final int addserver_address=0x7f07000a;
-        public static final int addserver_port=0x7f07000b;
-        public static final int addserver_server_name=0x7f070009;
-        public static final int addserver_server_specific_user_info=0x7f07000c;
-        public static final int control_layout=0x7f070004;
-        public static final int customviews=0x7f070014;
-        public static final int fragment_pager=0x7f070000;
-        public static final int fragment_pager_titlestrip=0x7f070001;
-        public static final int home_button=0x7f07000e;
-        public static final int input_field=0x7f070007;
-        public static final int maintext=0x7f070003;
-        public static final int menu_button=0x7f070013;
-        public static final int menu_connect=0x7f07001a;
-        public static final int menu_disconnect=0x7f070019;
-        public static final int menu_disconnect_all=0x7f07001b;
-        public static final int menu_serverlist_add=0x7f07001d;
-        public static final int menu_settings=0x7f07001c;
-        public static final int output_list=0x7f070005;
-        public static final int send_btn=0x7f070006;
-        public static final int separator=0x7f070015;
-        public static final int server_list=0x7f070016;
-        public static final int serveritem_info=0x7f070018;
-        public static final int serveritem_name=0x7f070017;
-        public static final int timestamp_text=0x7f070002;
+        public static final int LinearLayout1=0x7f080008;
+        public static final int RelativeLayout1=0x7f08000d;
+        public static final int action_buttons=0x7f080012;
+        public static final int activity_subtitle=0x7f080011;
+        public static final int activity_title=0x7f080010;
+        public static final int activity_titles=0x7f08000f;
+        public static final int addserver_address=0x7f08000a;
+        public static final int addserver_port=0x7f08000b;
+        public static final int addserver_server_name=0x7f080009;
+        public static final int addserver_server_specific_user_info=0x7f08000c;
+        public static final int control_layout=0x7f080004;
+        public static final int customviews=0x7f080014;
+        public static final int fragment_pager=0x7f080000;
+        public static final int fragment_pager_titlestrip=0x7f080001;
+        public static final int home_button=0x7f08000e;
+        public static final int input_field=0x7f080007;
+        public static final int menu_button=0x7f080013;
+        public static final int menu_connect=0x7f08001a;
+        public static final int menu_disconnect=0x7f080019;
+        public static final int menu_disconnect_all=0x7f08001b;
+        public static final int menu_serverlist_add=0x7f08001d;
+        public static final int menu_settings=0x7f08001c;
+        public static final int message_text=0x7f080003;
+        public static final int output_list=0x7f080005;
+        public static final int send_btn=0x7f080006;
+        public static final int separator=0x7f080015;
+        public static final int server_list=0x7f080016;
+        public static final int serveritem_info=0x7f080018;
+        public static final int serveritem_name=0x7f080017;
+        public static final int timestamp_text=0x7f080002;
     }
     public static final class layout {
         public static final int chat_base=0x7f030000;
@@ -62,38 +66,38 @@ public final class R {
         public static final int serverlist_item=0x7f030006;
     }
     public static final class menu {
-        public static final int chat_menu=0x7f060000;
-        public static final int serverlist_menu=0x7f060001;
-        public static final int settings_serverlist_menu=0x7f060002;
+        public static final int chat_menu=0x7f070000;
+        public static final int serverlist_menu=0x7f070001;
+        public static final int settings_serverlist_menu=0x7f070002;
     }
     public static final class string {
-        public static final int addserver_address_hint=0x7f050010;
-        public static final int addserver_dialog_title_add_server=0x7f05000c;
-        public static final int addserver_dialog_title_edit_server=0x7f05000d;
-        public static final int addserver_name_hint=0x7f05000e;
-        public static final int addserver_port_hint=0x7f05000f;
-        public static final int addserver_use_server_specific_user_info=0x7f050011;
-        public static final int app_name=0x7f050002;
-        public static final int cancel=0x7f050003;
-        public static final int chat_disconnect=0x7f050001;
-        public static final int chat_send=0x7f050000;
-        public static final int save=0x7f050004;
-        public static final int serverlist_connect=0x7f050006;
-        public static final int serverlist_disconnect_all=0x7f050007;
-        public static final int serverlist_label=0x7f050005;
-        public static final int serverlist_menu_add=0x7f05000b;
-        public static final int serverlist_settings=0x7f050008;
-        public static final int settings_general_default_nick=0x7f050013;
-        public static final int settings_general_default_nick_value=0x7f050014;
-        public static final int settings_general_defaults_category=0x7f050012;
-        public static final int settings_general_input_autocapitalize=0x7f050017;
-        public static final int settings_general_input_autocorrect=0x7f050016;
-        public static final int settings_general_input_category=0x7f050015;
-        public static final int settings_general_output_category=0x7f050018;
-        public static final int settings_general_output_enable_timestamp=0x7f050019;
-        public static final int settings_general_output_enable_timestamp_summary=0x7f05001a;
-        public static final int settings_header_general=0x7f050009;
-        public static final int settings_header_serverlist=0x7f05000a;
+        public static final int addserver_address_hint=0x7f060010;
+        public static final int addserver_dialog_title_add_server=0x7f06000c;
+        public static final int addserver_dialog_title_edit_server=0x7f06000d;
+        public static final int addserver_name_hint=0x7f06000e;
+        public static final int addserver_port_hint=0x7f06000f;
+        public static final int addserver_use_server_specific_user_info=0x7f060011;
+        public static final int app_name=0x7f060002;
+        public static final int cancel=0x7f060003;
+        public static final int chat_disconnect=0x7f060001;
+        public static final int chat_send=0x7f060000;
+        public static final int save=0x7f060004;
+        public static final int serverlist_connect=0x7f060006;
+        public static final int serverlist_disconnect_all=0x7f060007;
+        public static final int serverlist_label=0x7f060005;
+        public static final int serverlist_menu_add=0x7f06000b;
+        public static final int serverlist_settings=0x7f060008;
+        public static final int settings_general_default_nick=0x7f060013;
+        public static final int settings_general_default_nick_value=0x7f060014;
+        public static final int settings_general_defaults_category=0x7f060012;
+        public static final int settings_general_input_autocapitalize=0x7f060017;
+        public static final int settings_general_input_autocorrect=0x7f060016;
+        public static final int settings_general_input_category=0x7f060015;
+        public static final int settings_general_output_category=0x7f060018;
+        public static final int settings_general_output_enable_timestamp=0x7f060019;
+        public static final int settings_general_output_enable_timestamp_summary=0x7f06001a;
+        public static final int settings_header_general=0x7f060009;
+        public static final int settings_header_serverlist=0x7f06000a;
     }
     public static final class xml {
         public static final int settings_general=0x7f040000;
