@@ -89,13 +89,15 @@ public final class R {
         public static final int serverlist_settings=0x7f060008;
         public static final int settings_general_default_nick=0x7f060013;
         public static final int settings_general_default_nick_value=0x7f060014;
+        public static final int settings_general_default_quitmessage=0x7f060015;
+        public static final int settings_general_default_quitmessage_value=0x7f060016;
         public static final int settings_general_defaults_category=0x7f060012;
-        public static final int settings_general_input_autocapitalize=0x7f060017;
-        public static final int settings_general_input_autocorrect=0x7f060016;
-        public static final int settings_general_input_category=0x7f060015;
-        public static final int settings_general_output_category=0x7f060018;
-        public static final int settings_general_output_enable_timestamp=0x7f060019;
-        public static final int settings_general_output_enable_timestamp_summary=0x7f06001a;
+        public static final int settings_general_input_autocapitalize=0x7f060019;
+        public static final int settings_general_input_autocorrect=0x7f060018;
+        public static final int settings_general_input_category=0x7f060017;
+        public static final int settings_general_output_category=0x7f06001a;
+        public static final int settings_general_output_enable_timestamp=0x7f06001b;
+        public static final int settings_general_output_enable_timestamp_summary=0x7f06001c;
         public static final int settings_header_general=0x7f060009;
         public static final int settings_header_serverlist=0x7f06000a;
     }

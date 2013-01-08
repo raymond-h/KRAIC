@@ -6,6 +6,10 @@
             android:key="default_nickname"
             android:title="@string/settings_general_default_nick"
             android:defaultValue="@string/settings_general_default_nick_value" />
+        <EditTextPreference
+            android:key="default_quitmessage"
+            android:title="@string/settings_general_default_quitmessage"
+            android:defaultValue="@string/settings_general_default_quitmessage_value" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/settings_general_input_category">

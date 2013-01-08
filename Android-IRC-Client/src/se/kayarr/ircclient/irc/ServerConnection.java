@@ -10,11 +10,13 @@ import lombok.Getter;
 
 import org.pircbotx.exception.NickAlreadyInUseException;
 
+import se.kayarr.ircclient.R;
 import se.kayarr.ircclient.irc.output.OutputLine;
 import se.kayarr.ircclient.irc.output.SimpleStringLine;
 import se.kayarr.ircclient.services.ServerConnectionService;
-import se.kayarr.ircclient.shared.Settings;
 import se.kayarr.ircclient.shared.StaticInfo;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class ServerConnection {
@@ -35,13 +37,20 @@ public class ServerConnection {
 	
 	public String getDefaultNick() {
 		String nick = settingsItem.getUserInfo().getNick();
-		if(nick == null) nick = Settings.getInstance(context).getDefaultUserInfo().getNick();
+		if(nick == null) {
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+			nick = prefs.getString("default_nickname", context.getString(R.string.settings_general_default_nick_value));
+		}
 		return nick;
 	}
 	
 	public String getDefaultQuitMessage() {
 		String quitMessage = settingsItem.getUserInfo().getQuitMessage();
-		if(quitMessage == null) quitMessage = Settings.getInstance(context).getDefaultUserInfo().getQuitMessage();
+		if(quitMessage == null) {
+			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+			quitMessage = prefs.getString("default_quitmessage",
+					context.getString(R.string.settings_general_default_quitmessage_value));
+		}
 		return quitMessage != null ? quitMessage : "";
 	}
 

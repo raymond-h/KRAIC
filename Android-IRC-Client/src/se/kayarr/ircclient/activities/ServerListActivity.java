@@ -6,10 +6,10 @@ import java.util.Map;
 
 import se.kayarr.ircclient.R;
 import se.kayarr.ircclient.irc.ServerConnection;
+import se.kayarr.ircclient.irc.ServerListDatabaseHelper;
 import se.kayarr.ircclient.services.ServerConnectionService;
 import se.kayarr.ircclient.services.ServerConnectionService.OnConnectionListListener;
 import se.kayarr.ircclient.services.ServerConnectionService.ServiceBinder;
-import se.kayarr.ircclient.shared.Settings;
 import se.kayarr.ircclient.shared.StaticInfo;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -33,10 +33,14 @@ public class ServerListActivity extends CompatActionBarActivity implements Servi
 	
 	private ListView serverList;
 	private ServerListAdapter listAdapter;
+	
+	private ServerListDatabaseHelper dbHelper;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		dbHelper = new ServerListDatabaseHelper(this);
 		
 		setContentView(R.layout.serverlist);
 		
@@ -67,6 +71,8 @@ public class ServerListActivity extends CompatActionBarActivity implements Servi
 	protected void onStop() {
 		if(service != null) unbindService(this);
 		
+		dbHelper.close();
+		
 		super.onStop();
 	}
 
@@ -81,7 +87,7 @@ public class ServerListActivity extends CompatActionBarActivity implements Servi
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()) {
 			case R.id.menu_connect: {
-				this.service.connectTo(Settings.getInstance(this).getServerSettings().get(0));
+				this.service.connectTo(dbHelper.serverItems().getAllServers().get(0));
 				
 				return true;
 			}

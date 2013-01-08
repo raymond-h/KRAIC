@@ -1,13 +1,9 @@
 package se.kayarr.ircclient.shared;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Locale;
 
 import lombok.Getter;
-import se.kayarr.ircclient.irc.ServerSettingsItem;
-import se.kayarr.ircclient.irc.UserInfo;
 import android.content.Context;
 import android.graphics.Color;
 import android.util.SparseIntArray;
@@ -21,18 +17,6 @@ public class Settings {
 	}
 	
 	private Settings(Context context) {
-		serverSettings.add(
-				new ServerSettingsItem.Builder()
-				.setName("EsperNet #1")
-				.setAddress("irc.esper.net").setPort(6667).build()
-		);
-		serverSettings.add(
-				new ServerSettingsItem.Builder()
-				.setName("EsperNet #2")
-				.setAddress("irc.esper.net").setPort(6668)
-				.setNick("RayKayyyy").build()
-		);
-		
 		colorMap.append(0, Color.WHITE);
 		colorMap.append(1, Color.BLACK);
 		colorMap.append(2, Color.rgb(0, 0, 128));
@@ -52,10 +36,6 @@ public class Settings {
 	}
 	
 	//*
-	@Getter private UserInfo defaultUserInfo = new UserInfo("KR-AIC", "KR-AIC", "Hubba Hubba", "");
-	
-	@Getter private List<ServerSettingsItem> serverSettings = new ArrayList<ServerSettingsItem>();
-	
 	@Getter private boolean usingTimestamps = true;
 	@Getter private SimpleDateFormat timestampFormat = new SimpleDateFormat("HH:mm:ss", Locale.US);
 	

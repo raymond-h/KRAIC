@@ -10,13 +10,15 @@ import lombok.experimental.Accessors;
 public class ServerSettingsItem implements Serializable {
 	private static final long serialVersionUID = -9187385204145219989L;
 	
+	@Getter private long id = -1;
 	@Getter @Setter private String name;
 	@Getter @Setter private String address;
 	@Getter @Setter private int port;
 	
 	@Getter private UserInfo userInfo = new UserInfo();
 	
-	public ServerSettingsItem(String name, String address, int port) {
+	public ServerSettingsItem(long id, String name, String address, int port) {
+		this.id = id;
 		this.name = name;
 		this.address = address;
 		this.port = port;
@@ -31,6 +33,7 @@ public class ServerSettingsItem implements Serializable {
 	
 	@Data @Accessors(chain=true)
 	public static class Builder {
+		private int id = -1;
 		private String name = "Unnamed Server";
 		private String address = "";
 		private int port = 6667;
@@ -48,7 +51,7 @@ public class ServerSettingsItem implements Serializable {
 		}
 		
 		public ServerSettingsItem build() {
-			ServerSettingsItem item = new ServerSettingsItem(name, address, port);
+			ServerSettingsItem item = new ServerSettingsItem(id, name, address, port);
 			item.userInfo = new UserInfo(nick, userName, realName, quitMessage);
 			return item;
 		}

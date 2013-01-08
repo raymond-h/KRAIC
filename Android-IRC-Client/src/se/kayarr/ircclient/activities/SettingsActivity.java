@@ -3,12 +3,13 @@ package se.kayarr.ircclient.activities;
 import java.util.List;
 
 import se.kayarr.ircclient.R;
+import se.kayarr.ircclient.irc.ServerListDatabaseHelper;
 import se.kayarr.ircclient.irc.ServerSettingsItem;
-import se.kayarr.ircclient.irc.UserInfo;
 import se.kayarr.ircclient.shared.DeviceInfo;
 import se.kayarr.ircclient.shared.NumberRangeInputFilter;
-import se.kayarr.ircclient.shared.Settings;
+import se.kayarr.ircclient.shared.StaticInfo;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,6 +20,7 @@ import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
 import android.text.InputFilter;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -27,7 +29,6 @@ import android.widget.EditText;
 
 @TargetApi(11)
 public class SettingsActivity extends PreferenceActivity {
-	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -54,6 +55,15 @@ public class SettingsActivity extends PreferenceActivity {
 		private AlertDialog currentDialog;
 		private String settingsHeader;
 		
+		private ServerListDatabaseHelper dbHelper;
+		
+		@Override
+		public void onAttach(Activity activity) {
+			super.onAttach(activity);
+			
+			dbHelper = new ServerListDatabaseHelper(activity);
+		}
+
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
@@ -78,6 +88,11 @@ public class SettingsActivity extends PreferenceActivity {
 			if(nickPref != null) {
 				nickPref.setSummary(prefs.getString("default_nickname", ""));
 			}
+			
+			Preference quitPref = findPreference("default_quitmessage");
+			if(quitPref != null) {
+				quitPref.setSummary(prefs.getString("default_quitmessage", ""));
+			}
 			//*/
 		}
 
@@ -101,6 +116,8 @@ public class SettingsActivity extends PreferenceActivity {
 			getPreferenceManager().getSharedPreferences()
 				.unregisterOnSharedPreferenceChangeListener(this);
 			
+			dbHelper.close();
+			
 			super.onPause();
 		}
 
@@ -116,8 +133,7 @@ public class SettingsActivity extends PreferenceActivity {
 		public boolean onOptionsItemSelected(MenuItem item) {
 			switch(item.getItemId()) {
 				case R.id.menu_serverlist_add: {
-					ServerSettingsItem settingsItem = new ServerSettingsItem();
-					showServerEditDialog(null, settingsItem, true);
+					showServerEditDialog(null, null, true);
 					
 					return true;
 				}
@@ -130,8 +146,8 @@ public class SettingsActivity extends PreferenceActivity {
 		public boolean onPreferenceTreeClick(PreferenceScreen preferenceScreen,
 				Preference preference) {
 			
-			if(preference instanceof ServerItem) {
-				ServerItem serverItem = (ServerItem) preference;
+			if(preference instanceof ServerItemPreference) {
+				ServerItemPreference serverItem = (ServerItemPreference) preference;
 				showServerEditDialog(serverItem, serverItem.item, false);
 				
 				return true;
@@ -143,12 +159,12 @@ public class SettingsActivity extends PreferenceActivity {
 		public void updateServerList() {
 			getPreferenceScreen().removeAll();
 			
-			for(ServerSettingsItem item : Settings.getInstance(getActivity()).getServerSettings()) {
-				getPreferenceScreen().addPreference(new ServerItem(getActivity(), item));
+			for(ServerSettingsItem item : dbHelper.serverItems().getAllServers()) {
+				getPreferenceScreen().addPreference(new ServerItemPreference(getActivity(), item));
 			}
 		}
 		
-		private void showServerEditDialog(final ServerItem preference,
+		private void showServerEditDialog(final ServerItemPreference preference,
 				final ServerSettingsItem settingsItem, final boolean added) {
 			
 			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -161,9 +177,11 @@ public class SettingsActivity extends PreferenceActivity {
 			
 			portEdit.setFilters( new InputFilter[] { new NumberRangeInputFilter(0, 65535) } );
 			
-			serverNameEdit.setText(settingsItem.getName());
-			addressEdit.setText(settingsItem.getAddress());
-			portEdit.setText("" + settingsItem.getPort());
+			if(settingsItem != null) {
+				serverNameEdit.setText(settingsItem.getName());
+				addressEdit.setText(settingsItem.getAddress());
+				portEdit.setText("" + settingsItem.getPort());
+			}
 			
 			currentDialog = builder
 					.setCancelable(false)
@@ -178,15 +196,30 @@ public class SettingsActivity extends PreferenceActivity {
 					})
 					.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
 						public void onClick(DialogInterface dialog, int which) {
-							settingsItem.setName( serverNameEdit.getText().toString() );
-							settingsItem.setAddress( addressEdit.getText().toString() );
-							settingsItem.setPort( Integer.parseInt(portEdit.getText().toString(), 10) );
+							String name = serverNameEdit.getText().toString();
+							String address = addressEdit.getText().toString();
+							int port = Integer.parseInt(portEdit.getText().toString(), 10);
 							
-							if(!added) preference.update();
+							Log.d(StaticInfo.APP_TAG, "Server item " + name + " has ID " + settingsItem.getId());
+							
+							if(!added) {
+								settingsItem.setName(name);
+								settingsItem.setAddress(address);
+								settingsItem.setPort(port);
+								
+								dbHelper.serverItems().updateServer(settingsItem);
+								preference.update();
+								
+								//Log.d(StaticInfo.APP_TAG, "Updating ID " + settingsItem.getId());
+							}
 							else {
-								ServerItem item = new ServerItem(getActivity(), settingsItem);
+								ServerSettingsItem settingsItem = dbHelper.serverItems()
+										.addServer(name, address, port, null);
+								
+								ServerItemPreference item = new ServerItemPreference(getActivity(), settingsItem);
 								getPreferenceScreen().addPreference(item);
-								Settings.getInstance(getActivity()).getServerSettings().add(settingsItem);
+								
+								//Log.d(StaticInfo.APP_TAG, "Adding server item " + name);
 							}
 							
 							dialog.dismiss();
@@ -201,18 +234,23 @@ public class SettingsActivity extends PreferenceActivity {
 			Preference preference = findPreference(key);
 			
 			if(key.equals("default_nickname")) {
-				UserInfo defaults = Settings.getInstance(getActivity()).getDefaultUserInfo();
-				String defaultNick = sharedPreferences.getString(key, defaults.getNick());
-				defaults.setNick( defaultNick );
+				String defaultNick = sharedPreferences.getString(key,
+						getString(R.string.settings_general_default_nick_value));
 				preference.setSummary(defaultNick);
+			}
+			
+			if(key.equals("default_quitmessage")) {
+				String defaultQuit = sharedPreferences.getString(key,
+						getString(R.string.settings_general_default_quitmessage_value));
+				preference.setSummary(defaultQuit);
 			}
 		}
 	}
 	
-	public static class ServerItem extends Preference {
+	public static class ServerItemPreference extends Preference {
 		private ServerSettingsItem item;
 		
-		public ServerItem(Context context, ServerSettingsItem item) {
+		public ServerItemPreference(Context context, ServerSettingsItem item) {
 			super(context);
 			
 			this.item = item;
