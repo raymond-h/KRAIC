@@ -4,6 +4,7 @@
     <string name="serverlist_connect">Connect to…</string>
     <string name="serverlist_disconnect_all">Disconnect all</string>
     <string name="serverlist_settings">Settings</string>
+    <string name="serverlist_no_servers_to_show">Not connected to any servers</string>
     
 
 </resources>

@@ -50,6 +50,8 @@ public class ServerListActivity extends CompatActionBarActivity implements Servi
 		serverList.setOnItemClickListener(listAdapter);
 		serverList.setAdapter(listAdapter);
 		
+		serverList.setEmptyView( findViewById(R.id.server_list_empty_view) );
+		
 		Intent serviceIntent = new Intent(getApplicationContext(), ServerConnectionService.class);
 		startService(serviceIntent);
 	}
