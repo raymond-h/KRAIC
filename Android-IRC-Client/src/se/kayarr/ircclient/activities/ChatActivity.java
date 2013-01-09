@@ -17,13 +17,16 @@ import se.kayarr.ircclient.irc.Window;
 import se.kayarr.ircclient.irc.output.OutputLine;
 import se.kayarr.ircclient.services.ServerConnectionService;
 import se.kayarr.ircclient.services.ServerConnectionService.ServiceBinder;
+import se.kayarr.ircclient.shared.DeviceInfo;
 import se.kayarr.ircclient.shared.StaticInfo;
 import se.kayarr.ircclient.shared.Util;
+import android.annotation.SuppressLint;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -65,13 +68,14 @@ public class ChatActivity extends CompatActionBarActivity
 	
 	private List<WeakReference<WindowFragment>> windowFragments = new LinkedList<WeakReference<WindowFragment>>();
 
+	@SuppressLint("NewApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		//Log.d(StaticInfo.APP_TAG, "onCreate " + this + " begin, savedInstanceState = " + savedInstanceState);
-		
 		super.onCreate(savedInstanceState);
 		
-		//Log.d(StaticInfo.APP_TAG, "onCreate " + this + " midway, savedInstanceState = " + savedInstanceState);
+		if(DeviceInfo.isHoneycomb(true)) {
+			getActionBar().setDisplayHomeAsUpEnabled(true);
+		}
 		
 		setContentView(R.layout.chat_base);
 		
@@ -82,19 +86,12 @@ public class ChatActivity extends CompatActionBarActivity
 		fragmentPager.setAdapter(pagerAdapter);
 		fragmentPager.setOnPageChangeListener(this);
 		
-		//*
 		PagerTabStrip titleStrip = (PagerTabStrip) fragmentPager.findViewById(R.id.fragment_pager_titlestrip);
 		titleStrip.setTabIndicatorColor( Color.parseColor("#33B5E5") );
-		//titleStrip.setBackgroundColor( Color.BLACK );
-		//*/
-		
-		//Log.d(StaticInfo.APP_TAG, "onCreate " + this + " end, savedInstanceState = " + savedInstanceState);
 	}
 
 	@Override
 	protected void onDestroy() {
-		Log.d(StaticInfo.APP_TAG, "onDestroy " + this);
-		
 		super.onDestroy();
 	}
 
@@ -176,8 +173,19 @@ public class ChatActivity extends CompatActionBarActivity
 		return true;
 	}
 
+	@SuppressLint("NewApi")
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
+		if(DeviceInfo.isHoneycomb(true) && item.getItemId() == android.R.id.home) {
+			
+			Intent intent = new Intent(getApplicationContext(), ServerListActivity.class);
+			intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+			
+			startActivity(intent);
+			
+			return true;
+		}
+		
 		switch(item.getItemId()) {
 			case R.id.menu_disconnect: {
 				connection.disconnect();
