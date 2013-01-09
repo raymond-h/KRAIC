@@ -13,6 +13,12 @@ public class DeviceInfo {
 		return Build.VERSION.SDK_INT;
 	}
 	
+	public static boolean isJellyBeanMr1(boolean atleast) {
+		return atleast ?
+			(apiVersion() >= Build.VERSION_CODES.JELLY_BEAN_MR1):
+			(apiVersion() == Build.VERSION_CODES.JELLY_BEAN_MR1);
+	}
+	
 	public static boolean isJellyBean(boolean atleast) {
 		return atleast ?
 				(apiVersion() >= Build.VERSION_CODES.JELLY_BEAN) :
@@ -41,6 +47,18 @@ public class DeviceInfo {
 		return atleast ?
 			(apiVersion() >= Build.VERSION_CODES.FROYO) :
 			(apiVersion() == Build.VERSION_CODES.FROYO);
+	}
+	
+	public static boolean isEclairMr1(boolean atleast) {
+		return atleast ?
+			(apiVersion() >= Build.VERSION_CODES.ECLAIR_MR1):
+			(apiVersion() == Build.VERSION_CODES.ECLAIR_MR1);
+	}
+	
+	public static boolean isEclair01(boolean atleast) {
+		return atleast ?
+			(apiVersion() >= Build.VERSION_CODES.ECLAIR_0_1):
+			(apiVersion() == Build.VERSION_CODES.ECLAIR_0_1);
 	}
 	
 	public static boolean isEclair(boolean atleast) {
