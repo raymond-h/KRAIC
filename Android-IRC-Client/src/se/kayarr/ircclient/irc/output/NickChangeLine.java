@@ -2,13 +2,13 @@ package se.kayarr.ircclient.irc.output;
 
 import org.pircbotx.hooks.events.NickChangeEvent;
 
-import android.content.Context;
+import se.kayarr.ircclient.services.ServerConnectionService;
 
 public class NickChangeLine extends OutputLine {
 	private String oldNick;
 	private String newNick;
 	
-	public NickChangeLine(Context context, NickChangeEvent<?> event) {
+	public NickChangeLine(ServerConnectionService context, NickChangeEvent<?> event) {
 		super(context, event.getTimestamp());
 		
 		oldNick = event.getOldNick();

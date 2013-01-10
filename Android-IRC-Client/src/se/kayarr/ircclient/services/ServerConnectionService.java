@@ -11,6 +11,7 @@ import se.kayarr.ircclient.activities.ServerListActivity;
 import se.kayarr.ircclient.irc.ServerConnection;
 import se.kayarr.ircclient.irc.ServerSettingsItem;
 import se.kayarr.ircclient.shared.DeviceInfo;
+import se.kayarr.ircclient.shared.SettingsDatabaseHelper;
 import se.kayarr.ircclient.shared.StaticInfo;
 import se.kayarr.ircclient.shared.Util;
 import android.annotation.SuppressLint;
@@ -26,11 +27,14 @@ import android.os.Looper;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.ServiceCompat;
 import android.util.Log;
+import android.util.SparseIntArray;
 
 public class ServerConnectionService extends Service {
 	private NotificationManager notificationManager;
 	
 	private Map<Long, ServerConnection> connections = new HashMap<Long, ServerConnection>();
+	
+	private SettingsDatabaseHelper dbHelper;
 	
 	private Method setForegroundMethod;
 	private int foregroundNotificationId = -1;
@@ -91,10 +95,14 @@ public class ServerConnectionService extends Service {
 				.build();
 		
 		startForegroundCompat(StaticInfo.SERVICE_NOTIFICATION_ID, notification);
+		
+		dbHelper = new SettingsDatabaseHelper(this);
 	}
 	
 	@Override
 	public void onDestroy() {
+		dbHelper.close();
+		
 		stopForegroundCompat(true);
 		
 		disconnectAll();
@@ -207,5 +215,9 @@ public class ServerConnectionService extends Service {
 	
 	public void notifyInfoChanged(ServerConnection conn) {
 		connectionListCallback.onConnectionInfoChanged(conn);
+	}
+	
+	public SparseIntArray getColors() {
+		return dbHelper.colors().getColors();
 	}
 }

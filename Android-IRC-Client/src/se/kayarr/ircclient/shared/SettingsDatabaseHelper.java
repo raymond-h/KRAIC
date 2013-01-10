@@ -11,10 +11,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.graphics.Color;
+import android.util.SparseIntArray;
 
 public class SettingsDatabaseHelper extends SQLiteOpenHelper {
 	public static final String DATABASE_NAME = "settings.db";
-	public static final int VERSION = 1;
+	public static final int VERSION = 2;
 
 	public SettingsDatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, VERSION);
@@ -23,15 +25,21 @@ public class SettingsDatabaseHelper extends SQLiteOpenHelper {
 	@Override
 	public void onCreate(SQLiteDatabase db) {
 		ServerItemsTable.onCreate(db);
+		ColorsTable.onCreate(db);
 	}
 
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		ServerItemsTable.onUpgrade(db, oldVersion, newVersion);
+		ColorsTable.onUpgrade(db, oldVersion, newVersion);
 	}
 	
 	public ServerItemsTable serverItems() {
 		return new ServerItemsTable(this);
+	}
+	
+	public ColorsTable colors() {
+		return new ColorsTable(this);
 	}
 	
 	public static class ServerItemsTable {
@@ -135,6 +143,84 @@ public class SettingsDatabaseHelper extends SQLiteOpenHelper {
 			//Log.d(StaticInfo.APP_TAG, "Fetched " + servers.size() + " server items");
 			
 			return servers;
+		}
+	}
+	
+	public static class ColorsTable {
+		public static final String NAME = "colors";
+		
+		public static final String COLUMN_ID = "_ID";
+		public static final String COLUMN_COLOR_NUM = "color_num";
+		public static final String COLUMN_COLOR = "color";
+		
+		private static void onCreate(SQLiteDatabase db) {
+			db.execSQL("CREATE TABLE " + NAME + " (" +
+					
+					COLUMN_ID +				" INTEGER PRIMARY KEY AUTOINCREMENT," +
+					COLUMN_COLOR_NUM +		" INTEGER," +
+					COLUMN_COLOR +			" INTEGER" +
+					
+					")");
+			
+			int colors[] = {
+					Color.WHITE,
+					Color.BLACK,
+					Color.rgb(0, 0, 128),
+					Color.rgb(0, 128, 0),
+					Color.RED,
+					Color.rgb(128, 0, 0),
+					Color.rgb(128, 0, 128),
+					Color.rgb(255, 128, 0),
+					Color.YELLOW,
+					Color.GREEN,
+					Color.rgb(0, 128, 128),
+					Color.CYAN,
+					Color.BLUE,
+					Color.rgb(255, 64, 255),
+					Color.DKGRAY,
+					Color.LTGRAY
+			};
+			
+			ContentValues values = new ContentValues();
+			for(int i = 0; i < colors.length; i++) {
+				values.put(COLUMN_COLOR_NUM, i);
+				values.put(COLUMN_COLOR, colors[i]);
+				
+				db.insert(NAME, null, values);
+			}
+		}
+		
+		private static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+			if(oldVersion < 2 && newVersion >= 2) {
+				//Upgraded from a color table-less DB ver. to one where it is present
+				//So we simply make a fresh table!
+				onCreate(db);
+			}
+		}
+		
+		private SettingsDatabaseHelper dbHelper;
+		
+		private ColorsTable(SettingsDatabaseHelper dbHelper) {
+			this.dbHelper = dbHelper;
+		}
+		
+		public SparseIntArray getColors() {
+			SQLiteDatabase db = dbHelper.getReadableDatabase();
+			
+			Cursor dataCursor = db.query(NAME,
+					new String[] { COLUMN_COLOR_NUM, COLUMN_COLOR, },
+					null, null, null, null, null);
+			
+			SparseIntArray array = new SparseIntArray();
+			
+			if(dataCursor.moveToFirst()) {
+				do {
+					array.append(dataCursor.getInt(0), dataCursor.getInt(1));
+				}
+				while(dataCursor.moveToNext());
+			}
+			
+			return array;
 		}
 	}
 }

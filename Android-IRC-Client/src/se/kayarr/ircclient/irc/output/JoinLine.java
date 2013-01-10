@@ -2,14 +2,14 @@ package se.kayarr.ircclient.irc.output;
 
 import org.pircbotx.hooks.events.JoinEvent;
 
-import android.content.Context;
+import se.kayarr.ircclient.services.ServerConnectionService;
 
 public class JoinLine extends OutputLine {
 	private String channel;
 	private String nick;
 	private boolean ownJoin;
 	
-	public JoinLine(Context context, JoinEvent<?> event) {
+	public JoinLine(ServerConnectionService context, JoinEvent<?> event) {
 		super(context);
 		
 		this.channel = event.getChannel().getName();

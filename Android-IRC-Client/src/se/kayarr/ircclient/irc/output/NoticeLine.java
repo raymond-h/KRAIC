@@ -3,10 +3,9 @@ package se.kayarr.ircclient.irc.output;
 import org.pircbotx.Colors;
 import org.pircbotx.hooks.events.NoticeEvent;
 
+import se.kayarr.ircclient.services.ServerConnectionService;
 import se.kayarr.ircclient.shared.Util;
-
-import android.content.Context;
-import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
 
 public class NoticeLine extends OutputLine {
 	private boolean wasReceived = false;
@@ -14,7 +13,7 @@ public class NoticeLine extends OutputLine {
 	private String channel;
 	private String message;
 	
-	public NoticeLine(Context context, NoticeEvent<?> event) {
+	public NoticeLine(ServerConnectionService context, NoticeEvent<?> event) {
 		super( context, event.getTimestamp() );
 		
 		sender = event.getUser().getNick();
@@ -23,7 +22,7 @@ public class NoticeLine extends OutputLine {
 		wasReceived = true;
 	}
 
-	public NoticeLine(Context context, String sender, String channel, String message) {
+	public NoticeLine(ServerConnectionService context, String sender, String channel, String message) {
 		super(context);
 		this.sender = sender;
 		this.channel = channel;
@@ -31,9 +30,11 @@ public class NoticeLine extends OutputLine {
 	}
 
 	@Override
-	protected CharSequence outputString() {
-		return new SpannableStringBuilder(super.outputString())
-				.append((wasReceived ? "-> " : ""))
-				.append(Util.parseForSpans(getContext(), "-" + Colors.BOLD + sender + Colors.BOLD + "- " + message)); //TODO Make it use a global format
+	protected CharSequence outputString() { //TODO Make it use a global format
+		return TextUtils.concat(super.outputString(),
+				(wasReceived ? "-> " : ""),
+				
+				Util.parseForSpans("-" + Colors.BOLD + sender + Colors.BOLD + "- " + message, colors())
+		);
 	}
 }

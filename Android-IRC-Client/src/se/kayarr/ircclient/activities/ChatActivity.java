@@ -241,7 +241,7 @@ public class ChatActivity extends CompatActionBarActivity
 
 		@Override
 		public CharSequence getPageTitle(int position) {
-			return Util.ircCodesToSpanned( ChatActivity.this, cachedWindowsList.get(position).getTitle() );
+			return cachedWindowsList.get(position).getTitle();
 		}
 
 		@Override

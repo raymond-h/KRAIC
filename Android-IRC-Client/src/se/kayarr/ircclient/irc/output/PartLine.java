@@ -2,7 +2,7 @@ package se.kayarr.ircclient.irc.output;
 
 import org.pircbotx.hooks.events.PartEvent;
 
-import android.content.Context;
+import se.kayarr.ircclient.services.ServerConnectionService;
 
 public class PartLine extends OutputLine {
 	private String channel;
@@ -10,7 +10,7 @@ public class PartLine extends OutputLine {
 	private String reason;
 	private boolean ownPart;
 	
-	public PartLine(Context context, PartEvent<?> event) {
+	public PartLine(ServerConnectionService context, PartEvent<?> event) {
 		super(context);
 		
 		this.channel = event.getChannel().getName();

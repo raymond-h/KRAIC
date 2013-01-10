@@ -205,19 +205,6 @@ public class Util {
 	/**
 	 * Parses a {@link CharSequence} for IRC control codes such as Bold ({@code \u0002}), Underlined ({@code \u001f})
 	 * and Colors ({@code \u0003}) and makes it into a {@link Spanned} object that can be used in the Android UI.
-	 * Calling this is the exact same as calling {@link #ircCodesToSpanned(CharSequence, SparseIntArray)} with the color map
-	 * from {@link Settings}.
-	 * 
-	 * @param input The input text to parse
-	 * @return The resulting {@link Spanned} object
-	 */
-	public static Spanned ircCodesToSpanned(Context context, CharSequence input) {
-		return ircCodesToSpanned(input, Settings.getInstance(context).getColorMap());
-	}
-	
-	/**
-	 * Parses a {@link CharSequence} for IRC control codes such as Bold ({@code \u0002}), Underlined ({@code \u001f})
-	 * and Colors ({@code \u0003}) and makes it into a {@link Spanned} object that can be used in the Android UI.
 	 * 
 	 * @param input The input text to parse
 	 * @param colorMap The {@link SparseIntArray} with mappings from IRC colors to Android colors
@@ -382,7 +369,7 @@ public class Util {
 		return output;
 	}
 	
-	public static Spanned parseForSpans(Context context, CharSequence input) {
+	public static Spanned parseForSpans(CharSequence input, SparseIntArray colorMap) {
 		Spannable output = new SpannableString(input);
 		Linkify.addLinks(output, Linkify.ALL);
 		
@@ -396,6 +383,6 @@ public class Util {
 		}
 		//*/
 		
-		return ircCodesToSpanned(context, output);
+		return ircCodesToSpanned(output, colorMap);
 	}
 }

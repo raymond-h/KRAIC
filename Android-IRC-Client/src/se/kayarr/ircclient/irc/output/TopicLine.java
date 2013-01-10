@@ -5,8 +5,8 @@ import java.util.Date;
 
 import org.pircbotx.hooks.events.TopicEvent;
 
+import se.kayarr.ircclient.services.ServerConnectionService;
 import se.kayarr.ircclient.shared.Util;
-import android.content.Context;
 import android.text.SpannableStringBuilder;
 
 public class TopicLine extends OutputLine {
@@ -16,7 +16,7 @@ public class TopicLine extends OutputLine {
 	private Date setTime;
 	private boolean justSet = false;
 	
-	public TopicLine(Context context, TopicEvent<?> event) {
+	public TopicLine(ServerConnectionService context, TopicEvent<?> event) {
 		super( context, event.getTimestamp() );
 		
 		channel = event.getChannel().getName();
@@ -31,12 +31,12 @@ public class TopicLine extends OutputLine {
 		SpannableStringBuilder output = new SpannableStringBuilder(super.outputString());
 		
 		if(!justSet)
-			output.append("The topic for " + channel + " is \"").append(Util.parseForSpans(getContext(), topic))
+			output.append("The topic for " + channel + " is \"").append(Util.parseForSpans(topic, colors()))
 					.append("\", was set by " + setter + " at " + SimpleDateFormat.getInstance().format(setTime));
 		
 		else
 			output.append(setter + " changed the topic in " + channel + " to \"")
-					.append(Util.parseForSpans(getContext(), topic)).append("\"");
+					.append(Util.parseForSpans(topic, colors())).append("\"");
 		
 		return output;
 	}
