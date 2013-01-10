@@ -3,10 +3,10 @@ package se.kayarr.ircclient.activities;
 import java.util.List;
 
 import se.kayarr.ircclient.R;
-import se.kayarr.ircclient.irc.ServerListDatabaseHelper;
 import se.kayarr.ircclient.irc.ServerSettingsItem;
 import se.kayarr.ircclient.shared.DeviceInfo;
 import se.kayarr.ircclient.shared.NumberRangeInputFilter;
+import se.kayarr.ircclient.shared.SettingsDatabaseHelper;
 import se.kayarr.ircclient.shared.StaticInfo;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -55,13 +55,13 @@ public class SettingsActivity extends PreferenceActivity {
 		private AlertDialog currentDialog;
 		private String settingsHeader;
 		
-		private ServerListDatabaseHelper dbHelper;
+		private SettingsDatabaseHelper dbHelper;
 		
 		@Override
 		public void onAttach(Activity activity) {
 			super.onAttach(activity);
 			
-			dbHelper = new ServerListDatabaseHelper(activity);
+			dbHelper = new SettingsDatabaseHelper(activity);
 		}
 
 		@Override

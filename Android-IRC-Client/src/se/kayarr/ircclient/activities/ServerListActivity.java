@@ -6,10 +6,10 @@ import java.util.Map;
 
 import se.kayarr.ircclient.R;
 import se.kayarr.ircclient.irc.ServerConnection;
-import se.kayarr.ircclient.irc.ServerListDatabaseHelper;
 import se.kayarr.ircclient.services.ServerConnectionService;
 import se.kayarr.ircclient.services.ServerConnectionService.OnConnectionListListener;
 import se.kayarr.ircclient.services.ServerConnectionService.ServiceBinder;
+import se.kayarr.ircclient.shared.SettingsDatabaseHelper;
 import se.kayarr.ircclient.shared.StaticInfo;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -34,13 +34,13 @@ public class ServerListActivity extends CompatActionBarActivity implements Servi
 	private ListView serverList;
 	private ServerListAdapter listAdapter;
 	
-	private ServerListDatabaseHelper dbHelper;
+	private SettingsDatabaseHelper dbHelper;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		dbHelper = new ServerListDatabaseHelper(this);
+		dbHelper = new SettingsDatabaseHelper(this);
 		
 		setContentView(R.layout.serverlist);
 		

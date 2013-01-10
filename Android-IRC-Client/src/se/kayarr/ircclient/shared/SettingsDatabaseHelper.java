@@ -1,7 +1,10 @@
-package se.kayarr.ircclient.irc;
+package se.kayarr.ircclient.shared;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import se.kayarr.ircclient.irc.ServerSettingsItem;
+import se.kayarr.ircclient.irc.UserInfo;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -9,11 +12,11 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class ServerListDatabaseHelper extends SQLiteOpenHelper {
-	public static final String DATABASE_NAME = "servers.db";
+public class SettingsDatabaseHelper extends SQLiteOpenHelper {
+	public static final String DATABASE_NAME = "settings.db";
 	public static final int VERSION = 1;
 
-	public ServerListDatabaseHelper(Context context) {
+	public SettingsDatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, VERSION);
 	}
 
@@ -65,9 +68,9 @@ public class ServerListDatabaseHelper extends SQLiteOpenHelper {
 		private static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		}
 		
-		private ServerListDatabaseHelper dbHelper;
+		private SettingsDatabaseHelper dbHelper;
 		
-		private ServerItemsTable(ServerListDatabaseHelper dbHelper) {
+		private ServerItemsTable(SettingsDatabaseHelper dbHelper) {
 			this.dbHelper = dbHelper;
 		}
 		
