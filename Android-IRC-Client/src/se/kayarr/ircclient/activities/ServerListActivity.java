@@ -111,13 +111,13 @@ public class ServerListActivity extends CompatActionBarActivity implements Servi
 		return super.onOptionsItemSelected(item);
 	}
 
-	public void onServiceConnected(ComponentName name, IBinder service) {
-		ServerConnectionService.ServiceBinder binder = (ServiceBinder) service;
+	public void onServiceConnected(ComponentName name, IBinder b) {
+		ServerConnectionService.ServiceBinder binder = (ServiceBinder) b;
 		
-		this.service = binder.getService();
-		this.service.setOnConnectionListListener(this);
+		service = binder.getService();
+		service.setOnConnectionListListener(this);
 		
-		listAdapter.setConnections(this.service.getConnections());
+		listAdapter.setConnections(service.getConnections());
 	}
 
 	public void onServiceDisconnected(ComponentName name) {
