@@ -8,7 +8,8 @@ public class StaticInfo {
 	
 	static final public int SERVICE_NOTIFICATION_ID = 7558;
 	
-	static final public String EXTRA_CONN_ID = "se.kayarrr.ircclient.extra_connection_id";
+	static final public String EXTRA_CONN_ID = "se.kayarr.ircclient.extra_connection_id";
+	static final public String EXTRA_CONN_WINDOW = "se.kayarr.ircclient.extra_connection_window";
 	
 	static final public int MSG_BINDED = 1;
 	static final public int MSG_UNBINDED = 2;

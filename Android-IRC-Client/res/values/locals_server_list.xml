@@ -5,6 +5,7 @@
     <string name="serverlist_disconnect_all">Disconnect all</string>
     <string name="serverlist_settings">Settings</string>
     <string name="serverlist_no_servers_to_show">Not connected to any servers</string>
+    <string name="serverlist_tap_connection_to_show_windows">To see all windows for a connection, tap it</string>
     
 
 </resources>

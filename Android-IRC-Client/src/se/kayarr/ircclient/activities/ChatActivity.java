@@ -107,20 +107,20 @@ public class ChatActivity extends CompatActionBarActivity
 
 	@Override
 	protected void onStop() {
-		Log.d(StaticInfo.APP_TAG, "onStop " + this + " begin");
+		//Log.d(StaticInfo.APP_TAG, "onStop " + this + " begin");
 		
 		if(service != null) {
 			connection.removeOnCurrentWindowChangeListener(this);
 			connection.removeOnWindowListListener(this);
 			
-			Log.d(StaticInfo.APP_TAG, "onStop " + this + " midway");
+			//Log.d(StaticInfo.APP_TAG, "onStop " + this + " midway");
 			
 			unbindService(this);
 		}
 		
 		super.onStop();
 		
-		Log.d(StaticInfo.APP_TAG, "onStop " + this + " end");
+		//Log.d(StaticInfo.APP_TAG, "onStop " + this + " end");
 	}
 	
 	public void onServiceConnected(ComponentName name, IBinder b) {
@@ -136,6 +136,11 @@ public class ChatActivity extends CompatActionBarActivity
 		connection.addOnCurrentWindowChangeListener(this);
 		connection.addOnWindowListListener(this);
 		onWindowListChanged(connection);
+		
+		int windowIndex = getIntent().getIntExtra(StaticInfo.EXTRA_CONN_WINDOW, -1);
+		if(windowIndex >= 0) {
+			connection.setCurrentWindowIndex(windowIndex);
+		}
 		
 		fragmentPager.setCurrentItem(connection.getCurrentWindowIndex(), false);
 		
@@ -200,7 +205,7 @@ public class ChatActivity extends CompatActionBarActivity
 			int oldindex) {
 		if(index == oldindex) return;
 		
-		Log.d(StaticInfo.APP_TAG, "ChatActivity: Current window changed from " + oldindex + " to " + index);
+		//Log.d(StaticInfo.APP_TAG, "ChatActivity: Current window changed from " + oldindex + " to " + index);
 		
 		runOnUiThread(new Runnable() {
 			public void run() {
@@ -275,7 +280,7 @@ public class ChatActivity extends CompatActionBarActivity
 
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
-			Log.d(StaticInfo.APP_TAG, toString() + " onCreate begin " + savedInstanceState);
+			//Log.d(StaticInfo.APP_TAG, toString() + " onCreate begin " + savedInstanceState);
 			
 			super.onCreate(savedInstanceState);
 			
@@ -294,7 +299,7 @@ public class ChatActivity extends CompatActionBarActivity
 				}
 			}
 			
-			Log.d(StaticInfo.APP_TAG, toString() + " onCreate end " + savedInstanceState);
+			//Log.d(StaticInfo.APP_TAG, toString() + " onCreate end " + savedInstanceState);
 		}
 
 		public void onWindowsAvailable(ChatActivity activity) { //This will only be called when fragment has been recreated by the system
@@ -305,14 +310,14 @@ public class ChatActivity extends CompatActionBarActivity
 
 		@Override
 		public void onDestroy() {
-			Log.d(StaticInfo.APP_TAG, toString() + " onDestroy begin");
+			//Log.d(StaticInfo.APP_TAG, toString() + " onDestroy begin");
 			
 			window.removeOnOutputListener(outputAdapter);
 			window = null;
 			
 			super.onDestroy();
 			
-			Log.d(StaticInfo.APP_TAG, toString() + " onDestroy end");
+			//Log.d(StaticInfo.APP_TAG, toString() + " onDestroy end");
 		}
 
 		@Override
