@@ -22,14 +22,24 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="90dp"
-        android:layout_margin="8dp" >
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp" >
+
+        <ImageView
+            android:id="@+id/grid_tile_corner_icon"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true" />
 
         <TextView
             android:id="@+id/grid_tile_line_2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_marginBottom="8dp"
             android:layout_marginTop="8dp"
+            android:layout_toLeftOf="@id/grid_tile_corner_icon"
             android:ellipsize="end"
             android:text="Line 2"
             android:textAppearance="?android:attr/textAppearanceSmall" />
@@ -39,6 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@id/grid_tile_line_2"
+            android:layout_toLeftOf="@id/grid_tile_corner_icon"
             android:ellipsize="end"
             android:text="Line 1"
             android:textAppearance="?android:attr/textAppearanceSmall" />
