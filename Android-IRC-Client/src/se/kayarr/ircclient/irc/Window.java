@@ -65,9 +65,9 @@ public class Window {
 	}
 	
 	public static interface OnOutputListener {
-		public void onOutputLineAdded(OutputLine line);
+		public void onOutputLineAdded(Window window, OutputLine line);
 		
-		public void onOutputCleared();
+		public void onOutputCleared(Window window);
 	}
 	
 	public void addOnOutputListener(OnOutputListener l) {
@@ -80,13 +80,13 @@ public class Window {
 	
 	private void notifyOutputLineAdded(OutputLine line) {
 		for(OnOutputListener l : outputCallbacks) {
-			l.onOutputLineAdded(line);
+			l.onOutputLineAdded(this, line);
 		}
 	}
 	
 	private void notifyOutputCleared() {
 		for(OnOutputListener l : outputCallbacks) {
-			l.onOutputCleared();
+			l.onOutputCleared(this);
 		}
 	}
 }

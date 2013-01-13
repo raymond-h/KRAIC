@@ -439,11 +439,11 @@ public class ChatActivity extends CompatActionBarActivity
 				return convertView;
 			}
 
-			public void onOutputLineAdded(OutputLine line) {
+			public void onOutputLineAdded(Window window, OutputLine line) {
 				notifyDataSetChanged();
 			}
 
-			public void onOutputCleared() {
+			public void onOutputCleared(Window window) {
 				notifyDataSetChanged();
 			}
 		}

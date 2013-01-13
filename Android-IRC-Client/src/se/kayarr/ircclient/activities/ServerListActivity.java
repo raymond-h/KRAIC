@@ -50,6 +50,9 @@ public class ServerListActivity extends CompatActionBarActivity
 	@Getter private boolean dualPane;
 	
 	private ServerConnection currentConn;
+	private int currentConnPos = ListView.INVALID_POSITION;
+	
+	private static final String SAVED_BUNDLE_CURR_SELECTION = "se.kayarr.ircclient.current_selected_server";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +87,22 @@ public class ServerListActivity extends CompatActionBarActivity
 			gridAreaView.setAdapter(gridAdapter);
 			
 			gridAreaView.setOnItemClickListener(this);
+			
+			if(savedInstanceState != null) {
+				currentConnPos = savedInstanceState.getInt(SAVED_BUNDLE_CURR_SELECTION);
+			}
+			
+			Log.d(StaticInfo.DEBUG_TAG, "CurrentConnPos is " + currentConnPos);
+		}
+	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		
+		if(dualPane) {
+			Log.d(StaticInfo.DEBUG_TAG, "Saving currentConnPos as " + currentConnPos);
+			outState.putInt(SAVED_BUNDLE_CURR_SELECTION, currentConnPos);
 		}
 	}
 
@@ -149,6 +168,9 @@ public class ServerListActivity extends CompatActionBarActivity
 		service.setOnConnectionListListener(this);
 		
 		listAdapter.setConnections(service.getConnections());
+		if(dualPane && currentConnPos != ListView.INVALID_POSITION) {
+			setShownWindows(currentConnPos);
+		}
 	}
 
 	public void onServiceDisconnected(ComponentName name) {
@@ -190,7 +212,10 @@ public class ServerListActivity extends CompatActionBarActivity
 				intent.putExtra(StaticInfo.EXTRA_CONN_ID, id);
 				startActivity(intent);
 			}
-			else setShownWindows(position, id); //Otherwise in dual-pane, show conn. windows as a grid to the right
+			else {
+				currentConnPos = position;
+				setShownWindows(position); //Otherwise in dual-pane, show conn. windows as a grid to the right
+			}
 			
 		}
 		
@@ -207,8 +232,8 @@ public class ServerListActivity extends CompatActionBarActivity
 		}
 	}
 	
-	private void setShownWindows(int position, long connId) {
-		Log.d(StaticInfo.APP_TAG, "Getting info for conn " + connId + " at " + position);
+	private void setShownWindows(int position) {
+		Log.d(StaticInfo.DEBUG_TAG, "*** Showing windows for pos " + position);
 		
 		serverList.setItemChecked(position, true);
 		
@@ -220,7 +245,9 @@ public class ServerListActivity extends CompatActionBarActivity
 			}
 		}
 		
-		currentConn = service.getConnections().get(connId);
+		currentConn = listAdapter.getItem(position);
+		
+		Log.d(StaticInfo.DEBUG_TAG, "Getting info for conn " + currentConn.getId() + " at " + position);
 		
 		currentConn.addOnWindowListListener(this);
 		
@@ -243,6 +270,7 @@ public class ServerListActivity extends CompatActionBarActivity
 					window.addOnOutputListener(ServerListActivity.this);
 				}
 				
+				Log.d(StaticInfo.APP_TAG, "*************** UPDATING GRIDADAPTER");
 				gridAdapter.updateWindowList(connection != null ? connection.getWindows() : null);
 				gridAdapter.notifyDataSetChanged();
 			}
@@ -308,11 +336,22 @@ public class ServerListActivity extends CompatActionBarActivity
 		}
 
 		public View getView(int position, View convertView, ViewGroup parent) {
+			Window window = getItem(position);
+			GridViewUpdateHelper helper;
+			
 			if(convertView == null) {
 				convertView = getLayoutInflater().inflate(R.layout.serverlist_wide_grid_tile, parent, false);
+				
+				helper = new GridViewUpdateHelper(convertView);
+				convertView.setTag(helper);
+			}
+			else {
+				helper = (GridViewUpdateHelper) convertView.getTag();
 			}
 			
-			Window window = getItem(position);
+			helper.update(window);
+			
+			Log.d(StaticInfo.APP_TAG, "Pos #" + position + ": Window " + window.getTitle() + " assoc. with " + convertView);
 			
 			switch(window.getType()) {
 				case CHANNEL: convertView.setBackgroundResource(R.drawable.grid_tile_border_channel); break;
@@ -320,9 +359,9 @@ public class ServerListActivity extends CompatActionBarActivity
 				case STATUS: convertView.setBackgroundResource(R.drawable.grid_tile_border_status); break;
 			}
 			
-			TextView title = (TextView) convertView.findViewById(R.id.grid_tile_title);
-			TextView line1 = (TextView) convertView.findViewById(R.id.grid_tile_line_1);
-			TextView line2 = (TextView) convertView.findViewById(R.id.grid_tile_line_2);
+			TextView title = helper.title;
+			TextView line1 = helper.line1;
+			TextView line2 = helper.line2;
 			
 			title.setText( window.getTitle() );
 			
@@ -348,15 +387,56 @@ public class ServerListActivity extends CompatActionBarActivity
 			return convertView;
 		}
 	}
+	
+	private static class GridViewUpdateHelper implements Window.OnOutputListener {
+		private View view;
+		
+		private TextView title;
+		private TextView line1;
+		private TextView line2;
+		
+		private Window window;
+		
+		public GridViewUpdateHelper(View view) {
+			this.view = view;
+			
+			title = (TextView)view.findViewById(R.id.grid_tile_title);
+			line1 = (TextView)view.findViewById(R.id.grid_tile_line_1);
+			line2 = (TextView)view.findViewById(R.id.grid_tile_line_2);
+		}
+		
+		public void update(Window window) {
+			if(this.window != null)
+				window.removeOnOutputListener(this);
+			
+			this.window = window;
+			
+			if(window != null)
+				window.addOnOutputListener(this);
+		}
+		
+		public void onOutputLineAdded(Window window, OutputLine line) {
+			Log.d(StaticInfo.APP_TAG, "View " + view + ", window " + window.getTitle() + " got line " + line);
+			line1.setText(line2.getText());
+			line2.setText(line.getOutput());
+		}
 
-	public void onOutputLineAdded(OutputLine line) {
-		updateGridView();
+		public void onOutputCleared(Window window) {
+			Log.d(StaticInfo.APP_TAG, "View " + view + ", window " + window.getTitle() + " was cleared");
+			line1.setText("");
+			line2.setText("");
+		}
 	}
 
-	public void onOutputCleared() {
-		updateGridView();
+	public void onOutputLineAdded(Window window, OutputLine line) {
+		//updateGridView();
+	}
+
+	public void onOutputCleared(Window window) {
+		//updateGridView();
 	}
 	
+	/*
 	private void updateGridView() {
 		runOnUiThread(new Runnable() {
 			public void run() {
@@ -364,4 +444,5 @@ public class ServerListActivity extends CompatActionBarActivity
 			}
 		});
 	}
+	//*/
 }
