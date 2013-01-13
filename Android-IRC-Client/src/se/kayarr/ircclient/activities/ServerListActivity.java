@@ -13,8 +13,11 @@ import se.kayarr.ircclient.irc.Window;
 import se.kayarr.ircclient.irc.output.OutputLine;
 import se.kayarr.ircclient.services.ServerConnectionService;
 import se.kayarr.ircclient.services.ServerConnectionService.ServiceBinder;
+import se.kayarr.ircclient.shared.DeviceInfo;
 import se.kayarr.ircclient.shared.SettingsDatabaseHelper;
 import se.kayarr.ircclient.shared.StaticInfo;
+import android.annotation.SuppressLint;
+import android.app.ActivityOptions;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -215,6 +218,7 @@ public class ServerListActivity extends CompatActionBarActivity
 		});
 	}
 	
+	@SuppressLint("NewApi")
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		
@@ -240,7 +244,12 @@ public class ServerListActivity extends CompatActionBarActivity
 			Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
 			intent.putExtra(StaticInfo.EXTRA_CONN_ID, currentConn.getId());
 			intent.putExtra(StaticInfo.EXTRA_CONN_WINDOW, position);
-			startActivity(intent);
+			
+			if(DeviceInfo.isJellyBean(true)) {
+				ActivityOptions options = ActivityOptions.makeScaleUpAnimation(view, 0, 0, view.getWidth(), view.getHeight());
+				startActivity(intent, options.toBundle());
+			}
+			else startActivity(intent);
 			
 		}
 	}
