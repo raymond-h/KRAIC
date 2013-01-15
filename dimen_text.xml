@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="timestamp_size">16sp</dimen>
+    <dimen name="message_size">17sp</dimen>
+    
+</resources>

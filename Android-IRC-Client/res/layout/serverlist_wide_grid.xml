@@ -7,7 +7,7 @@
 
     <ListView
         android:id="@+id/server_list"
-        android:layout_width="360dp"
+        android:layout_width="350dp"
         android:layout_height="fill_parent"
         tools:listitem="@layout/serverlist_item" >
     </ListView>

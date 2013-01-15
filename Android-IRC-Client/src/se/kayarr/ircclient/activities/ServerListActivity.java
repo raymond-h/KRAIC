@@ -65,7 +65,7 @@ public class ServerListActivity extends CompatActionBarActivity
 		
 		dbHelper = new SettingsDatabaseHelper(this);
 		
-		setContentView(R.layout.serverlist_wide_grid);
+		setContentView(R.layout.serverlist);
 		
 		serverList = (ListView) findViewById(R.id.server_list);
 		serverList.setOnItemClickListener(this);
@@ -78,9 +78,7 @@ public class ServerListActivity extends CompatActionBarActivity
 		gridAreaView = (GridView) findViewById(R.id.wide_grid_view);
 		gridAreaText = (TextView) findViewById(R.id.wide_grid_area_text);
 		
-		if(gridAreaText != null) gridAreaText.setVisibility(View.GONE);
-		
-		dualPane = ( gridAreaView != null );
+		dualPane = ( gridAreaView != null && gridAreaText != null );
 		
 		Intent serviceIntent = new Intent(getApplicationContext(), ServerConnectionService.class);
 		startService(serviceIntent);
@@ -88,13 +86,15 @@ public class ServerListActivity extends CompatActionBarActivity
 		if(dualPane) {
 			serverList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 			
+			gridAreaText.setVisibility(View.GONE);
+			
 			gridAdapter = new WindowGridAdapter();
 			gridAreaView.setAdapter(gridAdapter);
 			
 			gridAreaView.setOnItemClickListener(this);
 			
 			if(savedInstanceState != null) {
-				currentConnPos = savedInstanceState.getInt(SAVED_BUNDLE_CURR_SELECTION);
+				currentConnPos = savedInstanceState.getInt(SAVED_BUNDLE_CURR_SELECTION, ListView.INVALID_POSITION);
 			}
 			
 			Log.d(StaticInfo.DEBUG_TAG, "CurrentConnPos is " + currentConnPos);
@@ -181,6 +181,7 @@ public class ServerListActivity extends CompatActionBarActivity
 		service.setOnConnectionListListener(this);
 		
 		listAdapter.setConnections(service.getConnections());
+		
 		if(dualPane) {
 			if(currentConnPos != ListView.INVALID_POSITION) {
 				setShownWindows(currentConnPos);
@@ -199,12 +200,14 @@ public class ServerListActivity extends CompatActionBarActivity
 			public void run() {
 				listAdapter.setConnections(service.getConnections());
 				
-				if(listAdapter.getCount() == 0) currentConn = null;
-				
-				if(currentConn == null) {
-					gridAdapter.updateWindowList(null);
+				if(dualPane) {
+					if(listAdapter.getCount() == 0) currentConn = null;
 					
-					if(listAdapter.getCount() > 0) gridAreaText.setVisibility(View.VISIBLE);
+					if(currentConn == null) {
+						gridAdapter.updateWindowList(null);
+						
+						if(listAdapter.getCount() > 0) gridAreaText.setVisibility(View.VISIBLE);
+					}
 				}
 			}
 		});
@@ -236,7 +239,8 @@ public class ServerListActivity extends CompatActionBarActivity
 			
 		}
 		
-		else if(parent == gridAreaView) { //Item in grid was clicked
+		else if(dualPane && parent == gridAreaView) { //Item in grid was clicked (only in dual-pane mode)
+			
 			Window window = currentConn.getWindows().get(position);
 			
 			Log.d(StaticInfo.APP_TAG, "Item " + position + " " + window.getTitle() + " clicked in grid");
@@ -254,7 +258,10 @@ public class ServerListActivity extends CompatActionBarActivity
 		}
 	}
 	
+	//*** This method is only called in dual-pane mode
 	private void setShownWindows(int position) {
+		if(!dualPane) return; //Dual-pane only!
+		
 		Log.d(StaticInfo.DEBUG_TAG, "*** Showing windows for pos " + position);
 		
 		serverList.setItemChecked(position, true);
@@ -347,7 +354,6 @@ public class ServerListActivity extends CompatActionBarActivity
 		}
 
 		public View getView(int position, View convertView, ViewGroup parent) {
-			Window window = getItem(position);
 			GridViewUpdateHelper helper;
 			
 			if(convertView == null) {
@@ -361,6 +367,7 @@ public class ServerListActivity extends CompatActionBarActivity
 				helper = (GridViewUpdateHelper) convertView.getTag();
 			}
 			
+			Window window = getItem(position);
 			helper.update(window);
 			
 			Log.d(StaticInfo.DEBUG_TAG, "Pos #" + position + ": Window " + window.getTitle() + " assoc. with " + convertView);
