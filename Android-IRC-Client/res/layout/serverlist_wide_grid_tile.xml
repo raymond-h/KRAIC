@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="2dp"
+    android:background="@drawable/grid_tile_border_status"
     android:orientation="vertical" >
 
     <TextView
@@ -30,7 +31,8 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true" />
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_tile_corner_status" />
 
         <TextView
             android:id="@+id/grid_tile_line_2"
