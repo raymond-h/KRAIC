@@ -208,7 +208,7 @@ public class SettingsDatabaseHelper extends SQLiteOpenHelper {
 			SQLiteDatabase db = dbHelper.getReadableDatabase();
 			
 			Cursor dataCursor = db.query(NAME,
-					new String[] { COLUMN_COLOR_NUM, COLUMN_COLOR, },
+					new String[] { COLUMN_COLOR_NUM, COLUMN_COLOR },
 					null, null, null, null, null);
 			
 			SparseIntArray array = new SparseIntArray();
