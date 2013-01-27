@@ -9,6 +9,7 @@ import java.util.Map;
 import lombok.Getter;
 import se.kayarr.ircclient.R;
 import se.kayarr.ircclient.irc.ServerConnection;
+import se.kayarr.ircclient.irc.ServerSettingsItem;
 import se.kayarr.ircclient.irc.Window;
 import se.kayarr.ircclient.irc.output.OutputLine;
 import se.kayarr.ircclient.services.ServerConnectionService;
@@ -39,7 +40,8 @@ import android.widget.TextView;
 
 public class ServerListActivity extends CompatActionBarActivity
 		implements ServiceConnection, ServerConnectionService.OnConnectionListListener,
-					ServerConnection.OnWindowListListener, OnItemClickListener {
+					ServerConnection.OnWindowListListener, OnItemClickListener,
+					ServerListDialogFragment.OnServerListClickedListener {
 	
 	private ServerConnectionService service;
 	
@@ -150,7 +152,28 @@ public class ServerListActivity extends CompatActionBarActivity
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()) {
 			case R.id.menu_connect: {
-				this.service.connectTo(dbHelper.serverItems().getAllServers().get(0));
+				List<ServerSettingsItem> allServers = dbHelper.serverItems().getAllServers();
+				
+				if(allServers.size() > 0) {
+					String[] serverNames = new String[allServers.size()+1];
+					serverNames[0] = getString(R.string.serverlist_manual_connect); //TODO Use string resource
+					
+					int i = 1;
+					for(ServerSettingsItem serverItem : allServers) {
+						serverNames[i++] = serverItem.getDisplayName();
+					}
+					
+					Bundle args = new Bundle();
+					args.putStringArray(ServerListDialogFragment.ARGUMENT_SERVER_NAMES, serverNames);
+					
+					ServerListDialogFragment dialog = new ServerListDialogFragment();
+					dialog.setArguments(args);
+					
+					dialog.show(getSupportFragmentManager(), "server_list_dialog");
+				}
+				else {
+					onServerListItemClicked(null, 0);
+				}
 				
 				return true;
 			}
@@ -172,6 +195,16 @@ public class ServerListActivity extends CompatActionBarActivity
 		}
 		
 		return super.onOptionsItemSelected(item);
+	}
+	
+	public void onServerListItemClicked(ServerListDialogFragment dialogFragment, int position) {
+		if(position == 0) {
+			//This is where we show "manual connect" dialog
+			Log.v(StaticInfo.APP_TAG, "Manual connect goes here!");
+		}
+		else {
+			this.service.connectTo(dbHelper.serverItems().getAllServers().get(position-1));
+		}
 	}
 
 	public void onServiceConnected(ComponentName name, IBinder b) {
@@ -444,14 +477,14 @@ public class ServerListActivity extends CompatActionBarActivity
 		}
 		
 		public void onOutputLineAdded(Window window, OutputLine line) {
-			Log.d(StaticInfo.APP_TAG, "View " + view + ", window " + window.getTitle() + " got line " + line);
+			//Log.d(StaticInfo.APP_TAG, "View " + view + ", window " + window.getTitle() + " got line " + line);
 			
 			line1.setText(line2.getText());
 			line2.setText(line.getOutput());
 		}
 
 		public void onOutputCleared(Window window) {
-			Log.d(StaticInfo.APP_TAG, "View " + view + ", window " + window.getTitle() + " was cleared");
+			//Log.d(StaticInfo.APP_TAG, "View " + view + ", window " + window.getTitle() + " was cleared");
 			
 			line1.setText("");
 			line2.setText("");
