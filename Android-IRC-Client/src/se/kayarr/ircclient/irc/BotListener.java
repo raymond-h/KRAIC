@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 
 import org.pircbotx.Channel;
 import org.pircbotx.ReplyConstants;
+import org.pircbotx.UserSnapshot;
 import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ActionEvent;
@@ -14,6 +15,7 @@ import org.pircbotx.hooks.events.NickChangeEvent;
 import org.pircbotx.hooks.events.NoticeEvent;
 import org.pircbotx.hooks.events.PartEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
+import org.pircbotx.hooks.events.QuitEvent;
 import org.pircbotx.hooks.events.ServerResponseEvent;
 import org.pircbotx.hooks.events.TopicEvent;
 
@@ -24,6 +26,7 @@ import se.kayarr.ircclient.irc.output.MessageLine;
 import se.kayarr.ircclient.irc.output.NickChangeLine;
 import se.kayarr.ircclient.irc.output.NoticeLine;
 import se.kayarr.ircclient.irc.output.PartLine;
+import se.kayarr.ircclient.irc.output.QuitLine;
 import se.kayarr.ircclient.irc.output.TopicLine;
 import se.kayarr.ircclient.services.ServerConnectionService;
 import se.kayarr.ircclient.shared.StaticInfo;
@@ -119,6 +122,25 @@ public class BotListener extends ListenerAdapter<Bot> {
 		if(window != null) window.output(new PartLine(context, event));
 		
 		super.onPart(event);
+	}
+
+	@Override
+	public void onQuit(QuitEvent<Bot> event) throws Exception {
+		UserSnapshot user = event.getUser();
+		for(Channel channel : user.getChannels()) {
+			Window window = connection.getWindowIgnoreCase(channel.getName(), false);
+			
+			if(window != null) //This should be guaranteed
+				window.output(new QuitLine(context, event));
+			
+			//This is a WTF error if it ever happens
+			else {
+				Log.e(StaticInfo.APP_TAG, "Tried outputting QuitLine to channel without corresponding window");
+				Log.e(StaticInfo.APP_TAG, "^ user: " + user.getNick() + ", channel: " + channel.getName());
+			}
+		}
+		
+		super.onQuit(event);
 	}
 
 	@Override
