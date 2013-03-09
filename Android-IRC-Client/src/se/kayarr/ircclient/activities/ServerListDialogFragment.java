@@ -9,7 +9,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 
 public class ServerListDialogFragment extends DialogFragment {
-	public static final String ARGUMENT_SERVER_NAMES = "args_server_names";
+	public static final String ARGUMENT_SERVER_NAMES = "se.kayarr.ircclient.args_server_names";
 	
 	public static interface OnServerListClickedListener {
 		public void onServerListItemClicked(ServerListDialogFragment dialogFragment, int position);
