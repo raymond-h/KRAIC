@@ -73,6 +73,8 @@ public class ServerSettingsItem implements Serializable, Parcelable {
 		dest.writeString(name);
 		dest.writeString(address);
 		dest.writeInt(port);
+		
+		dest.writeParcelable(userInfo, flags);
 	}
 	
 	public void readFromParcel(Parcel src) {
@@ -80,6 +82,8 @@ public class ServerSettingsItem implements Serializable, Parcelable {
 		name = src.readString();
 		address = src.readString();
 		port = src.readInt();
+		
+		userInfo = src.readParcelable(null);
 	}
 	
 	public static final Parcelable.Creator<ServerSettingsItem> CREATOR = new Creator<ServerSettingsItem>() {
