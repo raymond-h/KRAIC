@@ -479,6 +479,7 @@ public class ServerListActivity extends CompatActionBarActivity
 	}
 	
 	private static class GridViewUpdateHelper implements Window.OnOutputListener {
+		@SuppressWarnings("unused")
 		private WeakReference<View> view;
 		
 		private TextView title;
