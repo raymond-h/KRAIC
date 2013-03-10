@@ -60,17 +60,14 @@ public class SettingsDatabaseHelper extends SQLiteOpenHelper {
 					
 					")");
 			
+			//*
 			ContentValues values = new ContentValues();
 			
-			values.put(COLUMN_SERVER_NAME, "EsperNet #1");
+			values.put(COLUMN_SERVER_NAME, "EsperNet");
 			values.put(COLUMN_SERVER_ADDRESS, "irc.esper.net");
 			values.put(COLUMN_SERVER_PORT, 6667);
 			db.insert(NAME, null, values);
-			
-			values.put(COLUMN_SERVER_NAME, "EsperNet #2");
-			values.put(COLUMN_SERVER_ADDRESS, "irc.esper.net");
-			values.put(COLUMN_SERVER_PORT, 6668);
-			db.insert(NAME, null, values);
+			//*/
 		}
 		
 		private static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -101,7 +98,20 @@ public class SettingsDatabaseHelper extends SQLiteOpenHelper {
 		}
 		
 		public ServerSettingsItem addServer(ServerSettingsItem item) {
-			return addServer(item.getName(), item.getAddress(), item.getPort(), item.getUserInfo());
+			SQLiteDatabase db = dbHelper.getWritableDatabase();
+			ContentValues values = new ContentValues();
+			values.put(COLUMN_SERVER_NAME, item.getName());
+			values.put(COLUMN_SERVER_ADDRESS, item.getAddress());
+			values.put(COLUMN_SERVER_PORT, item.getPort());
+			
+			if(item.getUserInfo() != null) {
+				//TODO Handle user info for this server here
+			}
+			item.setId( db.insert(NAME, null, values) );
+			
+			//Log.d(StaticInfo.APP_TAG, "Inserted " + id + " database");
+			
+			return item;
 		}
 		
 		public void removeServer(ServerSettingsItem item) {

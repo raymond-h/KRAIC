@@ -197,12 +197,12 @@ public class SettingsActivity extends PreferenceActivity {
 				boolean added) {
 			
 			if(added) {
-				ServerSettingsItem item = dbHelper.serverItems().addServer(settingsItem);
+				dbHelper.serverItems().addServer(settingsItem);
 				
-				ServerItemPreference pref = new ServerItemPreference(getActivity(), item);
+				ServerItemPreference pref = new ServerItemPreference(getActivity(), settingsItem);
 				getPreferenceScreen().addPreference(pref);
 				
-				Log.d(StaticInfo.APP_TAG, "Added item " + item);
+				Log.d(StaticInfo.APP_TAG, "Added item " + settingsItem);
 			}
 			else {
 				dbHelper.serverItems().updateServer(settingsItem);

@@ -13,7 +13,7 @@ import lombok.experimental.Accessors;
 public class ServerSettingsItem implements Serializable, Parcelable {
 	private static final long serialVersionUID = -9187385204145219989L;
 	
-	@Getter private long id = -1;
+	@Getter @Setter private long id = -1;
 	@Getter @Setter private String name;
 	@Getter @Setter private String address;
 	@Getter @Setter private int port;
