@@ -1,7 +1,5 @@
 package se.kayarr.ircclient.irc.output;
 
-import java.util.Random;
-
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 
