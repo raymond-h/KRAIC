@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="2dp"
-    android:background="@drawable/grid_tile_border_status"
+    android:background="@drawable/tile_background"
     android:orientation="vertical" >
 
     <TextView
@@ -28,11 +28,12 @@
 
         <ImageView
             android:id="@+id/grid_tile_corner_icon"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:src="@drawable/ic_tile_corner_status" />
+            android:src="@drawable/ic_tile_corner_pm"
+            android:visibility="visible" />
 
         <TextView
             android:id="@+id/grid_tile_line_2"
@@ -40,6 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="8dp"
+            android:layout_marginRight="8dp"
             android:layout_marginTop="8dp"
             android:layout_toLeftOf="@id/grid_tile_corner_icon"
             android:ellipsize="end"
@@ -51,6 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_above="@id/grid_tile_line_2"
+            android:layout_marginRight="8dp"
             android:layout_toLeftOf="@id/grid_tile_corner_icon"
             android:ellipsize="end"
             android:text="Line 1"

@@ -438,15 +438,15 @@ public class ServerListActivity extends CompatActionBarActivity
 			
 			switch(window.getType()) {
 				case CHANNEL: 
-					convertView.setBackgroundResource(R.drawable.grid_tile_border_channel);
+					//convertView.setBackgroundResource(R.drawable.grid_tile_border_channel);
 					helper.cornerIcon.setImageResource(R.drawable.ic_tile_corner_chan);
 					break;
 				case USER:
-					convertView.setBackgroundResource(R.drawable.grid_tile_border_pm);
+					//convertView.setBackgroundResource(R.drawable.grid_tile_border_pm);
 					helper.cornerIcon.setImageResource(R.drawable.ic_tile_corner_pm);
 					break;
 				case STATUS:
-					convertView.setBackgroundResource(R.drawable.grid_tile_border_status);
+					//convertView.setBackgroundResource(R.drawable.grid_tile_border_status);
 					helper.cornerIcon.setImageResource(R.drawable.ic_tile_corner_status);
 					break;
 			}
