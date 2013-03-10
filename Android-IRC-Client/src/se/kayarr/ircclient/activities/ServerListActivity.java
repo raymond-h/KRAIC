@@ -48,6 +48,8 @@ public class ServerListActivity extends CompatActionBarActivity
 	
 	private ServerConnectionService service;
 	
+	private AlertDialog currentDialog;
+	
 	private ListView serverList;
 	private GridView gridAreaView;
 	private TextView gridAreaText;
@@ -143,6 +145,13 @@ public class ServerListActivity extends CompatActionBarActivity
 		
 		super.onStop();
 	}
+	
+	@Override
+	public void onPause() {
+		if(currentDialog != null) currentDialog.dismiss();
+		
+		super.onPause();
+	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -205,13 +214,13 @@ public class ServerListActivity extends CompatActionBarActivity
 			//This is where we show "manual connect" dialog
 			Log.v(StaticInfo.APP_TAG, "Manual connect goes here!");
 			
-			AlertDialog dialog = ServerEditDialogHelper.createDialog(this, null,
+			currentDialog = ServerEditDialogHelper.createDialog(this, null,
 					
 					getString(R.string.serverlist_connect_to), getString(R.string.serverlist_connect),
 					
 					this);
 			
-			dialog.show();
+			currentDialog.show();
 		}
 		else {
 			this.service.connectTo(dbHelper.serverItems().getAllServers().get(position-1));
