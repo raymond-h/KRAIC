@@ -58,7 +58,7 @@ public class Bot extends PircBotX {
 		
 		setVerbose(true);
 		
-		BackgroundListenerManager<Bot> manager = new BackgroundListenerManager<Bot>();
+		BackgroundListenerManager manager = new BackgroundListenerManager();
 		manager.addListener(new OwnCoreHooks());
 		manager.addListener(new BotListener(conn.getContext(), conn), true);
 		setListenerManager(manager);

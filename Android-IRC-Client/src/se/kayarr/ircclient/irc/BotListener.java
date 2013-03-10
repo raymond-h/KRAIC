@@ -105,6 +105,9 @@ public class BotListener extends ListenerAdapter<Bot> {
 
 	@Override
 	public void onNickChange(NickChangeEvent<Bot> event) throws Exception {
+		Log.d(StaticInfo.APP_TAG, "Got event " + event);
+		Log.d(StaticInfo.APP_TAG, "User is " + event.getUser());
+		
 		for(Channel channel : event.getUser().getChannels())
 			connection.output(channel.getName(), new NickChangeLine(context, event));
 		
