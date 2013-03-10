@@ -3,6 +3,8 @@ package se.kayarr.ircclient.irc.output;
 import org.pircbotx.hooks.events.NickChangeEvent;
 
 import se.kayarr.ircclient.services.ServerConnectionService;
+import se.kayarr.ircclient.shared.Util;
+import android.text.TextUtils;
 
 public class NickChangeLine extends OutputLine {
 	private String oldNick;
@@ -17,6 +19,13 @@ public class NickChangeLine extends OutputLine {
 
 	@Override
 	protected CharSequence outputString() {
-		return super.outputString() + oldNick + " changed nick to " + newNick; //TODO Make it use a global format
+		return TextUtils.concat(super.outputString(),
+				Util.parseForSpans(
+						Util.toBold(oldNick) + " changed nick to " + Util.toBold(newNick),
+						
+						colors()
+				)
+				//TODO Make it use a global format
+		);
 	}
 }

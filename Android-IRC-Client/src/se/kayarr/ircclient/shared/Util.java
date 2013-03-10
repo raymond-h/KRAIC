@@ -280,6 +280,9 @@ public class Util {
 					
 					i--;
 				}
+				catch(IndexOutOfBoundsException e) {
+					Log.v(StaticInfo.APP_TAG, "Reached the end of the string, it seems!");
+				}
 				finally {
 					//Incase of IndexOutOfBoundsException in charAt(), because we reached the end,
 					//we just consider the control code parsing done and continue on
@@ -384,5 +387,34 @@ public class Util {
 		//*/
 		
 		return ircCodesToSpanned(output, colorMap);
+	}
+	
+	public static String toBold(String text) {
+		return Colors.BOLD + text + Colors.BOLD;
+	}
+	
+	public static String toUnderline(String text) {
+		return Colors.UNDERLINE + text + Colors.UNDERLINE;
+	}
+	
+	public static String toColor(String text, int fg) {
+		if(fg < 0 || fg > 15) return text;
+		
+		return
+				new StringBuilder().append('\3').append(fg)
+				.append(text)
+				.append('\3')
+				.toString();
+	}
+	
+	public static String toColor(String text, int fg, int bg) {
+		if(bg < 0 || bg > 15) return toColor(text, fg);
+		if(fg < 0 || fg > 15) return text;
+		
+		return
+				new StringBuilder().append('\3').append(fg).append(",").append(bg)
+				.append(text)
+				.append('\3')
+				.toString();
 	}
 }

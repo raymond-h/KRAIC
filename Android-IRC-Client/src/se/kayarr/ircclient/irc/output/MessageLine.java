@@ -1,6 +1,7 @@
 package se.kayarr.ircclient.irc.output;
 
-import org.pircbotx.Colors;
+import java.util.Random;
+
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.PrivateMessageEvent;
 
@@ -38,7 +39,7 @@ public class MessageLine extends OutputLine {
 
 	protected CharSequence outputString() { //TODO Make it use a global format
 		return TextUtils.concat(super.outputString(),
-				Util.parseForSpans( Colors.BOLD + nick + Colors.BOLD + " :  " + message, colors() )
+				Util.parseForSpans( Util.toBold(nick)+ " :  " + message, colors() )
 		);
 	}
 }
