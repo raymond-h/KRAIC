@@ -15,10 +15,12 @@ import se.kayarr.ircclient.irc.output.OutputLine;
 import se.kayarr.ircclient.services.ServerConnectionService;
 import se.kayarr.ircclient.services.ServerConnectionService.ServiceBinder;
 import se.kayarr.ircclient.shared.DeviceInfo;
+import se.kayarr.ircclient.shared.ServerEditDialogHelper;
 import se.kayarr.ircclient.shared.SettingsDatabaseHelper;
 import se.kayarr.ircclient.shared.StaticInfo;
 import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
+import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -41,7 +43,8 @@ import android.widget.TextView;
 public class ServerListActivity extends CompatActionBarActivity
 		implements ServiceConnection, ServerConnectionService.OnConnectionListListener,
 					ServerConnection.OnWindowListListener, OnItemClickListener,
-					ServerListDialogFragment.OnServerListClickedListener {
+					ServerListDialogFragment.OnServerListClickedListener,
+					ServerEditDialogHelper.OnServerItemEditedListener {
 	
 	private ServerConnectionService service;
 	
@@ -156,7 +159,7 @@ public class ServerListActivity extends CompatActionBarActivity
 				
 				if(allServers.size() > 0) {
 					String[] serverNames = new String[allServers.size()+1];
-					serverNames[0] = getString(R.string.serverlist_manual_connect); //TODO Use string resource
+					serverNames[0] = getString(R.string.serverlist_manual_connect);
 					
 					int i = 1;
 					for(ServerSettingsItem serverItem : allServers) {
@@ -201,10 +204,29 @@ public class ServerListActivity extends CompatActionBarActivity
 		if(position == 0) {
 			//This is where we show "manual connect" dialog
 			Log.v(StaticInfo.APP_TAG, "Manual connect goes here!");
+			
+			AlertDialog dialog = ServerEditDialogHelper.createDialog(this, null,
+					
+					getString(R.string.serverlist_connect_to), getString(R.string.serverlist_connect),
+					
+					this);
+			
+			dialog.show();
 		}
 		else {
 			this.service.connectTo(dbHelper.serverItems().getAllServers().get(position-1));
 		}
+	}
+	
+	public void onServerItemEdited(ServerSettingsItem settingsItem,
+			boolean added) {
+		
+		Log.d(StaticInfo.APP_TAG, "MANUAL CONNECT TO: " + settingsItem);
+		this.service.connectTo(settingsItem);
+	}
+
+	public void onServerItemEditCancel(ServerSettingsItem settingsItem) {
+		Log.d(StaticInfo.APP_TAG, "Cancelled manual connect");
 	}
 
 	public void onServiceConnected(ComponentName name, IBinder b) {

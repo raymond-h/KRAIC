@@ -182,11 +182,13 @@ public class SettingsActivity extends PreferenceActivity {
 		
 		private void showServerEditDialog(final ServerSettingsItem settingsItem) {
 			
-			String title = getActivity().getString(settingsItem == null ?
+			String title = getString(settingsItem == null ?
 							R.string.addserver_dialog_title_add_server :
 							R.string.addserver_dialog_title_edit_server);
 			
-			currentDialog = ServerEditDialogHelper.createDialog(getActivity(), settingsItem, title, this);
+			String action = getString(R.string.save);
+			
+			currentDialog = ServerEditDialogHelper.createDialog(getActivity(), settingsItem, title, action, this);
 			
 			currentDialog.show();
 		}

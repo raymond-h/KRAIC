@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/menu_connect" android:title="@string/serverlist_connect" android:icon="@drawable/ic_action_connect" android:showAsAction="ifRoom"></item>
+    <item android:id="@+id/menu_connect" android:title="@string/serverlist_connect_to" android:icon="@drawable/ic_action_connect" android:showAsAction="ifRoom"></item>
     
     <item android:id="@+id/menu_disconnect_all" android:title="@string/serverlist_disconnect_all" android:showAsAction="never"></item>
     <item android:id="@+id/menu_settings" android:showAsAction="never" android:title="@string/serverlist_settings"></item>

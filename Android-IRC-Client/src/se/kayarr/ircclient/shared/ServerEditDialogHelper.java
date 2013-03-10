@@ -20,7 +20,7 @@ public class ServerEditDialogHelper {
 		public void onServerItemEditCancel(ServerSettingsItem settingsItem);
 	}
 
-	public static AlertDialog createDialog(Activity activity, final ServerSettingsItem serverItem, String title,
+	public static AlertDialog createDialog(Activity activity, final ServerSettingsItem serverItem, String title, String action,
 			final OnServerItemEditedListener l) {
 		
 		final boolean added = (serverItem == null);
@@ -53,7 +53,7 @@ public class ServerEditDialogHelper {
 					}
 				})
 				
-				.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+				.setPositiveButton(action, new DialogInterface.OnClickListener() {
 					public void onClick(DialogInterface dialog, int which) {
 						
 						String name = serverNameEdit.getText().toString();
