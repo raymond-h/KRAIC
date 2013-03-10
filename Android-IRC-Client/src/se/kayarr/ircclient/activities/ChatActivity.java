@@ -48,8 +48,8 @@ import android.view.View.OnKeyListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.BufferType;
@@ -273,7 +273,7 @@ public class ChatActivity extends CompatActionBarActivity
 		private ListView outputList;
 		private OutputLinesAdapter outputAdapter;
 		
-		private Button sendButton;
+		private ImageButton sendButton;
 		
 		private EditText inputField;
 		private boolean ctrlPressed = false;
@@ -329,7 +329,7 @@ public class ChatActivity extends CompatActionBarActivity
 			
 			outputList.setAdapter(outputAdapter);
 			
-			sendButton = (Button) view.findViewById(R.id.send_btn);
+			sendButton = (ImageButton) view.findViewById(R.id.send_btn);
 			
 			sendButton.setOnClickListener(new OnClickListener() {
 				public void onClick(View v) {
