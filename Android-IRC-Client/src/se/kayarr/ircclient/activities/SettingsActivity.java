@@ -5,27 +5,23 @@ import java.util.List;
 import se.kayarr.ircclient.R;
 import se.kayarr.ircclient.irc.ServerSettingsItem;
 import se.kayarr.ircclient.shared.DeviceInfo;
-import se.kayarr.ircclient.shared.NumberRangeInputFilter;
+import se.kayarr.ircclient.shared.ServerEditDialogHelper;
 import se.kayarr.ircclient.shared.SettingsDatabaseHelper;
 import se.kayarr.ircclient.shared.StaticInfo;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceScreen;
-import android.text.InputFilter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
 
 @TargetApi(11)
 public class SettingsActivity extends PreferenceActivity {
@@ -51,7 +47,9 @@ public class SettingsActivity extends PreferenceActivity {
 	
 	@TargetApi(11)
 	public static class SettingsFragment extends PreferenceFragment
-			implements SharedPreferences.OnSharedPreferenceChangeListener {
+			implements SharedPreferences.OnSharedPreferenceChangeListener,
+			ServerEditDialogHelper.OnServerItemEditedListener {
+		
 		private AlertDialog currentDialog;
 		private String settingsHeader;
 		
@@ -133,7 +131,7 @@ public class SettingsActivity extends PreferenceActivity {
 		public boolean onOptionsItemSelected(MenuItem item) {
 			switch(item.getItemId()) {
 				case R.id.menu_serverlist_add: {
-					showServerEditDialog(null, null, true);
+					showServerEditDialog(null);
 					
 					return true;
 				}
@@ -148,7 +146,7 @@ public class SettingsActivity extends PreferenceActivity {
 			
 			if(preference instanceof ServerItemPreference) {
 				ServerItemPreference serverItem = (ServerItemPreference) preference;
-				showServerEditDialog(serverItem, serverItem.item, false);
+				showServerEditDialog(serverItem.item);
 				
 				return true;
 			}
@@ -162,70 +160,6 @@ public class SettingsActivity extends PreferenceActivity {
 			for(ServerSettingsItem item : dbHelper.serverItems().getAllServers()) {
 				getPreferenceScreen().addPreference(new ServerItemPreference(getActivity(), item));
 			}
-		}
-		
-		private void showServerEditDialog(final ServerItemPreference preference,
-				final ServerSettingsItem settingsItem, final boolean added) {
-			
-			AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-			
-			final View dialogView = getActivity().getLayoutInflater().inflate(R.layout.dialog_add_server, null);
-			
-			final EditText serverNameEdit = (EditText) dialogView.findViewById(R.id.addserver_server_name);
-			final EditText addressEdit = (EditText) dialogView.findViewById(R.id.addserver_address);
-			final EditText portEdit = (EditText) dialogView.findViewById(R.id.addserver_port);
-			
-			portEdit.setFilters( new InputFilter[] { new NumberRangeInputFilter(0, 65535) } );
-			
-			if(settingsItem != null) {
-				serverNameEdit.setText(settingsItem.getName());
-				addressEdit.setText(settingsItem.getAddress());
-				portEdit.setText("" + settingsItem.getPort());
-			}
-			
-			currentDialog = builder
-					.setCancelable(false)
-					.setTitle(added ?
-							R.string.addserver_dialog_title_add_server :
-							R.string.addserver_dialog_title_edit_server)
-					.setView(dialogView)
-					.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-							dialog.dismiss();
-						}
-					})
-					.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
-						public void onClick(DialogInterface dialog, int which) {
-							String name = serverNameEdit.getText().toString();
-							String address = addressEdit.getText().toString();
-							int port = Integer.parseInt(portEdit.getText().toString(), 10);
-							
-							Log.d(StaticInfo.APP_TAG, "Server item " + name + " has ID " + settingsItem.getId());
-							
-							if(!added) {
-								settingsItem.setName(name);
-								settingsItem.setAddress(address);
-								settingsItem.setPort(port);
-								
-								dbHelper.serverItems().updateServer(settingsItem);
-								preference.update();
-								
-								//Log.d(StaticInfo.APP_TAG, "Updating ID " + settingsItem.getId());
-							}
-							else {
-								ServerSettingsItem settingsItem = dbHelper.serverItems()
-										.addServer(name, address, port, null);
-								
-								ServerItemPreference item = new ServerItemPreference(getActivity(), settingsItem);
-								getPreferenceScreen().addPreference(item);
-								
-								//Log.d(StaticInfo.APP_TAG, "Adding server item " + name);
-							}
-							
-							dialog.dismiss();
-						}
-					})
-					.show();
 		}
 		
 		public void onSharedPreferenceChanged(
@@ -244,6 +178,55 @@ public class SettingsActivity extends PreferenceActivity {
 						getString(R.string.settings_general_default_quitmessage_value));
 				preference.setSummary(defaultQuit);
 			}
+		}
+		
+		private void showServerEditDialog(final ServerSettingsItem settingsItem) {
+			
+			String title = getActivity().getString(settingsItem == null ?
+							R.string.addserver_dialog_title_add_server :
+							R.string.addserver_dialog_title_edit_server);
+			
+			currentDialog = ServerEditDialogHelper.createDialog(getActivity(), settingsItem, title, this);
+			
+			currentDialog.show();
+		}
+
+		public void onServerItemEdited(ServerSettingsItem settingsItem,
+				boolean added) {
+			
+			if(added) {
+				ServerSettingsItem item = dbHelper.serverItems().addServer(settingsItem);
+				
+				ServerItemPreference pref = new ServerItemPreference(getActivity(), item);
+				getPreferenceScreen().addPreference(pref);
+				
+				Log.d(StaticInfo.APP_TAG, "Added item " + item);
+			}
+			else {
+				dbHelper.serverItems().updateServer(settingsItem);
+				
+				findPreferenceByItem(settingsItem).update();
+				
+				Log.d(StaticInfo.APP_TAG, "Updated item " + settingsItem);
+			}
+		}
+
+		public void onServerItemEditCancel(ServerSettingsItem settingsItem) {
+			Log.d(StaticInfo.APP_TAG, "Cancelled item edit " + settingsItem);
+		}
+		
+		private ServerItemPreference findPreferenceByItem(ServerSettingsItem item) {
+			for(int i = 0; i < getPreferenceScreen().getPreferenceCount(); ++i) {
+				Preference pref = getPreferenceScreen().getPreference(i);
+				
+				if(pref instanceof ServerItemPreference) {
+					ServerItemPreference serverPref = (ServerItemPreference)pref;
+					
+					if(serverPref.item == item) return serverPref;
+				}
+			}
+			
+			return null;
 		}
 	}
 	

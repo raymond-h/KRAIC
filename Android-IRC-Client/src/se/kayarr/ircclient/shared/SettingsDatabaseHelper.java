@@ -100,6 +100,10 @@ public class SettingsDatabaseHelper extends SQLiteOpenHelper {
 			return new ServerSettingsItem(id, name, address, port);
 		}
 		
+		public ServerSettingsItem addServer(ServerSettingsItem item) {
+			return addServer(item.getName(), item.getAddress(), item.getPort(), item.getUserInfo());
+		}
+		
 		public void removeServer(ServerSettingsItem item) {
 			SQLiteDatabase db = dbHelper.getWritableDatabase();
 			db.delete(NAME, COLUMN_ID +  "=?", new String[] { Long.toString(item.getId()) });
