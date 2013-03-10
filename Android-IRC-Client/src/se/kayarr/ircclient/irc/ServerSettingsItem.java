@@ -96,4 +96,14 @@ public class ServerSettingsItem implements Serializable, Parcelable {
 			return new ServerSettingsItem[size];
 		}
 	};
+
+	@Override
+	public String toString() {
+		StringBuilder builder2 = new StringBuilder();
+		builder2.append("ServerSettingsItem [id=").append(id).append(", name=")
+				.append(name).append(", address=").append(address)
+				.append(", port=").append(port).append(", userInfo=")
+				.append(userInfo).append("]");
+		return builder2.toString();
+	}
 }
