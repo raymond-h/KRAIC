@@ -11,6 +11,7 @@ import se.kayarr.ircclient.irc.commands.JoinCommand;
 import se.kayarr.ircclient.irc.commands.LineDumpCommand;
 import se.kayarr.ircclient.irc.commands.MeCommand;
 import se.kayarr.ircclient.irc.commands.MsgCommand;
+import se.kayarr.ircclient.irc.commands.NickChangeCommand;
 import se.kayarr.ircclient.irc.commands.PartCommand;
 import se.kayarr.ircclient.irc.commands.QuitCommand;
 import se.kayarr.ircclient.irc.commands.WhoisCommand;
@@ -26,16 +27,16 @@ public class CommandManager {
 	public CommandManager() {
 		addCommand(new CommandsCommand());
 		addCommand(new HelpCommand());
+		addCommand(new LineDumpCommand());
 		
 		addCommand(new MsgCommand());
 		addCommand(new MeCommand());
 		addCommand(new JoinCommand());
 		addCommand(new PartCommand());
 		addCommand(new QuitCommand());
+		addCommand(new NickChangeCommand());
 		addCommand(new ClearCommand());
 		addCommand(new WhoisCommand());
-		
-		addCommand(new LineDumpCommand());
 	}
 	
 	public void addCommand(Command command) {

@@ -120,6 +120,10 @@ public class ServerConnection {
 		return bot.isConnected();
 	}
 	
+	public void changeNick(String newNick) {
+		bot.changeNick(newNick);
+	}
+	
 	public Window getCurrentWindow() {
 		return windows.get(currentWindowIndex);
 	}
