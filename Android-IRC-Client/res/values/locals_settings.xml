@@ -1,12 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="settings_header_general">General</string><string name="settings_header_serverlist">Servers</string><string name="serverlist_menu_add">Add</string>
-    <string name="addserver_dialog_title_add_server">Add server</string><string name="addserver_dialog_title_edit_server">Edit server</string><string name="addserver_name_hint">Server name (optional)</string>
-    <string name="addserver_port_hint">Port</string><string name="addserver_address_hint">Address</string><string name="addserver_use_server_specific_user_info">Use server-specific user info</string>
-    <string name="settings_general_defaults_category">Defaults</string><string name="settings_general_default_nick">Nickname</string>
-    <string name="settings_general_default_nick_value">KRAIC_User</string><string name="settings_general_default_quitmessage">Quit message</string><string name="settings_general_default_quitmessage_value">Pies a-flyin</string><string name="settings_general_input_category">Input</string>
+    <string name="settings_header_general">General</string>
+    <string name="settings_header_serverlist">Servers</string>
+    <string name="serverlist_menu_add">Add</string>
+    <string name="addserver_dialog_title_add_server">Add server</string>
+    <string name="addserver_dialog_title_edit_server">Edit server</string>
+    <string name="addserver_name_hint">Server name (optional)</string>
+    <string name="addserver_port_hint">Port</string>
+    <string name="addserver_address_hint">Address</string>
+    <string name="addserver_use_server_specific_user_info">Use server-specific user info</string>
+    
+    <string name="settings_general_defaults_category">Defaults</string>
+    <string name="settings_general_default_nick">Nickname</string>
+    <string name="settings_general_default_nick_value">KRAIC_User</string>
+    <string name="settings_general_default_quitmessage">Quit message</string>
+    <string name="settings_general_default_quitmessage_value">Pies a-flyin</string>
+    
+    <string name="settings_general_input_category">Input</string>
     <string name="settings_general_input_autocorrect">Auto-correct input text</string>
     <string name="settings_general_input_autocapitalize">Auto-capitalize sentences</string>
+    
     <string name="settings_general_output_category">Output</string>
     <string name="settings_general_output_enable_timestamp">Enable Timestamp</string>
     <string name="settings_general_output_enable_timestamp_summary">Display timestamp before every line</string>
