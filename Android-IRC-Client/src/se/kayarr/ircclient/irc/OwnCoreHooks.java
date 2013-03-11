@@ -7,6 +7,6 @@ import org.pircbotx.hooks.events.VersionEvent;
 public class OwnCoreHooks extends CoreHooks {
 	@Override
 	public void onVersion(VersionEvent event) {
-        event.getBot().sendCTCPResponse(event.getUser(), "VERSION " + ((Bot)event.getBot()).getActualVersion());
+        event.respond("VERSION " + ((Bot)event.getBot()).getActualVersion());
 	}
 }
