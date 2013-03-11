@@ -95,8 +95,9 @@ public class BotListener extends ListenerAdapter<Bot> {
 	@Override
 	public void onJoin(JoinEvent<Bot> event) throws Exception {
 		Window joinedChannel = connection.getWindowIgnoreCase(event.getChannel().getName());
-		if(joinedChannel == null)
-			joinedChannel = connection.createWindow(event.getChannel().getName(), Window.Type.CHANNEL);
+		if(joinedChannel == null) {
+			joinedChannel = connection.createWindow(event.getChannel().getName(), event.getChannel());
+		}
 		
 		joinedChannel.output(new JoinLine(context, event));
 		
@@ -168,8 +169,9 @@ public class BotListener extends ListenerAdapter<Bot> {
 	@Override
 	public void onPrivateMessage(PrivateMessageEvent<Bot> event) throws Exception {
 		Window window = connection.getWindowIgnoreCase(event.getUser().getNick());
-		if(window == null)
-			window = connection.createWindow(event.getUser().getNick(), Window.Type.USER);
+		if(window == null) {
+			window = connection.createWindow(event.getUser().getNick(), event.getUser());
+		}
 		
 		window.output(new MessageLine(context, event));
 		
@@ -184,8 +186,9 @@ public class BotListener extends ListenerAdapter<Bot> {
 		
 		else { //Sent as a PM
 			Window window = connection.getWindowIgnoreCase(event.getUser().getNick());
-			if(window == null)
-				window = connection.createWindow(event.getUser().getNick(), Window.Type.USER);
+			if(window == null) {
+				window = connection.createWindow(event.getUser().getNick(), event.getUser());
+			}
 			
 			window.output(new ActionLine(context, event));
 		}

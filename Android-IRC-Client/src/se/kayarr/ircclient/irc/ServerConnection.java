@@ -8,9 +8,12 @@ import java.util.Set;
 
 import lombok.Getter;
 
+import org.pircbotx.Channel;
+import org.pircbotx.User;
 import org.pircbotx.exception.NickAlreadyInUseException;
 
 import se.kayarr.ircclient.R;
+import se.kayarr.ircclient.irc.Window.Type;
 import se.kayarr.ircclient.irc.output.OutputLine;
 import se.kayarr.ircclient.irc.output.SimpleStringLine;
 import se.kayarr.ircclient.services.ServerConnectionService;
@@ -199,6 +202,18 @@ public class ServerConnection {
 		Window w = new Window(this, name, type);
 		windows.add(w);
 		notifyWindowListChanged();
+		return w;
+	}
+	
+	public Window createWindow(String name, Channel channel) {
+		Window w = createWindow(name, Type.CHANNEL);
+		w.setChannel(channel);
+		return w;
+	}
+	
+	public Window createWindow(String name, User user) {
+		Window w = createWindow(name, Type.USER);
+		w.setUser(user);
 		return w;
 	}
 	

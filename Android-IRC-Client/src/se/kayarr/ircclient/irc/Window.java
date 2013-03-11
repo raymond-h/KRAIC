@@ -7,6 +7,10 @@ import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
+
+import org.pircbotx.Channel;
+import org.pircbotx.User;
+
 import se.kayarr.ircclient.exceptions.InvalidWindowTypeException;
 import se.kayarr.ircclient.irc.output.OutputLine;
 import se.kayarr.ircclient.irc.output.SimpleStringLine;
@@ -20,6 +24,19 @@ public class Window {
 	@Getter @Setter private Type type = Type.STATUS;
 	@Getter private List<OutputLine> lines = new ArrayList<OutputLine>();
 	private Set<OnOutputListener> outputCallbacks = new HashSet<OnOutputListener>();
+	
+	@Setter private Channel channel = null;
+	@Setter private User user = null;
+	
+	public Channel getChannel() {
+		if(type != Type.CHANNEL) return null;
+		return channel;
+	}
+	
+	public User getUser() {
+		if(type != Type.USER) return null;
+		return user;
+	}
 	
 	Window(ServerConnection connection, String title, Type type) {
 		this.connection = connection;
