@@ -104,7 +104,7 @@ public class ServerListActivity extends CompatActionBarActivity
 				currentConnPos = savedInstanceState.getInt(SAVED_BUNDLE_CURR_SELECTION, ListView.INVALID_POSITION);
 			}
 			
-			Log.d(StaticInfo.DEBUG_TAG, "CurrentConnPos is " + currentConnPos);
+			Log.d(StaticInfo.APP_TAG, "CurrentConnPos is " + currentConnPos);
 		}
 	}
 	
@@ -113,7 +113,7 @@ public class ServerListActivity extends CompatActionBarActivity
 		super.onSaveInstanceState(outState);
 		
 		if(dualPane) {
-			Log.d(StaticInfo.DEBUG_TAG, "Saving currentConnPos as " + currentConnPos);
+			Log.d(StaticInfo.APP_TAG, "Saving currentConnPos as " + currentConnPos);
 			outState.putInt(SAVED_BUNDLE_CURR_SELECTION, currentConnPos);
 		}
 	}
@@ -326,7 +326,7 @@ public class ServerListActivity extends CompatActionBarActivity
 	private void setShownWindows(int position) {
 		if(!dualPane) return; //Dual-pane only!
 		
-		Log.d(StaticInfo.DEBUG_TAG, "*** Showing windows for pos " + position);
+		Log.d(StaticInfo.APP_TAG, "*** Showing windows for pos " + position);
 		
 		serverList.setItemChecked(position, true);
 		
@@ -336,7 +336,7 @@ public class ServerListActivity extends CompatActionBarActivity
 		
 		currentConn = listAdapter.getItem(position);
 		
-		Log.d(StaticInfo.DEBUG_TAG, "Getting info for conn " + currentConn.getId() + " at " + position);
+		Log.d(StaticInfo.APP_TAG, "Getting info for conn " + currentConn.getId() + " at " + position);
 		
 		currentConn.addOnWindowListListener(this);
 		
@@ -459,7 +459,7 @@ public class ServerListActivity extends CompatActionBarActivity
 			
 			List<OutputLine> lines = window.getLines();
 			
-			Log.d(StaticInfo.DEBUG_TAG, "There are " + lines.size() + " lines for " + window.getTitle());
+			Log.d(StaticInfo.APP_TAG, "There are " + lines.size() + " lines for " + window.getTitle());
 			
 			if(lines.size() >= 1) {
 				line2.setText( lines.get(lines.size()-1).getOutput() );
