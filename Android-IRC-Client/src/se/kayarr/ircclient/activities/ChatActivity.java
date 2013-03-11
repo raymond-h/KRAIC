@@ -86,7 +86,7 @@ public class ChatActivity extends CompatActionBarActivity
 		fragmentPager.setOnPageChangeListener(this);
 		
 		PagerTabStrip titleStrip = (PagerTabStrip) fragmentPager.findViewById(R.id.fragment_pager_titlestrip);
-		titleStrip.setTabIndicatorColor( Color.parseColor("#33B5E5") );
+		titleStrip.setTabIndicatorColor( getResources().getColor(R.color.holo_blue) );
 	}
 
 	@Override
