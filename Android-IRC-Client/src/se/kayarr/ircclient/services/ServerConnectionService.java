@@ -86,7 +86,7 @@ public class ServerConnectionService extends Service {
 		
 		Notification notification = 
 				new NotificationCompat.Builder(this)
-				.setSmallIcon(R.drawable.notification_icon)
+				.setSmallIcon(R.drawable.ic_notification)
 				.setTicker("Started KRIRC")
 				
 				.setContentTitle(Util.getApplicationLabel(getApplicationContext()))
