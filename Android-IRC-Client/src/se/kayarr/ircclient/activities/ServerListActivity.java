@@ -434,7 +434,7 @@ public class ServerListActivity extends CompatActionBarActivity
 			Window window = getItem(position);
 			helper.update(window);
 			
-			Log.d(StaticInfo.DEBUG_TAG, "Pos #" + position + ": Window " + window.getTitle() + " assoc. with " + convertView);
+			Log.d(StaticInfo.APP_TAG, "Pos #" + position + ": Window " + window.getTitle() + " assoc. with " + convertView);
 			
 			switch(window.getType()) {
 				case CHANNEL: 
