@@ -1,12 +1,13 @@
 package se.kayarr.ircclient.views;
 
+import java.util.List;
+
 import se.kayarr.ircclient.irc.output.OutputLine;
-import android.animation.LayoutTransition;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -17,27 +18,27 @@ public class FadeAwayLinesLayout extends ViewGroup {
 	
 	private LinearLayout mainList;
 	
-	volatile private long lastViewAddTime = 0;
+	//volatile private long lastViewAddTime = 0;
 	
-	private class TriggerViewCleanupRunnable implements Runnable {
-		
-		private long addTime;
-		
-		public TriggerViewCleanupRunnable(long addTime) {
-			this.addTime = addTime;
-		}
-		
-		public void run() {
-			
-			if(addTime != lastViewAddTime) return;
-			
-			Log.d(TAG, "*** Time to check if there any views outside");
-			
-			triggerRemovingOutsideViews();
-			
-		}
-		
-	}
+//	private class TriggerViewCleanupRunnable implements Runnable {
+//		
+//		private long addTime;
+//		
+//		public TriggerViewCleanupRunnable(long addTime) {
+//			this.addTime = addTime;
+//		}
+//		
+//		public void run() {
+//			
+//			if(addTime != lastViewAddTime) return;
+//			
+//			Log.d(TAG, "*** Time to check if there any views outside");
+//			
+//			triggerRemovingOutsideViews();
+//			
+//		}
+//		
+//	}
 	
 	public FadeAwayLinesLayout(Context context) {
 		this(context, null);
@@ -46,6 +47,7 @@ public class FadeAwayLinesLayout extends ViewGroup {
 	@SuppressLint("NewApi")
 	private void setLayoutTransitionForList(LinearLayout list) {
 		
+		/*
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
 			LayoutTransition trans = new LayoutTransition();
 			
@@ -64,19 +66,19 @@ public class FadeAwayLinesLayout extends ViewGroup {
 						
 						//Log.d(TAG, "endTransition triggered with CHANGE_APPEARING");
 						
-						//*
 						lastViewAddTime = System.currentTimeMillis();
 						
 						container.postDelayed(
 								new TriggerViewCleanupRunnable(lastViewAddTime),
 								2000);
-						//*/
 					}
 				}
 			});
 			
 			mainList.setLayoutTransition(trans);
 		}
+		//*/
+		
 	}
 
 	public FadeAwayLinesLayout(Context context, AttributeSet attrs) {
@@ -95,13 +97,20 @@ public class FadeAwayLinesLayout extends ViewGroup {
 		addView(mainList);
 	}
 	
+	public void addExistingLines(List<OutputLine> lines) {
+		for(OutputLine line : lines) {
+			addLine(line);
+		}
+	}
+	
 	public void addLine(OutputLine line) {
 		TextView textLine = new TextView( getContext() );
 		
 		textLine.setLayoutParams(
 				new LinearLayout.LayoutParams(
 						LayoutParams.WRAP_CONTENT,
-						LayoutParams.WRAP_CONTENT
+						LayoutParams.WRAP_CONTENT,
+						Gravity.BOTTOM
 				)
 		);
 		
@@ -126,7 +135,7 @@ public class FadeAwayLinesLayout extends ViewGroup {
 				
 				Log.d(TAG, "Child " + i + " is outside, remove " + removeCount + " items from beginning");
 				
-				mainList.removeViews(0, removeCount);
+				//mainList.removeViews(0, removeCount);
 				
 				break;
 			}

@@ -435,7 +435,7 @@ public class ServerListActivity extends CompatActionBarActivity
 			Window window = getItem(position);
 			helper.update(window);
 			
-			//Log.d(StaticInfo.APP_TAG, "Pos #" + position + ": Window " + window.getTitle() + " assoc. with " + convertView);
+			Log.d(StaticInfo.APP_TAG, "Pos #" + position + ": Window " + window.getTitle() + " assoc. with " + convertView);
 			
 			switch(window.getType()) {
 				case CHANNEL: 
@@ -457,6 +457,9 @@ public class ServerListActivity extends CompatActionBarActivity
 			title.setText( window.getTitle() );
 			
 			List<OutputLine> lines = window.getLines();
+			
+			helper.linesLayout.clearLines();
+			helper.linesLayout.addExistingLines(lines);
 			
 			//Log.d(StaticInfo.APP_TAG, "There are " + lines.size() + " lines for " + window.getTitle());
 			
