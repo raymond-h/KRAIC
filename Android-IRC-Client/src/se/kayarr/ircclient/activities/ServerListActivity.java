@@ -18,6 +18,7 @@ import se.kayarr.ircclient.shared.DeviceInfo;
 import se.kayarr.ircclient.shared.ServerEditDialogHelper;
 import se.kayarr.ircclient.shared.SettingsDatabaseHelper;
 import se.kayarr.ircclient.shared.StaticInfo;
+import se.kayarr.ircclient.views.FadeAwayLinesLayout;
 import android.annotation.SuppressLint;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
@@ -434,7 +435,7 @@ public class ServerListActivity extends CompatActionBarActivity
 			Window window = getItem(position);
 			helper.update(window);
 			
-			Log.d(StaticInfo.APP_TAG, "Pos #" + position + ": Window " + window.getTitle() + " assoc. with " + convertView);
+			//Log.d(StaticInfo.APP_TAG, "Pos #" + position + ": Window " + window.getTitle() + " assoc. with " + convertView);
 			
 			switch(window.getType()) {
 				case CHANNEL: 
@@ -452,15 +453,14 @@ public class ServerListActivity extends CompatActionBarActivity
 			}
 			
 			TextView title = helper.title;
-			TextView line1 = helper.line1;
-			TextView line2 = helper.line2;
 			
 			title.setText( window.getTitle() );
 			
 			List<OutputLine> lines = window.getLines();
 			
-			Log.d(StaticInfo.APP_TAG, "There are " + lines.size() + " lines for " + window.getTitle());
+			//Log.d(StaticInfo.APP_TAG, "There are " + lines.size() + " lines for " + window.getTitle());
 			
+			/*
 			if(lines.size() >= 1) {
 				line2.setText( lines.get(lines.size()-1).getOutput() );
 				
@@ -473,6 +473,7 @@ public class ServerListActivity extends CompatActionBarActivity
 				line2.setText("");
 				line1.setText("");
 			}
+			//*/
 			
 			return convertView;
 		}
@@ -483,8 +484,7 @@ public class ServerListActivity extends CompatActionBarActivity
 		private WeakReference<View> view;
 		
 		private TextView title;
-		private TextView line1;
-		private TextView line2;
+		private FadeAwayLinesLayout linesLayout;
 		private ImageView cornerIcon;
 		
 		private Window window;
@@ -492,9 +492,8 @@ public class ServerListActivity extends CompatActionBarActivity
 		public GridViewUpdateHelper(View view) {
 			this.view = new WeakReference<View>(view);
 			
-			title = (TextView)view.findViewById(R.id.grid_tile_title);
-			line1 = (TextView)view.findViewById(R.id.grid_tile_line_1);
-			line2 = (TextView)view.findViewById(R.id.grid_tile_line_2);
+			title = (TextView) view.findViewById(R.id.grid_tile_title);
+			linesLayout = (FadeAwayLinesLayout) view.findViewById(R.id.grid_tile_lines_layout);
 			cornerIcon = (ImageView) view.findViewById(R.id.grid_tile_corner_icon);
 		}
 		
@@ -511,15 +510,13 @@ public class ServerListActivity extends CompatActionBarActivity
 		public void onOutputLineAdded(Window window, OutputLine line) {
 			//Log.d(StaticInfo.APP_TAG, "View " + view + ", window " + window.getTitle() + " got line " + line);
 			
-			line1.setText(line2.getText());
-			line2.setText(line.getOutput());
+			linesLayout.addLine(line);
 		}
 
 		public void onOutputCleared(Window window) {
 			//Log.d(StaticInfo.APP_TAG, "View " + view + ", window " + window.getTitle() + " was cleared");
 			
-			line1.setText("");
-			line2.setText("");
+			linesLayout.clearLines();
 		}
 	}
 }

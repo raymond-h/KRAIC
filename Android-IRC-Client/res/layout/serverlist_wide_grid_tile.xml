@@ -35,29 +35,17 @@
             android:src="@drawable/ic_tile_corner_pm"
             android:visibility="visible" />
 
-        <TextView
-            android:id="@+id/grid_tile_line_2"
-            android:layout_width="match_parent"
+        <se.kayarr.ircclient.views.FadeAwayLinesLayout
+            android:id="@+id/grid_tile_lines_layout"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
             android:layout_marginBottom="8dp"
-            android:layout_marginRight="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_toLeftOf="@id/grid_tile_corner_icon"
-            android:ellipsize="end"
-            android:text="Line 2"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:layout_toLeftOf="@id/grid_tile_corner_icon" >
 
-        <TextView
-            android:id="@+id/grid_tile_line_1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@id/grid_tile_line_2"
-            android:layout_marginRight="8dp"
-            android:layout_toLeftOf="@id/grid_tile_corner_icon"
-            android:ellipsize="end"
-            android:text="Line 1"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+        </se.kayarr.ircclient.views.FadeAwayLinesLayout>
 
     </RelativeLayout>
 </LinearLayout>
