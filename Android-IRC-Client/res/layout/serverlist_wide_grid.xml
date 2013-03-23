@@ -25,7 +25,7 @@
         android:layout_toRightOf="@id/server_list" >
 
         <GridView
-            android:id="@+id/wide_grid_view"
+            android:id="@+id/tile_grid_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:horizontalSpacing="30dp"
@@ -38,7 +38,7 @@
         </GridView>
 
         <TextView
-            android:id="@+id/wide_grid_area_text"
+            android:id="@+id/tile_grid_area_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"

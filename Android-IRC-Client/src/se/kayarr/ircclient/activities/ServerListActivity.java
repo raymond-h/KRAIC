@@ -82,8 +82,8 @@ public class ServerListActivity extends CompatActionBarActivity
 		
 		serverList.setEmptyView( findViewById(R.id.server_list_empty_view) );
 		
-		gridAreaView = (GridView) findViewById(R.id.wide_grid_view);
-		gridAreaText = (TextView) findViewById(R.id.wide_grid_area_text);
+		gridAreaView = (GridView) findViewById(R.id.tile_grid_view);
+		gridAreaText = (TextView) findViewById(R.id.tile_grid_area_text);
 		
 		dualPane = ( gridAreaView != null && gridAreaText != null );
 		
