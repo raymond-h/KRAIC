@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -95,6 +96,15 @@ public class FadeAwayLinesLayout extends ViewGroup {
 		setLayoutTransitionForList(mainList);
 		
 		addView(mainList);
+		
+		mainList.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+			
+			public void onGlobalLayout() {
+				
+				triggerRemovingOutsideViews();
+			}
+			
+		});
 	}
 	
 	public void addExistingLines(List<OutputLine> lines) {
@@ -125,17 +135,36 @@ public class FadeAwayLinesLayout extends ViewGroup {
 		mainList.removeAllViews();
 	}
 	
+	private volatile int viewCount = 0;
+	
 	private void triggerRemovingOutsideViews() {
 		
-		for(int i = 0; i < mainList.getChildCount(); i++) {
+		if(viewCount == mainList.getChildCount()) return;
+		
+		Log.d(TAG, mainList.hashCode() + " triggered view check");
+		
+		for(int i = mainList.getChildCount() - 1; i >= 0; i--) {
 			View child = mainList.getChildAt(i);
 			
-			if(child.getTop() > getHeight()) {
-				int removeCount = mainList.getChildCount() - i;
+//			Log.d(TAG, "Child #" + i + ": " +
+//					"getHeight() = " + getHeight() + ", " +
+//					"mainList.getHeight() = " + mainList.getHeight() + ", " +
+//					"mainList.getMeasuredHeight() = " + mainList.getMeasuredHeight() + ", " +
+//					"child.getTop() = " + child.getTop() + ", " +
+//					"child.getBottom() = " + child.getBottom()
+//			);
+			
+//			Log.d(TAG, "^--- dist is " + (mainList.getHeight() - child.getTop()) );
+//			Log.d(TAG, "^--- dist is " + (mainList.getHeight() - child.getBottom()) );
+			
+			if( mainList.getHeight() - child.getBottom() > getHeight() ) {
+				int removeCount = i + 1;
 				
 				Log.d(TAG, "Child " + i + " is outside, remove " + removeCount + " items from beginning");
 				
-				//mainList.removeViews(0, removeCount);
+				mainList.removeViews(0, removeCount);
+				
+				viewCount = mainList.getChildCount();
 				
 				break;
 			}
