@@ -1,8 +1,6 @@
 package se.kayarr.ircclient.activities;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -10,16 +8,12 @@ import lombok.Getter;
 import se.kayarr.ircclient.R;
 import se.kayarr.ircclient.irc.ServerConnection;
 import se.kayarr.ircclient.irc.ServerSettingsItem;
-import se.kayarr.ircclient.irc.Window;
-import se.kayarr.ircclient.irc.output.OutputLine;
 import se.kayarr.ircclient.services.ServerConnectionService;
 import se.kayarr.ircclient.services.ServerConnectionService.ServiceBinder;
-import se.kayarr.ircclient.shared.DeviceInfo;
 import se.kayarr.ircclient.shared.ServerEditDialogHelper;
 import se.kayarr.ircclient.shared.SettingsDatabaseHelper;
 import se.kayarr.ircclient.shared.StaticInfo;
 import android.annotation.SuppressLint;
-import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -34,28 +28,28 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
-import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 
 public class ServerListActivity extends CompatActionBarActivity
-		implements ServiceConnection, ServerConnectionService.OnConnectionListListener,
-					ServerConnection.OnWindowListListener, OnItemClickListener,
+		implements ServiceConnection, OnItemClickListener,
+		
+					ServerWindowTilesFragment.ServiceRetriever,
+		
+					ServerConnectionService.OnConnectionListListener,
+					
 					ServerListDialogFragment.OnServerListClickedListener,
 					ServerEditDialogHelper.OnServerItemEditedListener {
 	
-	private ServerConnectionService service;
+	@Getter private ServerConnectionService service;
 	
 	private AlertDialog currentDialog;
 	
 	private ListView serverList;
-	private GridView gridAreaView;
-	private TextView gridAreaText;
+	private View tileGridNoneSelected;
 	
 	private ServerListAdapter listAdapter;
-	private WindowGridAdapter gridAdapter;
 	
 	private SettingsDatabaseHelper dbHelper;
 	
@@ -72,33 +66,27 @@ public class ServerListActivity extends CompatActionBarActivity
 		
 		dbHelper = new SettingsDatabaseHelper(this);
 		
-		setContentView(R.layout.serverlist);
+		setContentView(R.layout.serverlist_conn_list);
 		
-		serverList = (ListView) findViewById(R.id.server_list);
+		serverList = (ListView) findViewById(R.id.serverlist_connection_list);
 		serverList.setOnItemClickListener(this);
+		
+		tileGridNoneSelected = findViewById(R.id.serverlist_tile_grid_none_selected_view);
+		if(tileGridNoneSelected != null) tileGridNoneSelected.setVisibility(View.GONE);
 		
 		listAdapter = new ServerListAdapter();
 		serverList.setAdapter(listAdapter);
 		
-		serverList.setEmptyView( findViewById(R.id.server_list_empty_view) );
+		serverList.setEmptyView( findViewById(R.id.serverlist_connection_list_empty_view) );
 		
-		gridAreaView = (GridView) findViewById(R.id.tile_grid_view);
-		gridAreaText = (TextView) findViewById(R.id.tile_grid_area_text);
-		
-		dualPane = ( gridAreaView != null && gridAreaText != null );
+		View tileGrid = findViewById(R.id.serverlist_grid_fragment_container);
+		dualPane = ( tileGrid != null && tileGrid.getVisibility() == View.VISIBLE );
 		
 		Intent serviceIntent = new Intent(getApplicationContext(), ServerConnectionService.class);
 		startService(serviceIntent);
 		
 		if(dualPane) {
 			serverList.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
-			
-			gridAreaText.setVisibility(View.GONE);
-			
-			gridAdapter = new WindowGridAdapter();
-			gridAreaView.setAdapter(gridAdapter);
-			
-			gridAreaView.setOnItemClickListener(this);
 			
 			if(savedInstanceState != null) {
 				currentConnPos = savedInstanceState.getInt(SAVED_BUNDLE_CURR_SELECTION, ListView.INVALID_POSITION);
@@ -114,6 +102,7 @@ public class ServerListActivity extends CompatActionBarActivity
 		
 		if(dualPane) {
 			Log.d(StaticInfo.APP_TAG, "Saving currentConnPos as " + currentConnPos);
+			
 			outState.putInt(SAVED_BUNDLE_CURR_SELECTION, currentConnPos);
 		}
 	}
@@ -133,12 +122,6 @@ public class ServerListActivity extends CompatActionBarActivity
 
 	@Override
 	protected void onStop() {
-		if(dualPane) {
-			for(GridViewUpdateHelper helper : gridAdapter.helpers) {
-				helper.update(null);
-			}
-		}
-		
 		if(service != null) unbindService(this);
 		
 		dbHelper.close();
@@ -151,6 +134,24 @@ public class ServerListActivity extends CompatActionBarActivity
 		if(currentDialog != null) currentDialog.dismiss();
 		
 		super.onPause();
+	}
+	
+	public void onServiceConnected(ComponentName name, IBinder b) {
+		ServerConnectionService.ServiceBinder binder = (ServiceBinder) b;
+		
+		service = binder.getService();
+		service.setOnConnectionListListener(this);
+		
+		listAdapter.setConnections(service.getConnections());
+		
+		if(dualPane) {
+			setShownWindows(currentConnPos);
+		}
+	}
+
+	public void onServiceDisconnected(ComponentName name) {
+		this.service.removeOnConnectionListListener(this);
+		this.service = null;
 	}
 
 	@Override
@@ -192,8 +193,6 @@ public class ServerListActivity extends CompatActionBarActivity
 			
 			case R.id.menu_disconnect_all: {
 				this.service.disconnectAll();
-				currentConn = null;
-				currentConnPos = ListView.INVALID_POSITION;
 				
 				return true;
 			}
@@ -237,27 +236,6 @@ public class ServerListActivity extends CompatActionBarActivity
 	public void onServerItemEditCancel(ServerSettingsItem settingsItem) {
 		Log.d(StaticInfo.APP_TAG, "Cancelled manual connect");
 	}
-
-	public void onServiceConnected(ComponentName name, IBinder b) {
-		ServerConnectionService.ServiceBinder binder = (ServiceBinder) b;
-		
-		service = binder.getService();
-		service.setOnConnectionListListener(this);
-		
-		listAdapter.setConnections(service.getConnections());
-		
-		if(dualPane) {
-			if(currentConnPos != ListView.INVALID_POSITION) {
-				setShownWindows(currentConnPos);
-			}
-			else if(listAdapter.getCount() > 0) gridAreaText.setVisibility(View.VISIBLE);
-		}
-	}
-
-	public void onServiceDisconnected(ComponentName name) {
-		this.service.removeOnConnectionListListener(this);
-		this.service = null;
-	}
 	
 	public void onConnectionListChanged() {
 		runOnUiThread(new Runnable() {
@@ -265,13 +243,10 @@ public class ServerListActivity extends CompatActionBarActivity
 				listAdapter.setConnections(service.getConnections());
 				
 				if(dualPane) {
-					if(listAdapter.getCount() == 0) currentConn = null;
 					
-					if(currentConn == null) {
-						gridAdapter.updateWindowList(null);
-						
-						if(listAdapter.getCount() > 0) gridAreaText.setVisibility(View.VISIBLE);
-					}
+					if(listAdapter.getCount() == 0) setShownWindows(ListView.INVALID_POSITION);
+					
+					updateNoneSelectedView();
 				}
 			}
 		});
@@ -289,73 +264,68 @@ public class ServerListActivity extends CompatActionBarActivity
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		
-		if(parent == serverList) { //Item on server list was clicked
-			
-			if(!dualPane) { //If using a single-pane layout (just server list), open ChatActivity for that conn.
-				Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-				intent.putExtra(StaticInfo.EXTRA_CONN_ID, id);
-				startActivity(intent);
-			}
-			else {
-				currentConnPos = position;
-				setShownWindows(position); //Otherwise in dual-pane, show conn. windows as a grid to the right
-			}
-			
+		if(!dualPane) { //If using a single-pane layout (just server list), open ChatActivity for that conn.
+			Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+			intent.putExtra(StaticInfo.EXTRA_CONN_ID, id);
+			startActivity(intent);
+		}
+		else {
+			setShownWindows(position); //Otherwise in dual-pane, show conn. windows as a grid to the right
 		}
 		
-		else if(dualPane && parent == gridAreaView) { //Item in grid was clicked (only in dual-pane mode)
-			
-			Window window = currentConn.getWindows().get(position);
-			
-			Log.d(StaticInfo.APP_TAG, "Item " + position + " " + window.getTitle() + " clicked in grid");
-			
-			Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-			intent.putExtra(StaticInfo.EXTRA_CONN_ID, currentConn.getId());
-			intent.putExtra(StaticInfo.EXTRA_CONN_WINDOW, position);
-			
-			if(DeviceInfo.isJellyBean(true)) {
-				ActivityOptions options = ActivityOptions.makeScaleUpAnimation(view, 0, 0, view.getWidth(), view.getHeight());
-				startActivity(intent, options.toBundle());
-			}
-			else startActivity(intent);
-			
-		}
 	}
 	
-	//*** This method is only called in dual-pane mode
 	private void setShownWindows(int position) {
-		if(!dualPane) return; //Dual-pane only!
-		
 		Log.d(StaticInfo.APP_TAG, "*** Showing windows for pos " + position);
 		
-		serverList.setItemChecked(position, true);
-		
-		if( currentConn != null ) {
-			currentConn.removeOnWindowListListener(this);
-		}
-		
+		currentConnPos = position;
 		currentConn = listAdapter.getItem(position);
 		
-		Log.d(StaticInfo.APP_TAG, "Getting info for conn " + currentConn.getId() + " at " + position);
-		
-		currentConn.addOnWindowListListener(this);
-		
-		onWindowListChanged(currentConn);
-		
-		gridAreaText.setVisibility(View.GONE);
-		
-		Log.d(StaticInfo.APP_TAG, "Showing windows for " + currentConn.getStatus().getTitle() + ","
-				+ " it has " + currentConn.getWindows().size());
-	}
-
-	public void onWindowListChanged(final ServerConnection connection) {
-		runOnUiThread(new Runnable() {
-			public void run() {
-				Log.d(StaticInfo.APP_TAG, "*************** UPDATING GRIDADAPTER");
-				gridAdapter.updateWindowList(connection != null ? connection.getWindows() : null);
-				gridAdapter.notifyDataSetChanged();
+		if(dualPane) {
+			serverList.setItemChecked(position, true);
+			
+			ServerWindowTilesFragment tilesFragment =
+					(ServerWindowTilesFragment) getSupportFragmentManager()
+					.findFragmentById(R.id.serverlist_grid_fragment_container);
+			
+			if(currentConn != null) {
+				if(tilesFragment == null || tilesFragment.getCurrentConnectionId() != currentConn.getId()) {
+					//Time to change fragment
+					
+					tilesFragment = ServerWindowTilesFragment.createInstance( currentConn.getId() );
+					
+					getSupportFragmentManager().beginTransaction()
+							.replace(R.id.serverlist_grid_fragment_container, tilesFragment)
+							.commit();
+				}
 			}
-		});
+			else {
+				if(tilesFragment != null) {
+					getSupportFragmentManager().beginTransaction()
+							.remove(tilesFragment)
+							.commit();
+				}
+			}
+			
+			updateNoneSelectedView();
+		}
+		else {
+			if(currentConn != null) {
+				//Start another activity with a new fragment for the server
+			}
+		}
+		
+		if(currentConn != null)
+			Log.d(StaticInfo.APP_TAG, "Showing windows for " + currentConn.getStatus().getTitle() + ","
+				+ " it has " + currentConn.getWindows().size());
+		else Log.d(StaticInfo.APP_TAG, "Showing no windows");
+	}
+	
+	private void updateNoneSelectedView() {
+		if(tileGridNoneSelected != null) {
+			if(listAdapter.getCount() > 0 && currentConn == null) tileGridNoneSelected.setVisibility(View.VISIBLE);
+			else tileGridNoneSelected.setVisibility(View.GONE);
+		}
 	}
 	
 	public class ServerListAdapter extends BaseAdapter {
@@ -374,7 +344,12 @@ public class ServerListActivity extends CompatActionBarActivity
 		}
 
 		public ServerConnection getItem(int position) {
-			return connections != null ? connections.get(position) : null;
+			try {
+				return connections != null ? connections.get(position) : null;
+			}
+			catch(IndexOutOfBoundsException e) {
+				return null;
+			}
 		}
 
 		public long getItemId(int position) {
@@ -394,132 +369,6 @@ public class ServerListActivity extends CompatActionBarActivity
 			serverInfo.setText(conn.getStatus().getInfo());
 			
 			return convertView;
-		}
-	}
-	
-	public class WindowGridAdapter extends BaseAdapter {
-		private List<Window> windows;
-		private List<GridViewUpdateHelper> helpers = new LinkedList<GridViewUpdateHelper>();
-		
-		public void updateWindowList(List<Window> windows) {
-			this.windows = windows;
-		}
-		
-		public int getCount() {
-			return windows != null ? windows.size() : 0;
-		}
-
-		public Window getItem(int position) {
-			return windows != null ? windows.get(position) : null;
-		}
-
-		public long getItemId(int position) {
-			return -1;
-		}
-
-		public View getView(int position, View convertView, ViewGroup parent) {
-			GridViewUpdateHelper helper;
-			
-			if(convertView == null) {
-				convertView = getLayoutInflater().inflate(R.layout.serverlist_wide_grid_tile, parent, false);
-				
-				helper = new GridViewUpdateHelper(convertView);
-				helpers.add(helper);
-				convertView.setTag(helper);
-			}
-			else {
-				helper = (GridViewUpdateHelper) convertView.getTag();
-			}
-			
-			Window window = getItem(position);
-			helper.update(window);
-			
-			Log.d(StaticInfo.APP_TAG, "Pos #" + position + ": Window " + window.getTitle() + " assoc. with " + convertView);
-			
-			switch(window.getType()) {
-				case CHANNEL: 
-					//convertView.setBackgroundResource(R.drawable.grid_tile_border_channel);
-					helper.cornerIcon.setImageResource(R.drawable.ic_tile_corner_chan);
-					break;
-				case USER:
-					//convertView.setBackgroundResource(R.drawable.grid_tile_border_pm);
-					helper.cornerIcon.setImageResource(R.drawable.ic_tile_corner_pm);
-					break;
-				case STATUS:
-					//convertView.setBackgroundResource(R.drawable.grid_tile_border_status);
-					helper.cornerIcon.setImageResource(R.drawable.ic_tile_corner_status);
-					break;
-			}
-			
-			TextView title = helper.title;
-			TextView line1 = helper.line1;
-			TextView line2 = helper.line2;
-			
-			title.setText( window.getTitle() );
-			
-			List<OutputLine> lines = window.getLines();
-			
-			Log.d(StaticInfo.APP_TAG, "There are " + lines.size() + " lines for " + window.getTitle());
-			
-			if(lines.size() >= 1) {
-				line2.setText( lines.get(lines.size()-1).getOutput() );
-				
-				if(lines.size() >= 2) {
-					line1.setText( lines.get(lines.size()-2).getOutput() );
-				}
-				else line1.setText("");
-			}
-			else {
-				line2.setText("");
-				line1.setText("");
-			}
-			
-			return convertView;
-		}
-	}
-	
-	private static class GridViewUpdateHelper implements Window.OnOutputListener {
-		@SuppressWarnings("unused")
-		private WeakReference<View> view;
-		
-		private TextView title;
-		private TextView line1;
-		private TextView line2;
-		private ImageView cornerIcon;
-		
-		private Window window;
-		
-		public GridViewUpdateHelper(View view) {
-			this.view = new WeakReference<View>(view);
-			
-			title = (TextView)view.findViewById(R.id.grid_tile_title);
-			line1 = (TextView)view.findViewById(R.id.grid_tile_line_1);
-			line2 = (TextView)view.findViewById(R.id.grid_tile_line_2);
-			cornerIcon = (ImageView) view.findViewById(R.id.grid_tile_corner_icon);
-		}
-		
-		public void update(Window window) {
-			if(this.window != null)
-				this.window.removeOnOutputListener(this);
-			
-			this.window = window;
-			
-			if(window != null)
-				window.addOnOutputListener(this);
-		}
-		
-		public void onOutputLineAdded(Window window, OutputLine line) {
-			//Log.d(StaticInfo.APP_TAG, "View " + view + ", window " + window.getTitle() + " got line " + line);
-			
-			line1.setText(line2.getText());
-			line2.setText(line.getOutput());
-		}
-
-		public void onOutputCleared(Window window) {
-			//Log.d(StaticInfo.APP_TAG, "View " + view + ", window " + window.getTitle() + " was cleared");
-			
-			line1.setText("");
-			line2.setText("");
 		}
 	}
 }

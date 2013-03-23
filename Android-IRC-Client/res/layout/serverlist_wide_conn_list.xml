@@ -14,7 +14,7 @@
 
     <FrameLayout
         android:id="@+id/serverlist_grid_fragment_container"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_alignParentRight="true"
         android:layout_toRightOf="@id/serverlist_connection_list" >
@@ -28,5 +28,13 @@
         android:layout_centerInParent="true"
         android:gravity="center"
         android:text="@string/serverlist_no_servers_to_show" />
+
+    <TextView
+        android:id="@+id/serverlist_tile_grid_none_selected_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@id/serverlist_connection_list"
+        android:gravity="center"
+        android:text="@string/serverlist_tap_connection_to_show_windows" />
 
 </RelativeLayout>

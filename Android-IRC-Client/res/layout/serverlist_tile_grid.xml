@@ -16,11 +16,4 @@
         tools:listitem="@layout/serverlist_wide_grid_tile" >
     </GridView>
 
-    <TextView
-        android:id="@+id/tile_grid_area_text"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:text="@string/serverlist_tap_connection_to_show_windows" />
-
 </FrameLayout>

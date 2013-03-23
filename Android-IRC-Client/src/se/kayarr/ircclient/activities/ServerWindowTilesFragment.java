@@ -4,11 +4,15 @@ import java.lang.ref.WeakReference;
 import java.util.LinkedList;
 import java.util.List;
 
+import lombok.Getter;
 import se.kayarr.ircclient.R;
 import se.kayarr.ircclient.irc.ServerConnection;
 import se.kayarr.ircclient.irc.Window;
 import se.kayarr.ircclient.irc.output.OutputLine;
+import se.kayarr.ircclient.services.ServerConnectionService;
 import se.kayarr.ircclient.shared.StaticInfo;
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -22,15 +26,56 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class ServerWindowTilesFragment extends Fragment implements OnItemClickListener {
+public class ServerWindowTilesFragment extends Fragment
+		implements OnItemClickListener, ServerConnection.OnWindowListListener {
+	
+	public static final String ARGS_CONN_ID = "se.kayarr.ircclient.server_id";
 	
 	private GridView tileGridView;
-	private TextView tileGridAreaText;
 	private WindowGridAdapter gridAdapter;
+	
+	private ServerConnectionService service;
+	
+	@Getter private long currentConnectionId;
+	private ServerConnection currentConnection;
+	
+	public static ServerWindowTilesFragment createInstance(long connId) {
+		ServerWindowTilesFragment instance = new ServerWindowTilesFragment();
+		
+		Bundle args = new Bundle();
+		args.putLong(ARGS_CONN_ID, connId);
+		instance.setArguments(args);
+		
+		return instance;
+	}
+	
+	public static interface ServiceRetriever {
+		public ServerConnectionService getService();
+	}
+	
+	private ServiceRetriever attachedActivity;
+
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+		
+		try {
+			attachedActivity = (ServiceRetriever) activity;
+		}
+		catch(ClassCastException e) {
+			throw new ClassCastException(activity + " needs to implements ServiceRetriever");
+		}
+	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		currentConnectionId = getArguments().getLong(ARGS_CONN_ID);
+		
+		service = attachedActivity.getService();
+		
+		currentConnection = service.getConnections().get(currentConnectionId);
 	}
 
 	@Override
@@ -40,34 +85,88 @@ public class ServerWindowTilesFragment extends Fragment implements OnItemClickLi
 		View layout = inflater.inflate(R.layout.serverlist_tile_grid, container, false);
 		
 		tileGridView = (GridView) layout.findViewById(R.id.tile_grid_view);
-		tileGridAreaText = (TextView) layout.findViewById(R.id.tile_grid_area_text);
 		
 		gridAdapter = new WindowGridAdapter();
 		tileGridView.setAdapter(gridAdapter);
 		
 		tileGridView.setOnItemClickListener(this);
 		
+		onWindowListChanged(currentConnection);
+		
+		Log.d(StaticInfo.APP_TAG, "Now showing " + currentConnection.getWindows().size() + " tiles");
+		
 		return layout;
+	}
+	
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		
+		currentConnection.addOnWindowListListener(this);
+		
+		gridAdapter.notifyDataSetChanged();
+		
+		for(GridViewUpdateHelper helper : gridAdapter.helpers) {
+			helper.registerToWindow();
+		}
+	}
+
+	@Override
+	public void onStop() {
+		for(GridViewUpdateHelper helper : gridAdapter.helpers) {
+			helper.unregisterFromWindow();
+		}
+		
+		currentConnection.removeOnWindowListListener(this);
+		
+		super.onStop();
 	}
 
 	@Override
 	public void onPause() {
 		super.onPause();
 	}
+	
+	public void setCurrentConnection(ServerConnection currentConnection) {
+		this.currentConnection = currentConnection;
+	}
 
-	public void onItemClick(AdapterView<?> parent, View child, int pos, long id) {
+	public void onItemClick(AdapterView<?> parent, View child, int position, long id) {
+		
+		Window window = currentConnection.getWindows().get(position);
+		
+		Log.d(StaticInfo.APP_TAG, "Item " + position + " " + window.getTitle() + " clicked in grid");
+		
+		Intent intent = new Intent( getActivity().getApplicationContext(), ChatActivity.class );
+		
+		intent.putExtra(StaticInfo.EXTRA_CONN_ID, currentConnection.getId());
+		intent.putExtra(StaticInfo.EXTRA_CONN_WINDOW, position);
+		
+		startActivity(intent);
+		
+//		if(DeviceInfo.isJellyBean(true)) {
+//			ActivityOptions options = ActivityOptions.makeScaleUpAnimation(view, 0, 0, view.getWidth(), view.getHeight());
+//			startActivity(intent, options.toBundle());
+//		}
+//		else startActivity(intent);
+		
 	}
 	
 	public void onWindowListChanged(final ServerConnection connection) {
 		getActivity().runOnUiThread(new Runnable() {
 			public void run() {
-				Log.d(StaticInfo.APP_TAG, "*************** UPDATING GRIDADAPTER");
+				Log.d(StaticInfo.APP_TAG, "*************** UPDATING GRIDADAPTER IN FRAGMENT");
 				gridAdapter.updateWindowList(connection != null ? connection.getWindows() : null);
 				gridAdapter.notifyDataSetChanged();
 			}
 		});
 	}
-	
+
 	public class WindowGridAdapter extends BaseAdapter {
 		private List<Window> windows;
 		private List<GridViewUpdateHelper> helpers = new LinkedList<GridViewUpdateHelper>();
@@ -105,19 +204,16 @@ public class ServerWindowTilesFragment extends Fragment implements OnItemClickLi
 			Window window = getItem(position);
 			helper.update(window);
 			
-			Log.d(StaticInfo.APP_TAG, "Pos #" + position + ": Window " + window.getTitle() + " assoc. with " + convertView);
+			//Log.d(StaticInfo.APP_TAG, "Pos #" + position + ": Window " + window.getTitle() + " assoc. with " + convertView);
 			
 			switch(window.getType()) {
-				case CHANNEL: 
-					//convertView.setBackgroundResource(R.drawable.grid_tile_border_channel);
+				case CHANNEL:
 					helper.cornerIcon.setImageResource(R.drawable.ic_tile_corner_chan);
 					break;
 				case USER:
-					//convertView.setBackgroundResource(R.drawable.grid_tile_border_pm);
 					helper.cornerIcon.setImageResource(R.drawable.ic_tile_corner_pm);
 					break;
 				case STATUS:
-					//convertView.setBackgroundResource(R.drawable.grid_tile_border_status);
 					helper.cornerIcon.setImageResource(R.drawable.ic_tile_corner_status);
 					break;
 			}
@@ -130,7 +226,7 @@ public class ServerWindowTilesFragment extends Fragment implements OnItemClickLi
 			
 			List<OutputLine> lines = window.getLines();
 			
-			Log.d(StaticInfo.APP_TAG, "There are " + lines.size() + " lines for " + window.getTitle());
+			//Log.d(StaticInfo.APP_TAG, "There are " + lines.size() + " lines for " + window.getTitle());
 			
 			if(lines.size() >= 1) {
 				line2.setText( lines.get(lines.size()-1).getOutput() );
@@ -177,6 +273,14 @@ public class ServerWindowTilesFragment extends Fragment implements OnItemClickLi
 			
 			if(window != null)
 				window.addOnOutputListener(this);
+		}
+		
+		public void registerToWindow() {
+			window.addOnOutputListener(this);
+		}
+		
+		public void unregisterFromWindow() {
+			window.removeOnOutputListener(this);
 		}
 		
 		public void onOutputLineAdded(Window window, OutputLine line) {
