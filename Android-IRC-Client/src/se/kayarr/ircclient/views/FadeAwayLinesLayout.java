@@ -19,8 +19,8 @@ public class FadeAwayLinesLayout extends ViewGroup {
 	
 	private LinearLayout mainList;
 	
-	//volatile private long lastViewAddTime = 0;
-	
+//	volatile private long lastViewAddTime = 0;
+//	
 //	private class TriggerViewCleanupRunnable implements Runnable {
 //		
 //		private long addTime;
@@ -48,37 +48,35 @@ public class FadeAwayLinesLayout extends ViewGroup {
 	@SuppressLint("NewApi")
 	private void setLayoutTransitionForList(LinearLayout list) {
 		
-		/*
-		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-			LayoutTransition trans = new LayoutTransition();
-			
-			trans.addTransitionListener(new LayoutTransition.TransitionListener() {
-				
-				public void startTransition(LayoutTransition transition,
-						ViewGroup container, View view, int transitionType) {
-				}
-				
-				public void endTransition(LayoutTransition transition, ViewGroup container,
-						View view, int transitionType) {
-					
-					//Log.d(TAG, "endTransition triggered with " + transitionType);
-					
-					if(transitionType == LayoutTransition.CHANGE_APPEARING) {
-						
-						//Log.d(TAG, "endTransition triggered with CHANGE_APPEARING");
-						
-						lastViewAddTime = System.currentTimeMillis();
-						
-						container.postDelayed(
-								new TriggerViewCleanupRunnable(lastViewAddTime),
-								2000);
-					}
-				}
-			});
-			
-			mainList.setLayoutTransition(trans);
-		}
-		//*/
+//		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+//			LayoutTransition trans = new LayoutTransition();
+//			
+//			trans.addTransitionListener(new LayoutTransition.TransitionListener() {
+//				
+//				public void startTransition(LayoutTransition transition,
+//						ViewGroup container, View view, int transitionType) {
+//				}
+//				
+//				public void endTransition(LayoutTransition transition, ViewGroup container,
+//						View view, int transitionType) {
+//					
+//					//Log.d(TAG, "endTransition triggered with " + transitionType);
+//					
+//					if(transitionType == LayoutTransition.CHANGE_APPEARING) {
+//						
+//						//Log.d(TAG, "endTransition triggered with CHANGE_APPEARING");
+//						
+//						lastViewAddTime = System.currentTimeMillis();
+//						
+//						container.postDelayed(
+//								new TriggerViewCleanupRunnable(lastViewAddTime),
+//								2000);
+//					}
+//				}
+//			});
+//			
+//			mainList.setLayoutTransition(trans);
+//		}
 		
 	}
 
