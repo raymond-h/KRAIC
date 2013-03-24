@@ -1,5 +1,6 @@
 package se.kayarr.ircclient.views;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import se.kayarr.ircclient.irc.output.OutputLine;
@@ -19,27 +20,12 @@ public class FadeAwayLinesLayout extends ViewGroup {
 	
 	private LinearLayout mainList;
 	
-//	volatile private long lastViewAddTime = 0;
-//	
-//	private class TriggerViewCleanupRunnable implements Runnable {
-//		
-//		private long addTime;
-//		
-//		public TriggerViewCleanupRunnable(long addTime) {
-//			this.addTime = addTime;
-//		}
-//		
-//		public void run() {
-//			
-//			if(addTime != lastViewAddTime) return;
-//			
-//			Log.d(TAG, "*** Time to check if there any views outside");
-//			
-//			triggerRemovingOutsideViews();
-//			
-//		}
-//		
-//	}
+	/**
+	 * A temporary list of all lines to show. This is to keep the list
+	 * until after the layout has been measured.
+	 */
+	private List<OutputLine> tempLineList;
+	private List<TextView> viewsToAdd = new LinkedList<TextView>();
 	
 	public FadeAwayLinesLayout(Context context) {
 		this(context, null);
@@ -86,7 +72,7 @@ public class FadeAwayLinesLayout extends ViewGroup {
 		mainList = new LinearLayout(context);
 		mainList.setLayoutParams(
 				new FadeAwayLinesLayout.LayoutParams(
-						LayoutParams.FILL_PARENT,
+						LayoutParams.MATCH_PARENT,
 						LayoutParams.WRAP_CONTENT
 				)
 		);
@@ -95,23 +81,21 @@ public class FadeAwayLinesLayout extends ViewGroup {
 		
 		addView(mainList);
 		
-		mainList.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+		mainList.getViewTreeObserver().addOnGlobalLayoutListener( new OnGlobalLayoutListener() {
 			
 			public void onGlobalLayout() {
 				
 				triggerRemovingOutsideViews();
 			}
 			
-		});
+		} );
 	}
-	
+
 	public void addExistingLines(List<OutputLine> lines) {
-		for(OutputLine line : lines) {
-			addLine(line);
-		}
+		tempLineList = lines;
 	}
 	
-	public void addLine(OutputLine line) {
+	private TextView obtainViewForLine(OutputLine line) {
 		TextView textLine = new TextView( getContext() );
 		
 		textLine.setLayoutParams(
@@ -126,7 +110,17 @@ public class FadeAwayLinesLayout extends ViewGroup {
 		
 		textLine.setTextColor( getContext().getResources().getColor(android.R.color.primary_text_dark) );
 		
-		mainList.addView(textLine);
+		return textLine;
+	}
+	
+	public void addLine(OutputLine line) {
+		TextView textLine = obtainViewForLine(line);
+		
+		addViewToList(textLine);
+	}
+	
+	private void addViewToList(View view) {
+		mainList.addView(view);
 	}
 	
 	public void clearLines() {
@@ -150,8 +144,7 @@ public class FadeAwayLinesLayout extends ViewGroup {
 //					"mainList.getMeasuredHeight() = " + mainList.getMeasuredHeight() + ", " +
 //					"child.getTop() = " + child.getTop() + ", " +
 //					"child.getBottom() = " + child.getBottom()
-//			);
-			
+//			);		
 //			Log.d(TAG, "^--- dist is " + (mainList.getHeight() - child.getTop()) );
 //			Log.d(TAG, "^--- dist is " + (mainList.getHeight() - child.getBottom()) );
 			
@@ -173,10 +166,53 @@ public class FadeAwayLinesLayout extends ViewGroup {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
     	
+//    	Log.d(TAG, "********* onMeasure called (" +
+//    			"w = " + MeasureSpec.toString(widthMeasureSpec) + ", " +
+//    			"h = " + MeasureSpec.toString(heightMeasureSpec) + ")");
+    	
         measureChildren(
-        		MeasureSpec.makeMeasureSpec( MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.AT_MOST ),
+        		MeasureSpec.makeMeasureSpec( MeasureSpec.getSize(widthMeasureSpec), MeasureSpec.EXACTLY ),
         		MeasureSpec.makeMeasureSpec( 0, MeasureSpec.UNSPECIFIED )
         );
+        
+        //This is where we start adding lines, as the list has been measured and
+        //we know how large it wants to be.
+        //Log.d(TAG, "Measured width of list is " + mainList.getMeasuredWidth());
+        
+        if(tempLineList != null && mainList.getMeasuredWidth() > 0) {
+        	
+        	int totalHeight = 0;
+        	
+    		for(int i = tempLineList.size()-1; i >= 0; i--) {
+    			TextView textLine = obtainViewForLine( tempLineList.get(i) );
+    			
+    			textLine.measure(
+    					MeasureSpec.makeMeasureSpec(mainList.getMeasuredWidth(), MeasureSpec.AT_MOST),
+    					MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
+    			);
+    			
+//    			Log.d(TAG, "Line \"" + tempLineList.get(i).getOutput() + "\": " +
+//    					"The child's height is " + textLine.getMeasuredHeight());
+    			
+    			totalHeight += textLine.getMeasuredHeight();
+    			
+//    			Log.d(TAG, "totalHeight is now " + totalHeight + ", and height is " + MeasureSpec.getSize(heightMeasureSpec));
+    			
+    			viewsToAdd.add(textLine);
+    			
+    			if(totalHeight > MeasureSpec.getSize(heightMeasureSpec)) break;
+    		}
+    		
+//			Log.d(TAG, "Done with measuring items; " +
+//					viewsToAdd.size() + " items are to be added");
+			
+			for(TextView view : viewsToAdd) {
+				mainList.addView(view, 0);
+			}
+			viewsToAdd.clear();
+			
+			tempLineList = null;
+        }
         
         setMeasuredDimension(
         		MeasureSpec.getSize(widthMeasureSpec),
