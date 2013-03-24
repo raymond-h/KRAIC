@@ -120,6 +120,8 @@ public class FadeAwayLinesLayout extends ViewGroup {
 	}
 	
 	private void addViewToList(View view) {
+		Log.d(TAG, "* ANIMATION *");
+		
 		mainList.addView(view);
 	}
 	
@@ -207,7 +209,7 @@ public class FadeAwayLinesLayout extends ViewGroup {
 //					viewsToAdd.size() + " items are to be added");
 			
 			for(TextView view : viewsToAdd) {
-				mainList.addView(view, 0);
+				mainList.addView(view);
 			}
 			viewsToAdd.clear();
 			
