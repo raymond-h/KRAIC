@@ -209,7 +209,7 @@ public class FadeAwayLinesLayout extends ViewGroup {
 //					viewsToAdd.size() + " items are to be added");
 			
 			for(TextView view : viewsToAdd) {
-				mainList.addView(view);
+				mainList.addView(view, 0);
 			}
 			viewsToAdd.clear();
 			
