@@ -145,8 +145,6 @@ public class ServerListActivity extends CompatActionBarActivity
 		
 		listAdapter.setConnections(service.getConnections());
 		
-		//setServiceForFragment();
-		
 		if(dualPane) {
 			setShownWindows(currentConnPos);
 		}
@@ -302,8 +300,6 @@ public class ServerListActivity extends CompatActionBarActivity
 					getSupportFragmentManager().beginTransaction()
 							.replace(R.id.serverlist_grid_fragment_container, tilesFragment)
 							.commit();
-					
-					tilesFragment.setService(service);
 				}
 			}
 			else {

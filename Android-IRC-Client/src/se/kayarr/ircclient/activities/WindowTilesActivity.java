@@ -59,8 +59,6 @@ public class WindowTilesActivity extends CompatActionBarActivity
 		getCompatActionBar().setTitle( connection.getSettingsItem().getDisplayName() );
 		getCompatActionBar().setSubtitle( connection.getSettingsItem().getDisplayAddress() );
 		
-		//setServiceForFragment();
-		
 		if(getSupportFragmentManager().findFragmentById(android.R.id.content) == null) {
 			//No fragment is currently shown
 			ServerWindowTilesFragment f =
@@ -71,8 +69,6 @@ public class WindowTilesActivity extends CompatActionBarActivity
 			getSupportFragmentManager().beginTransaction()
 					.add(android.R.id.content, f)
 					.commit();
-			
-			f.setService(service);
 		}
 	}
 

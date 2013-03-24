@@ -135,12 +135,6 @@ public class ServerWindowTilesFragment extends Fragment
 		return layout;
 	}
 	
-	public void setService(ServerConnectionService service) {
-		Log.d(StaticInfo.APP_TAG, "setService called");
-		
-		this.service = service;
-	}
-	
 	public void setCurrentConnection(ServerConnection currentConnection) {
 		this.currentConnection = currentConnection;
 	}
