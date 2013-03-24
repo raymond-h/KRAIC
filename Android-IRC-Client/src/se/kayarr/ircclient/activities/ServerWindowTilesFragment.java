@@ -194,7 +194,7 @@ public class ServerWindowTilesFragment extends Fragment
 			GridViewUpdateHelper helper;
 			
 			if(convertView == null) {
-				convertView = getActivity().getLayoutInflater().inflate(R.layout.serverlist_wide_grid_tile, parent, false);
+				convertView = getActivity().getLayoutInflater().inflate(R.layout.serverlist_grid_tile, parent, false);
 				
 				helper = new GridViewUpdateHelper(convertView);
 				helpers.add(helper);

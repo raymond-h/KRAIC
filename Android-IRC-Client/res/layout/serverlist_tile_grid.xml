@@ -16,7 +16,7 @@
         android:numColumns="@integer/tile_columns"
         android:stretchMode="columnWidth"
         android:verticalSpacing="8dp"
-        tools:listitem="@layout/serverlist_wide_grid_tile" >
+        tools:listitem="@layout/serverlist_grid_tile" >
 
     </GridView>
 
