@@ -8,12 +8,16 @@
         android:id="@+id/tile_grid_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:horizontalSpacing="30dp"
-        android:numColumns="3"
-        android:padding="30dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"
+        android:horizontalSpacing="8dp"
+        android:numColumns="@integer/tile_columns"
         android:stretchMode="columnWidth"
-        android:verticalSpacing="30dp"
+        android:verticalSpacing="8dp"
         tools:listitem="@layout/serverlist_wide_grid_tile" >
+
     </GridView>
 
 </FrameLayout>

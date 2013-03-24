@@ -20,6 +20,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -35,7 +36,7 @@ import android.widget.TextView;
 public class ServerListActivity extends CompatActionBarActivity
 		implements ServiceConnection, OnItemClickListener,
 		
-					ServerWindowTilesFragment.ServiceRetriever,
+//					ServerWindowTilesFragment.ServiceRetriever,
 		
 					ServerConnectionService.OnConnectionListListener,
 					
@@ -143,6 +144,8 @@ public class ServerListActivity extends CompatActionBarActivity
 		service.setOnConnectionListListener(this);
 		
 		listAdapter.setConnections(service.getConnections());
+		
+		//setServiceForFragment();
 		
 		if(dualPane) {
 			setShownWindows(currentConnPos);
@@ -264,14 +267,16 @@ public class ServerListActivity extends CompatActionBarActivity
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		
-		if(!dualPane) { //If using a single-pane layout (just server list), open ChatActivity for that conn.
-			Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
-			intent.putExtra(StaticInfo.EXTRA_CONN_ID, id);
-			startActivity(intent);
-		}
-		else {
-			setShownWindows(position); //Otherwise in dual-pane, show conn. windows as a grid to the right
-		}
+		setShownWindows(position);
+		
+//		if(!dualPane) { //If using a single-pane layout (just server list), open ChatActivity for that conn.
+//			Intent intent = new Intent(getApplicationContext(), ChatActivity.class);
+//			intent.putExtra(StaticInfo.EXTRA_CONN_ID, id);
+//			startActivity(intent);
+//		}
+//		else {
+//			setShownWindows(position); //Otherwise in dual-pane, show conn. windows as a grid to the right
+//		}
 		
 	}
 	
@@ -297,6 +302,8 @@ public class ServerListActivity extends CompatActionBarActivity
 					getSupportFragmentManager().beginTransaction()
 							.replace(R.id.serverlist_grid_fragment_container, tilesFragment)
 							.commit();
+					
+					tilesFragment.setService(service);
 				}
 			}
 			else {
@@ -312,6 +319,10 @@ public class ServerListActivity extends CompatActionBarActivity
 		else {
 			if(currentConn != null) {
 				//Start another activity with a new fragment for the server
+				
+				Intent intent = new Intent(getApplicationContext(), WindowTilesActivity.class);
+				intent.putExtra(WindowTilesActivity.EXTRA_CONN_ID, currentConn.getId());
+				startActivity(intent);
 			}
 		}
 		

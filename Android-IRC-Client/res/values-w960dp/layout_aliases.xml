@@ -2,4 +2,5 @@
 <resources>
     <item type="layout" name="serverlist">@layout/serverlist_wide_grid</item>
     <item type="layout" name="serverlist_conn_list">@layout/serverlist_wide_conn_list</item>
+    <item name="tile_columns" type="integer">3</item>
 </resources>

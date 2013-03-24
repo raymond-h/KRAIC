@@ -10,10 +10,13 @@ import se.kayarr.ircclient.irc.ServerConnection;
 import se.kayarr.ircclient.irc.Window;
 import se.kayarr.ircclient.irc.output.OutputLine;
 import se.kayarr.ircclient.services.ServerConnectionService;
+import se.kayarr.ircclient.services.ServerConnectionService.ServiceBinder;
 import se.kayarr.ircclient.shared.StaticInfo;
-import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,7 +30,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 public class ServerWindowTilesFragment extends Fragment
-		implements OnItemClickListener, ServerConnection.OnWindowListListener {
+		implements ServiceConnection, OnItemClickListener, ServerConnection.OnWindowListListener {
 	
 	public static final String ARGS_CONN_ID = "se.kayarr.ircclient.server_id";
 	
@@ -48,54 +51,14 @@ public class ServerWindowTilesFragment extends Fragment
 		
 		return instance;
 	}
-	
-	public static interface ServiceRetriever {
-		public ServerConnectionService getService();
-	}
-	
-	private ServiceRetriever attachedActivity;
-
-	@Override
-	public void onAttach(Activity activity) {
-		super.onAttach(activity);
-		
-		try {
-			attachedActivity = (ServiceRetriever) activity;
-		}
-		catch(ClassCastException e) {
-			throw new ClassCastException(activity + " needs to implements ServiceRetriever");
-		}
-	}
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		Log.d(StaticInfo.APP_TAG, "onCreate called");
+		
 		currentConnectionId = getArguments().getLong(ARGS_CONN_ID);
-		
-		service = attachedActivity.getService();
-		
-		currentConnection = service.getConnections().get(currentConnectionId);
-	}
-
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		
-		View layout = inflater.inflate(R.layout.serverlist_tile_grid, container, false);
-		
-		tileGridView = (GridView) layout.findViewById(R.id.tile_grid_view);
-		
-		gridAdapter = new WindowGridAdapter();
-		tileGridView.setAdapter(gridAdapter);
-		
-		tileGridView.setOnItemClickListener(this);
-		
-		onWindowListChanged(currentConnection);
-		
-		Log.d(StaticInfo.APP_TAG, "Now showing " + currentConnection.getWindows().size() + " tiles");
-		
-		return layout;
 	}
 	
 	@Override
@@ -107,7 +70,10 @@ public class ServerWindowTilesFragment extends Fragment
 	public void onStart() {
 		super.onStart();
 		
-		currentConnection.addOnWindowListListener(this);
+		Log.d(StaticInfo.APP_TAG, "onStart called");
+		
+		Intent serviceIntent = new Intent(getActivity().getApplicationContext(), ServerConnectionService.class);
+		getActivity().bindService(serviceIntent, this, 0);
 		
 		gridAdapter.notifyDataSetChanged();
 		
@@ -118,11 +84,11 @@ public class ServerWindowTilesFragment extends Fragment
 
 	@Override
 	public void onStop() {
+		if(service != null) getActivity().unbindService(this);
+		
 		for(GridViewUpdateHelper helper : gridAdapter.helpers) {
 			helper.unregisterFromWindow();
 		}
-		
-		currentConnection.removeOnWindowListListener(this);
 		
 		super.onStop();
 	}
@@ -130,6 +96,49 @@ public class ServerWindowTilesFragment extends Fragment
 	@Override
 	public void onPause() {
 		super.onPause();
+	}
+	
+	public void onServiceConnected(ComponentName name, IBinder b) {
+		Log.d(StaticInfo.APP_TAG, "onServiceConnected called");
+		
+		ServerConnectionService.ServiceBinder binder = (ServiceBinder) b;
+		
+		service = binder.getService();
+		
+		currentConnection = service.getConnections().get(currentConnectionId);
+		currentConnection.addOnWindowListListener(this);
+		
+		onWindowListChanged(currentConnection);
+	}
+
+	public void onServiceDisconnected(ComponentName name) {
+		currentConnection.removeOnWindowListListener(this);
+		
+		service = null;
+	}
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		
+		Log.d(StaticInfo.APP_TAG, "onCreateView called");
+		
+		View layout = inflater.inflate(R.layout.serverlist_tile_grid, container, false);
+		
+		tileGridView = (GridView) layout.findViewById(R.id.tile_grid_view);
+		
+		gridAdapter = new WindowGridAdapter();
+		tileGridView.setAdapter(gridAdapter);
+		
+		tileGridView.setOnItemClickListener(this);
+		
+		return layout;
+	}
+	
+	public void setService(ServerConnectionService service) {
+		Log.d(StaticInfo.APP_TAG, "setService called");
+		
+		this.service = service;
 	}
 	
 	public void setCurrentConnection(ServerConnection currentConnection) {
