@@ -12,8 +12,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:text="Medium Text"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:text="Window Title"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        tools:ignore="HardcodedText" />
 
     <View
         android:layout_width="wrap_content"
@@ -46,7 +47,8 @@
             android:layout_toLeftOf="@id/grid_tile_corner_icon"
             android:ellipsize="end"
             android:text="Line 2"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            tools:ignore="HardcodedText" />
 
         <TextView
             android:id="@+id/grid_tile_line_1"
@@ -57,7 +59,8 @@
             android:layout_toLeftOf="@id/grid_tile_corner_icon"
             android:ellipsize="end"
             android:text="Line 1"
-            android:textAppearance="?android:attr/textAppearanceSmall" />
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            tools:ignore="HardcodedText" />
 
     </RelativeLayout>
 </LinearLayout>
