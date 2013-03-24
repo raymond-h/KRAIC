@@ -132,7 +132,8 @@ public class ChatActivity extends CompatActionBarActivity
 		long connId = getIntent().getLongExtra(StaticInfo.EXTRA_CONN_ID, -1);
 		connection = service.getConnections().get(connId);
 		
-		getCompatActionBar().setSubtitle( connection.getSettingsItem().getDisplayName() );
+		getCompatActionBar().setTitle( connection.getSettingsItem().getDisplayName() );
+		getCompatActionBar().setSubtitle( connection.getSettingsItem().getDisplayAddress() );
 		
 		connection.addOnCurrentWindowChangeListener(this);
 		connection.addOnWindowListListener(this);

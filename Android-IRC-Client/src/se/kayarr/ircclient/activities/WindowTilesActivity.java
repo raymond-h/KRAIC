@@ -54,9 +54,10 @@ public class WindowTilesActivity extends CompatActionBarActivity
 		
 		service = binder.getService();
 		
-		ServerConnection conn = service.getConnections().get( getIntent().getLongExtra(EXTRA_CONN_ID, -1) );
+		ServerConnection connection = service.getConnections().get( getIntent().getLongExtra(EXTRA_CONN_ID, -1) );
 		
-		getCompatActionBar().setSubtitle( conn.getSettingsItem().getDisplayName() );
+		getCompatActionBar().setTitle( connection.getSettingsItem().getDisplayName() );
+		getCompatActionBar().setSubtitle( connection.getSettingsItem().getDisplayAddress() );
 		
 		//setServiceForFragment();
 		
