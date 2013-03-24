@@ -35,7 +35,11 @@ public class ServerSettingsItem implements Serializable, Parcelable {
 	}
 
 	public String getDisplayName() {
-		return (name != null && name.length() > 0) ? name : address + ":" + port;
+		return (name != null && name.length() > 0) ? name : getDisplayAddress();
+	}
+	
+	public String getDisplayAddress() {
+		return address + ":" + port;
 	}
 	
 	@Data @Accessors(chain=true)
