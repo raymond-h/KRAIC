@@ -65,6 +65,8 @@ public class ChatActivity extends CompatActionBarActivity
 	private WindowPagerAdapter pagerAdapter;
 	
 	private List<WeakReference<WindowFragment>> windowFragments = new LinkedList<WeakReference<WindowFragment>>();
+	
+	private boolean hasSavedInstanceState;
 
 	@SuppressLint("NewApi")
 	@Override
@@ -86,6 +88,8 @@ public class ChatActivity extends CompatActionBarActivity
 		
 		PagerTabStrip titleStrip = (PagerTabStrip) fragmentPager.findViewById(R.id.fragment_pager_titlestrip);
 		titleStrip.setTabIndicatorColor( getResources().getColor(R.color.holo_blue) );
+		
+		hasSavedInstanceState = (savedInstanceState != null);
 	}
 
 	@Override
@@ -140,7 +144,7 @@ public class ChatActivity extends CompatActionBarActivity
 		onWindowListChanged(connection);
 		
 		int windowIndex = getIntent().getIntExtra(StaticInfo.EXTRA_CONN_WINDOW, -1);
-		if(windowIndex >= 0) {
+		if(!hasSavedInstanceState && windowIndex >= 0) {
 			connection.setCurrentWindowIndex(windowIndex);
 		}
 		
