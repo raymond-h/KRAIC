@@ -132,6 +132,9 @@ public class ChatActivity extends CompatActionBarActivity
 		long connId = getIntent().getLongExtra(StaticInfo.EXTRA_CONN_ID, -1);
 		connection = service.getConnections().get(connId);
 		
+		getCompatActionBar().setTitle( connection.getSettingsItem().getDisplayName() );
+		getCompatActionBar().setSubtitle( connection.getSettingsItem().getDisplayAddress() );
+		
 		connection.addOnCurrentWindowChangeListener(this);
 		connection.addOnWindowListListener(this);
 		onWindowListChanged(connection);
@@ -322,7 +325,7 @@ public class ChatActivity extends CompatActionBarActivity
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			View view = inflater.inflate(R.layout.chatlayout, container, false);
+			View view = inflater.inflate(R.layout.chat_fragment_layout, container, false);
 			
 			outputList = (ListView) view.findViewById(R.id.output_list);
 			

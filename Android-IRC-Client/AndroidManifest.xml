@@ -28,6 +28,8 @@
             </intent-filter>
         </activity>
         
+        <activity android:name=".activities.WindowTilesActivity" />
+        
         <activity android:name=".activities.ChatActivity" />
         
         <activity android:name=".activities.SettingsActivity"></activity>

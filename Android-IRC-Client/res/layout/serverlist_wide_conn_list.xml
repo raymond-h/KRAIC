@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <ListView
+        android:id="@+id/serverlist_connection_list"
+        android:layout_width="350dp"
+        android:layout_height="fill_parent"
+        tools:listitem="@layout/serverlist_connection_item" >
+    </ListView>
+
+    <FrameLayout
+        android:id="@+id/serverlist_grid_fragment_container"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@id/serverlist_connection_list" >
+
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/serverlist_connection_list_empty_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:text="@string/serverlist_no_servers_to_show" />
+
+    <TextView
+        android:id="@+id/serverlist_tile_grid_none_selected_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@id/serverlist_connection_list"
+        android:gravity="center"
+        android:text="@string/serverlist_tap_connection_to_show_windows" />
+
+</RelativeLayout>
