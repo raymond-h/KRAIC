@@ -9,7 +9,7 @@
         android:id="@+id/serverlist_connection_list"
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        tools:listitem="@layout/serverlist_item" >
+        tools:listitem="@layout/serverlist_connection_item" >
 
     </ListView>
 

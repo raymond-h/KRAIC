@@ -365,7 +365,7 @@ public class ServerListActivity extends CompatActionBarActivity
 
 		public View getView(int position, View convertView, ViewGroup parent) {
 			if(convertView == null) {
-				convertView = getLayoutInflater().inflate(R.layout.serverlist_item, parent, false);
+				convertView = getLayoutInflater().inflate(R.layout.serverlist_connection_item, parent, false);
 			}
 			
 			TextView serverName = (TextView) convertView.findViewById(R.id.serveritem_name);

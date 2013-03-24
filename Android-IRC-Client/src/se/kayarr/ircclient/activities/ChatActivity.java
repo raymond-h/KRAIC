@@ -325,7 +325,7 @@ public class ChatActivity extends CompatActionBarActivity
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
-			View view = inflater.inflate(R.layout.chatlayout, container, false);
+			View view = inflater.inflate(R.layout.chat_fragment_layout, container, false);
 			
 			outputList = (ListView) view.findViewById(R.id.output_list);
 			
