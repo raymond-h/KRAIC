@@ -4,6 +4,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 import se.kayarr.ircclient.irc.output.OutputLine;
+import se.kayarr.ircclient.shared.DeviceInfo;
+import android.animation.Animator;
+import android.animation.Animator.AnimatorListener;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
@@ -26,6 +32,8 @@ public class FadeAwayLinesLayout extends ViewGroup {
 	 */
 	private List<OutputLine> tempLineList;
 	private List<TextView> viewsToAdd = new LinkedList<TextView>();
+	
+	private volatile int currentAnimation = 0;
 	
 	public FadeAwayLinesLayout(Context context) {
 		this(context, null);
@@ -85,7 +93,7 @@ public class FadeAwayLinesLayout extends ViewGroup {
 			
 			public void onGlobalLayout() {
 				
-				triggerRemovingOutsideViews();
+				//triggerRemovingOutsideViews();
 			}
 			
 		} );
@@ -119,14 +127,134 @@ public class FadeAwayLinesLayout extends ViewGroup {
 		addViewToList(textLine);
 	}
 	
+	@SuppressLint("NewApi")
 	private void addViewToList(View view) {
 		Log.d(TAG, "* ANIMATION *");
 		
 		mainList.addView(view);
+		
+		if(DeviceInfo.isHoneycomb(true)) {
+			
+			view.measure(
+					MeasureSpec.makeMeasureSpec( mainList.getWidth(), MeasureSpec.AT_MOST ),
+					MeasureSpec.makeMeasureSpec( 0, MeasureSpec.UNSPECIFIED )
+			);
+			
+			int viewHeight = view.getMeasuredHeight();
+			
+			Log.d(TAG, "The view's height is " + viewHeight);
+			
+			AnimatorSet slideAnimations = new AnimatorSet();
+			LinkedList<Animator> animatorList = new LinkedList<Animator>();
+			
+			for(int i = 0; i < mainList.getChildCount() - 1; i++) {
+				
+				View child = mainList.getChildAt(i);
+				
+				ObjectAnimator childAnimator =
+						ObjectAnimator.ofFloat(child, "translationY", viewHeight, 0.0f);
+				
+				childAnimator.setDuration(300);
+				
+				animatorList.add(childAnimator);
+				
+			}
+			
+			slideAnimations.playTogether(animatorList);
+			
+			boolean shallSlideViews = slideAnimations.getChildAnimations().size() > 0;
+			
+			AnimatorSet finalAnimationSequence = new AnimatorSet();
+			
+			ObjectAnimator viewAnimator = ObjectAnimator.ofFloat(view, "alpha", 1.0f);
+			
+			if(shallSlideViews) viewAnimator.setStartDelay(100);
+			
+			viewAnimator.setDuration(300);
+			
+			AnimatorSet.Builder b = finalAnimationSequence.play(viewAnimator);
+			
+			if(shallSlideViews) b.after(slideAnimations);
+			
+			view.setAlpha(0.0f);
+			
+			final int curAni = ++currentAnimation;
+			
+			finalAnimationSequence.addListener(new AnimatorListener() {
+				
+				public void onAnimationStart(Animator animation) {
+				}
+				
+				public void onAnimationRepeat(Animator animation) {
+				}
+				
+				public void onAnimationEnd(Animator animation) {
+					if(curAni == currentAnimation) triggerRemovingOutsideViews();
+				}
+				
+				public void onAnimationCancel(Animator animation) {
+					if(curAni == currentAnimation) triggerRemovingOutsideViews();
+				}
+				
+			});
+			
+			finalAnimationSequence.start();
+			
+		}
 	}
 	
-	public void clearLines() {
-		mainList.removeAllViews();
+	@SuppressLint("NewApi")
+	public void clearLines(boolean animated) {
+		//Log.d(TAG, "Removing all items...");
+		
+		if(animated && DeviceInfo.isHoneycomb(true)) {
+			
+			AnimatorSet removeAnimator = new AnimatorSet();
+			LinkedList<Animator> animatorList = new LinkedList<Animator>();
+			
+			for(int i = mainList.getChildCount() - 1; i >= 0; i--) {
+				
+				View child = mainList.getChildAt(i);
+				
+				ObjectAnimator childAnimator =
+						ObjectAnimator.ofPropertyValuesHolder( child,
+								
+								PropertyValuesHolder.ofFloat("translationX", mainList.getWidth()),
+								PropertyValuesHolder.ofFloat("alpha", 0.0f)
+				);
+				
+				//if(i != 0) childAnimator.setStartDelay(i * 100);
+				childAnimator.setDuration(100);
+				
+				animatorList.add(childAnimator);
+				
+			}
+			
+			removeAnimator.playSequentially(animatorList);
+			
+			removeAnimator.addListener(new AnimatorListener() {
+				
+				public void onAnimationStart(Animator animation) {
+				}
+				
+				public void onAnimationRepeat(Animator animation) {
+				}
+				
+				public void onAnimationEnd(Animator animation) {
+					mainList.removeAllViews();
+				}
+				
+				public void onAnimationCancel(Animator animation) {
+					mainList.removeAllViews();
+				}
+				
+			});
+			
+			removeAnimator.start();
+			
+		}
+		
+		else mainList.removeAllViews();
 	}
 	
 	private volatile int viewCount = 0;

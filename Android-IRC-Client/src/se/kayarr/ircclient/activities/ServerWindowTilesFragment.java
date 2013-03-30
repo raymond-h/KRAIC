@@ -22,10 +22,12 @@ import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -228,7 +230,8 @@ public class ServerWindowTilesFragment extends Fragment
 			
 			List<OutputLine> lines = window.getLines();
 			
-			helper.linesLayout.clearLines();
+			//Log.d("TAG", "Called in WindowGridAdapter.getView");
+			helper.linesLayout.clearLines(false);
 			helper.linesLayout.addExistingLines(lines);
 			
 			//Log.d(StaticInfo.APP_TAG, "There are " + lines.size() + " lines for " + window.getTitle());
@@ -258,6 +261,7 @@ public class ServerWindowTilesFragment extends Fragment
 		
 		private TextView title;
 		private FadeAwayLinesLayout linesLayout;
+		private Button clearBtn;
 		private ImageView cornerIcon;
 		
 		private Window window;
@@ -267,7 +271,17 @@ public class ServerWindowTilesFragment extends Fragment
 			
 			title = (TextView) view.findViewById(R.id.grid_tile_title);
 			linesLayout = (FadeAwayLinesLayout) view.findViewById(R.id.grid_tile_lines_layout);
+			clearBtn = (Button) view.findViewById(R.id.grid_tile_clear_btn);
 			cornerIcon = (ImageView) view.findViewById(R.id.grid_tile_corner_icon);
+			
+			clearBtn.setOnClickListener(new OnClickListener() {
+				
+				public void onClick(View v) {
+					//Log.d("TAG", "Called in GridViewUpdateHelper.clearBtn.onClick");
+					linesLayout.clearLines(true);
+				}
+				
+			});
 		}
 		
 		public void update(Window window) {
@@ -297,7 +311,8 @@ public class ServerWindowTilesFragment extends Fragment
 		public void onOutputCleared(Window window) {
 			//Log.d(StaticInfo.APP_TAG, "View " + view + ", window " + window.getTitle() + " was cleared");
 			
-			linesLayout.clearLines();
+			//Log.d("TAG", "GridViewUpdateHelper.onOutputCleared");
+			linesLayout.clearLines(true);
 		}
 	}
 }
