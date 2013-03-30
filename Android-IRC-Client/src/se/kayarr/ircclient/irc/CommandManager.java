@@ -3,18 +3,7 @@ package se.kayarr.ircclient.irc;
 import java.util.LinkedList;
 import java.util.List;
 
-import se.kayarr.ircclient.irc.commands.ClearCommand;
-import se.kayarr.ircclient.irc.commands.Command;
-import se.kayarr.ircclient.irc.commands.CommandsCommand;
-import se.kayarr.ircclient.irc.commands.HelpCommand;
-import se.kayarr.ircclient.irc.commands.JoinCommand;
-import se.kayarr.ircclient.irc.commands.LineDumpCommand;
-import se.kayarr.ircclient.irc.commands.MeCommand;
-import se.kayarr.ircclient.irc.commands.MsgCommand;
-import se.kayarr.ircclient.irc.commands.NickChangeCommand;
-import se.kayarr.ircclient.irc.commands.PartCommand;
-import se.kayarr.ircclient.irc.commands.QuitCommand;
-import se.kayarr.ircclient.irc.commands.WhoisCommand;
+import se.kayarr.ircclient.irc.commands.*;
 
 public class CommandManager {
 	private static CommandManager instance = new CommandManager();
@@ -27,8 +16,7 @@ public class CommandManager {
 	public CommandManager() {
 		addCommand(new CommandsCommand());
 		addCommand(new HelpCommand());
-		addCommand(new LineDumpCommand());
-		
+		addCommand(new LineDumpCommand());		
 		addCommand(new MsgCommand());
 		addCommand(new MeCommand());
 		addCommand(new JoinCommand());
@@ -37,6 +25,7 @@ public class CommandManager {
 		addCommand(new NickChangeCommand());
 		addCommand(new ClearCommand());
 		addCommand(new WhoisCommand());
+		addCommand(new NickListCommand());
 	}
 	
 	public void addCommand(Command command) {
