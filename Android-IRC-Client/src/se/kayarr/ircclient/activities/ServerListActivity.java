@@ -144,6 +144,11 @@ public class ServerListActivity extends CompatActionBarActivity
 		
 		listAdapter.setConnections(service.getConnections());
 		
+		// Set pos to first item if there are existing items and none are selected.
+		if(currentConnPos == ListView.INVALID_POSITION && listAdapter.getCount() != 0) {
+			currentConnPos = 0;
+		}
+		
 		if(dualPane) {
 			setShownWindows(currentConnPos);
 		}
