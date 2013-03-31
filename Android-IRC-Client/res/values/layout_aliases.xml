@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <item name="tile_columns" type="integer">1</item>
-    
+
+    <!-- These are alias for the constants of View visibility -->
+    <string name="view_visible">0</string> <!-- This is VISIBLE -->
+    <string name="view_invisible">1</string> <!-- This is INVISIBLE -->
+    <string name="view_gone">2</string> <!-- This is GONE -->
+
+    <string name="default_nicklist_visibility">@string/view_gone</string>
+
 </resources>

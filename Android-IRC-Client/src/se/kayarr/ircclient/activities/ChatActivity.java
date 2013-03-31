@@ -305,6 +305,9 @@ public class ChatActivity extends CompatActionBarActivity
 	}
 
 	public static class WindowFragment extends Fragment {
+		
+		private static final String NICKLIST_VISIBILITY_KEY = "se.kayarr.ircclient.NICKLIST_VISIBILITY_KEY";
+		
 		private int windowPosition;
 		private Window window;
 		
@@ -345,10 +348,20 @@ public class ChatActivity extends CompatActionBarActivity
 			//Log.d(StaticInfo.APP_TAG, toString() + " onCreate end " + savedInstanceState);
 		}
 
+		
 		public void onWindowsAvailable(ChatActivity activity) { //This will only be called when fragment has been recreated by the system
 			window = activity.connection.getWindows().get(windowPosition);
 			window.addOnOutputListener(outputAdapter);
 			outputAdapter.notifyDataSetChanged();
+			
+			// Set up the nickList because it won't get set on recreation
+			if(window != null && window.getType() == Window.Type.CHANNEL)
+			{
+				userAdapter = new UserListAdapter(window.getChannel());
+				nickList.setAdapter(userAdapter);
+			}
+			else
+				nickList.setVisibility(View.GONE);
 		}
 
 		@Override
@@ -448,7 +461,7 @@ public class ChatActivity extends CompatActionBarActivity
 			});
 			
 			nickList = (ListView) view.findViewById(R.id.nick_list);
-			if(window.getType() == Window.Type.CHANNEL)
+			if(window != null && window.getType() == Window.Type.CHANNEL)
 			{
 				userAdapter = new UserListAdapter(window.getChannel());
 				nickList.setAdapter(userAdapter);
@@ -463,6 +476,15 @@ public class ChatActivity extends CompatActionBarActivity
 							);
 			
 			return view;
+		}
+		
+		@Override
+		public void onSaveInstanceState(Bundle outState)
+		{
+			super.onSaveInstanceState(outState);
+			// TODO: Save state of nicklist visibility.
+//			if(nickList != null && nickList.visib)
+//			outState.putBoolean(NICKLIST_VISIBILITY_KEY,)
 		}
 		
 		private void onSend(boolean runCommands) {
