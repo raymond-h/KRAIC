@@ -42,19 +42,23 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.InputType;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnKeyListener;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.BaseAdapter;
@@ -76,6 +80,8 @@ public class ChatActivity extends CompatActionBarActivity
 	private WindowPagerAdapter pagerAdapter;
 	
 	private List<WeakReference<WindowFragment>> windowFragments = new LinkedList<WeakReference<WindowFragment>>();
+	
+	private GestureDetectorCompat gestureDetector;
 	
 	private boolean hasSavedInstanceState;
 
@@ -101,6 +107,21 @@ public class ChatActivity extends CompatActionBarActivity
 		titleStrip.setTabIndicatorColor( getResources().getColor(R.color.holo_blue) );
 		
 		hasSavedInstanceState = (savedInstanceState != null);
+		
+		gestureDetector = new GestureDetectorCompat(this, new SimpleOnGestureListener(){
+			@Override
+			public boolean onDown(MotionEvent e)
+			{
+				return true;
+			}
+		
+			@Override
+			public boolean onDoubleTap(MotionEvent e)
+			{
+				Log.d(StaticInfo.APP_TAG, "onDoubleTap: double tap detected");
+				return true;
+			}
+		});
 	}
 
 	@Override
@@ -295,6 +316,11 @@ public class ChatActivity extends CompatActionBarActivity
 		private EditText inputField;
 		private boolean ctrlPressed = false;
 
+		private ListView nickList;
+		private UserListAdapter userAdapter;
+		
+		private GestureDetectorCompat gestureDetector;
+		
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
 			//Log.d(StaticInfo.APP_TAG, toString() + " onCreate begin " + savedInstanceState);
@@ -345,6 +371,40 @@ public class ChatActivity extends CompatActionBarActivity
 			outputList = (ListView) view.findViewById(R.id.output_list);
 			
 			outputList.setAdapter(outputAdapter);
+			gestureDetector = new GestureDetectorCompat(getActivity(), new SimpleOnGestureListener(){
+				@Override
+				public boolean onDown(MotionEvent e)
+				{
+					return true;
+				}
+			
+				@Override
+				public boolean onDoubleTap(MotionEvent e)
+				{
+					Log.d(StaticInfo.APP_TAG, "onDoubleTap: double tap detected");
+					if(window.getType() == Window.Type.CHANNEL)
+					{
+						int visibility = nickList.getVisibility();
+						if(visibility == View.GONE)
+						{
+							nickList.setVisibility(View.VISIBLE);
+						}
+						else
+						{
+							nickList.setVisibility(View.GONE);
+						}
+					}
+					
+					
+					return true;
+				}
+			});
+			outputList.setOnTouchListener(new OnTouchListener(){
+				public boolean onTouch(View v, MotionEvent event)
+				{
+					return gestureDetector.onTouchEvent(event);
+				}
+			});
 			
 			sendButton = (ImageButton) view.findViewById(R.id.send_btn);
 			
@@ -387,9 +447,12 @@ public class ChatActivity extends CompatActionBarActivity
 				}
 			});
 			
-			ListView nickList = (ListView) view.findViewById(R.id.nick_list);
+			nickList = (ListView) view.findViewById(R.id.nick_list);
 			if(window.getType() == Window.Type.CHANNEL)
-				nickList.setAdapter(new UserListAdapter(window.getChannel()));
+			{
+				userAdapter = new UserListAdapter(window.getChannel());
+				nickList.setAdapter(userAdapter);
+			}
 			else
 				nickList.setVisibility(View.GONE);
 			
@@ -423,6 +486,8 @@ public class ChatActivity extends CompatActionBarActivity
 				}
 			}
 		}
+		
+		
 		
 		public String toString() {
 			return "WindowFragment (" + hashCode() + ") [Window #" + windowPosition + " " + (window != null ? window.getTitle() : "NONE") + "]";
