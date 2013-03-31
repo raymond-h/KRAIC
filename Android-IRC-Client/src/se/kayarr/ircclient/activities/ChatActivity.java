@@ -5,10 +5,21 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.pircbotx.Channel;
 import org.pircbotx.Colors;
+import org.pircbotx.User;
+import org.pircbotx.hooks.Event;
+import org.pircbotx.hooks.Listener;
+import org.pircbotx.hooks.events.ConnectEvent;
+import org.pircbotx.hooks.events.JoinEvent;
+import org.pircbotx.hooks.events.KickEvent;
+import org.pircbotx.hooks.events.NickChangeEvent;
+import org.pircbotx.hooks.events.PartEvent;
+import org.pircbotx.hooks.events.UserListEvent;
 
 import se.kayarr.ircclient.R;
 import se.kayarr.ircclient.exceptions.InvalidWindowTypeException;
+import se.kayarr.ircclient.irc.Bot;
 import se.kayarr.ircclient.irc.CommandManager;
 import se.kayarr.ircclient.irc.ServerConnection;
 import se.kayarr.ircclient.irc.ServerConnection.OnCurrentWindowChangeListener;
@@ -376,6 +387,12 @@ public class ChatActivity extends CompatActionBarActivity
 				}
 			});
 			
+			ListView nickList = (ListView) view.findViewById(R.id.nick_list);
+			if(window.getType() == Window.Type.CHANNEL)
+				nickList.setAdapter(new UserListAdapter(window.getChannel()));
+			else
+				nickList.setVisibility(View.GONE);
+			
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
 			inputField.setInputType(InputType.TYPE_CLASS_TEXT | 
 					(prefs.getBoolean("auto_correct", true)?InputType.TYPE_TEXT_FLAG_AUTO_CORRECT:0) |
@@ -452,6 +469,74 @@ public class ChatActivity extends CompatActionBarActivity
 			public void onOutputCleared(Window window) {
 				notifyDataSetChanged();
 			}
+		}
+		
+		public class UserListAdapter extends BaseAdapter implements Listener<Bot>{
+
+			Channel chan;
+			ArrayList<User> users;
+			
+			public UserListAdapter(Channel chan)
+			{
+				//chan.getUsers()
+				this.chan = chan;
+				chan.getBot().getListenerManager().addListener(this);
+				updateNickList();
+			}
+			
+			public void updateNickList()
+			{
+				users = new ArrayList<User>(chan.getUsers());
+				getActivity().runOnUiThread(new Runnable(){
+					public void run()
+					{
+						notifyDataSetChanged();
+					}
+				});
+			}
+			
+
+			public void onEvent(Event<Bot> event) throws Exception
+			{
+				if(event instanceof KickEvent ||
+				event instanceof NickChangeEvent ||
+				event instanceof PartEvent ||
+				event instanceof JoinEvent ||
+				event instanceof UserListEvent ||
+				event instanceof ConnectEvent) {
+					updateNickList();
+				}				
+			}
+			
+			public int getCount()
+			{
+				return users.size();
+			}
+
+			public User getItem(int position)
+			{
+				return users.get(position);
+			}
+
+			public long getItemId(int position)
+			{
+				return -1;
+			}
+
+			public View getView(int position, View convertView, ViewGroup parent)
+			{
+				if(convertView == null)
+				{
+					convertView = getActivity().getLayoutInflater().inflate(R.layout.nick_line, parent, false);
+				}
+				TextView nickText = (TextView) convertView.findViewById(R.id.text_nick);
+				nickText.setText(getItem(position).getNick());
+				
+				return convertView;
+			}
+
+			
+			
 		}
 	}
 }

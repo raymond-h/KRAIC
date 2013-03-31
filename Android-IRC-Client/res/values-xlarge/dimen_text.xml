@@ -2,5 +2,6 @@
 <resources>
     <dimen name="timestamp_size">16sp</dimen>
     <dimen name="message_size">17sp</dimen>
-    
+    <dimen name="nick_size">16sp</dimen>
+    <dimen name="nick_list_width">200dp</dimen>
 </resources>

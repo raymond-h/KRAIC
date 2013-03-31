@@ -13,11 +13,11 @@
 
         <ImageButton
             android:id="@+id/send_btn"
-            android:contentDescription="@string/chat_send"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:layout_alignParentRight="true"
             android:background="@color/borderless_button_bg"
+            android:contentDescription="@string/chat_send"
             android:padding="8dp"
             android:scaleType="centerInside"
             android:src="@drawable/ic_btn_send" />
@@ -37,31 +37,51 @@
             android:inputType="text" >
 
             <requestFocus />
-
         </EditText>
-
     </RelativeLayout>
 
-    <View
-        android:id="@+id/chat_delim"
+    <RelativeLayout
+        android:id="@+id/chat_output_container"
         android:layout_width="wrap_content"
-        android:layout_height="1dp"
-        android:layout_above="@id/control_layout"
-        android:background="?android:attr/listDivider" />
-
-    <ListView
-        android:id="@+id/output_list"
-        android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/chat_delim"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="0px"
-        android:nextFocusDown="@id/input_field"
-        android:paddingBottom="8dp"
-        android:stackFromBottom="true"
-        android:transcriptMode="normal"
-        tools:listitem="@layout/chat_line" >
+        android:layout_above="@id/control_layout" >
 
-    </ListView>
+        <ListView
+            android:id="@+id/nick_list"
+            android:layout_width="@dimen/nick_list_width"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="4dp"
+            android:dividerHeight="1px"
+            tools:listitem="@layout/nick_line" />
+		
+        <View 
+            android:id="@+id/nick_delim"
+            android:layout_height="wrap_content"
+            android:layout_width="1px"
+            android:layout_toLeftOf="@id/nick_list"
+            android:background="?android:attr/listDivider"/>
+        
+        <View
+            android:id="@+id/chat_delim"
+            android:layout_width="wrap_content"
+            android:layout_height="1px"
+            android:layout_alignParentBottom="true"
+            android:background="?android:attr/listDivider" />
+
+        <ListView
+            android:id="@+id/output_list"
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:layout_toLeftOf="@id/nick_delim"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="0px"
+            android:nextFocusDown="@id/input_field"
+            android:paddingBottom="8dp"
+            android:stackFromBottom="true"
+            android:transcriptMode="normal"
+            tools:listitem="@layout/chat_line" >
+        </ListView>
+    </RelativeLayout>
 
 </RelativeLayout>
