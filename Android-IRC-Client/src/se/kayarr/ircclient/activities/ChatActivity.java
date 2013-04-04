@@ -81,7 +81,6 @@ public class ChatActivity extends CompatActionBarActivity
 	
 	private List<WeakReference<WindowFragment>> windowFragments = new LinkedList<WeakReference<WindowFragment>>();
 	
-	private GestureDetectorCompat gestureDetector;
 	
 	private boolean hasSavedInstanceState;
 
@@ -107,21 +106,6 @@ public class ChatActivity extends CompatActionBarActivity
 		titleStrip.setTabIndicatorColor( getResources().getColor(R.color.holo_blue) );
 		
 		hasSavedInstanceState = (savedInstanceState != null);
-		
-		gestureDetector = new GestureDetectorCompat(this, new SimpleOnGestureListener(){
-			@Override
-			public boolean onDown(MotionEvent e)
-			{
-				return true;
-			}
-		
-			@Override
-			public boolean onDoubleTap(MotionEvent e)
-			{
-				Log.d(StaticInfo.APP_TAG, "onDoubleTap: double tap detected");
-				return true;
-			}
-		});
 	}
 
 	@Override
@@ -353,17 +337,22 @@ public class ChatActivity extends CompatActionBarActivity
 			window = activity.connection.getWindows().get(windowPosition);
 			window.addOnOutputListener(outputAdapter);
 			outputAdapter.notifyDataSetChanged();
-			
+		}
+
+		@Override
+		public void onResume()
+		{
+			super.onResume();
+
 			// Set up the nickList because it won't get set on recreation
-			if(window != null && window.getType() == Window.Type.CHANNEL)
+			if (window != null && window.getType() == Window.Type.CHANNEL)
 			{
 				userAdapter = new UserListAdapter(window.getChannel());
 				nickList.setAdapter(userAdapter);
-			}
-			else
+			} else
 				nickList.setVisibility(View.GONE);
 		}
-
+		
 		@Override
 		public void onDestroy() {
 			//Log.d(StaticInfo.APP_TAG, toString() + " onDestroy begin");
@@ -574,12 +563,16 @@ public class ChatActivity extends CompatActionBarActivity
 			public void updateNickList()
 			{
 				users = new ArrayList<User>(chan.getUsers());
-				getActivity().runOnUiThread(new Runnable(){
-					public void run()
-					{
-						notifyDataSetChanged();
-					}
-				});
+				if(getActivity() != null)
+				{
+					getActivity().runOnUiThread(new Runnable(){
+						public void run()
+						{
+							notifyDataSetChanged();
+						}
+					});	
+				}
+				
 			}
 			
 
