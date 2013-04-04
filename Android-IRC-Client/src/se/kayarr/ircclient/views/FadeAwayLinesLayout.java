@@ -3,7 +3,6 @@ package se.kayarr.ircclient.views;
 import java.util.List;
 
 import se.kayarr.ircclient.irc.output.OutputLine;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -45,7 +44,6 @@ public class FadeAwayLinesLayout extends ViewGroup {
 		this(context, null);
 	}
 	
-	@SuppressLint("NewApi")
 	private void setLayoutTransitionForList(LinearLayout list) {
 		
 //		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -86,7 +84,7 @@ public class FadeAwayLinesLayout extends ViewGroup {
 		mainList = new LinearLayout(context);
 		mainList.setLayoutParams(
 				new FadeAwayLinesLayout.LayoutParams(
-						LayoutParams.FILL_PARENT,
+						LayoutParams.MATCH_PARENT,
 						LayoutParams.WRAP_CONTENT
 				)
 		);

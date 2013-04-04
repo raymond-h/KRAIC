@@ -1,7 +1,5 @@
 package se.kayarr.ircclient.services;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,13 +8,10 @@ import se.kayarr.ircclient.R;
 import se.kayarr.ircclient.activities.ServerListActivity;
 import se.kayarr.ircclient.irc.ServerConnection;
 import se.kayarr.ircclient.irc.ServerSettingsItem;
-import se.kayarr.ircclient.shared.DeviceInfo;
 import se.kayarr.ircclient.shared.SettingsDatabaseHelper;
 import se.kayarr.ircclient.shared.StaticInfo;
 import se.kayarr.ircclient.shared.Util;
-import android.annotation.SuppressLint;
 import android.app.Notification;
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
@@ -30,14 +25,10 @@ import android.util.Log;
 import android.util.SparseIntArray;
 
 public class ServerConnectionService extends Service {
-	private NotificationManager notificationManager;
 	
 	private Map<Long, ServerConnection> connections = new HashMap<Long, ServerConnection>();
 	
 	private SettingsDatabaseHelper dbHelper;
-	
-	private Method setForegroundMethod;
-	private int foregroundNotificationId = -1;
 	
 	private long idCounter = 0;
 	
@@ -72,13 +63,6 @@ public class ServerConnectionService extends Service {
 	public void onCreate() {
 		super.onCreate();
 		
-		notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-		
-		try {
-			setForegroundMethod = getClass().getMethod("setForeground", new Class<?>[] { boolean.class });
-		}
-		catch (NoSuchMethodException e) {}
-		
 		Intent intent = new Intent(getApplicationContext(), ServerListActivity.class);
 		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 		
@@ -94,7 +78,7 @@ public class ServerConnectionService extends Service {
 				.setContentIntent(pending)
 				.build();
 		
-		startForegroundCompat(StaticInfo.SERVICE_NOTIFICATION_ID, notification);
+		startForeground(StaticInfo.SERVICE_NOTIFICATION_ID, notification);
 		
 		dbHelper = new SettingsDatabaseHelper(this);
 	}
@@ -103,49 +87,11 @@ public class ServerConnectionService extends Service {
 	public void onDestroy() {
 		dbHelper.close();
 		
-		stopForegroundCompat(true);
+		stopForeground(true);
 		
 		disconnectAll();
 		
 		super.onDestroy();
-	}
-	
-	/*
-	 * This demonstrates why removing methods between API levels is a bad idea.
-	 * Thank god they learned their lesson after Eclair...
-	 */
-	
-	@SuppressLint("NewApi")
-	void startForegroundCompat(int id, Notification notification) {
-		if(DeviceInfo.isEclair(true)) {
-			startForeground(id, notification);
-		}
-		else {
-			try {
-				foregroundNotificationId = id;
-				notificationManager.notify(foregroundNotificationId, notification);
-				setForegroundMethod.invoke(this, true);
-			}
-			catch (IllegalArgumentException e) { e.printStackTrace(); }
-			catch (IllegalAccessException e) { e.printStackTrace(); }
-			catch (InvocationTargetException e) { e.printStackTrace(); }
-		}
-	}
-	
-	@SuppressLint("NewApi")
-	void stopForegroundCompat(boolean removeNotification) {
-		if(DeviceInfo.isEclair(true)) {
-			stopForeground(removeNotification);
-		}
-		else {
-			try {
-				if(removeNotification) notificationManager.cancel(foregroundNotificationId);
-				setForegroundMethod.invoke(this, false);
-			}
-			catch (IllegalArgumentException e) { e.printStackTrace(); }
-			catch (IllegalAccessException e) { e.printStackTrace(); }
-			catch (InvocationTargetException e) { e.printStackTrace(); }
-		}
 	}
 	
 	public ServerConnection connectTo(ServerSettingsItem item) {

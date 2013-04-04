@@ -37,30 +37,35 @@ public class DeviceInfo {
 				(apiVersion() == Build.VERSION_CODES.HONEYCOMB);
 	}
 	
+	@Deprecated
 	public static boolean isGingerbread(boolean atleast) {
 		return atleast ?
 			(apiVersion() >= Build.VERSION_CODES.GINGERBREAD) :
 			(apiVersion() == Build.VERSION_CODES.GINGERBREAD);
 	}
 	
+	@Deprecated
 	public static boolean isFroyo(boolean atleast) {
 		return atleast ?
 			(apiVersion() >= Build.VERSION_CODES.FROYO) :
 			(apiVersion() == Build.VERSION_CODES.FROYO);
 	}
 	
+	@Deprecated
 	public static boolean isEclairMr1(boolean atleast) {
 		return atleast ?
 			(apiVersion() >= Build.VERSION_CODES.ECLAIR_MR1):
 			(apiVersion() == Build.VERSION_CODES.ECLAIR_MR1);
 	}
 	
+	@Deprecated
 	public static boolean isEclair01(boolean atleast) {
 		return atleast ?
 			(apiVersion() >= Build.VERSION_CODES.ECLAIR_0_1):
 			(apiVersion() == Build.VERSION_CODES.ECLAIR_0_1);
 	}
 	
+	@Deprecated
 	public static boolean isEclair(boolean atleast) {
 		return atleast ?
 			(apiVersion() >= Build.VERSION_CODES.ECLAIR):

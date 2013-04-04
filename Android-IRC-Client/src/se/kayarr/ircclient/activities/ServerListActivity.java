@@ -13,7 +13,6 @@ import se.kayarr.ircclient.services.ServerConnectionService.ServiceBinder;
 import se.kayarr.ircclient.shared.ServerEditDialogHelper;
 import se.kayarr.ircclient.shared.SettingsDatabaseHelper;
 import se.kayarr.ircclient.shared.StaticInfo;
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -265,7 +264,6 @@ public class ServerListActivity extends CompatActionBarActivity
 		});
 	}
 	
-	@SuppressLint("NewApi")
 	public void onItemClick(AdapterView<?> parent, View view, int position,
 			long id) {
 		
