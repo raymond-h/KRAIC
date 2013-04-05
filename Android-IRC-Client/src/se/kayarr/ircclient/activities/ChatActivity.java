@@ -36,6 +36,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -49,6 +50,7 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.InputType;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -61,6 +63,7 @@ import android.view.View.OnKeyListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.webkit.WebView.FindListener;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -101,6 +104,9 @@ public class ChatActivity extends CompatActionBarActivity
 		
 		fragmentPager.setAdapter(pagerAdapter);
 		fragmentPager.setOnPageChangeListener(this);
+		
+		fragmentPager.setPageMarginDrawable( R.drawable.divider );
+		fragmentPager.setPageMargin(1);
 		
 		PagerTabStrip titleStrip = (PagerTabStrip) fragmentPager.findViewById(R.id.fragment_pager_titlestrip);
 		titleStrip.setTabIndicatorColor( getResources().getColor(R.color.holo_blue) );
@@ -305,6 +311,7 @@ public class ChatActivity extends CompatActionBarActivity
 
 		private ListView nickList;
 		private UserListAdapter userAdapter;
+		private View nickDelim;
 		
 		private GestureDetectorCompat gestureDetector;
 		
@@ -350,7 +357,7 @@ public class ChatActivity extends CompatActionBarActivity
 				userAdapter = new UserListAdapter(window.getChannel());
 				nickList.setAdapter(userAdapter);
 			} else
-				nickList.setVisibility(View.GONE);
+				setNickListVisible(false);
 		}
 		
 		@Override
@@ -386,15 +393,7 @@ public class ChatActivity extends CompatActionBarActivity
 					Log.d(StaticInfo.APP_TAG, "onDoubleTap: double tap detected");
 					if(window.getType() == Window.Type.CHANNEL)
 					{
-						int visibility = nickList.getVisibility();
-						if(visibility == View.GONE)
-						{
-							nickList.setVisibility(View.VISIBLE);
-						}
-						else
-						{
-							nickList.setVisibility(View.GONE);
-						}
+						setNickListVisible( !isNickListVisible() );
 					}
 					
 					
@@ -449,14 +448,17 @@ public class ChatActivity extends CompatActionBarActivity
 				}
 			});
 			
+			nickDelim = view.findViewById(R.id.nick_delim);
+			
 			nickList = (ListView) view.findViewById(R.id.nick_list);
+			
 			if(window != null && window.getType() == Window.Type.CHANNEL)
 			{
 				userAdapter = new UserListAdapter(window.getChannel());
 				nickList.setAdapter(userAdapter);
 			}
 			else
-				nickList.setVisibility(View.GONE);
+				setNickListVisible(false);
 			
 			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
 			inputField.setInputType(InputType.TYPE_CLASS_TEXT | 
@@ -545,6 +547,22 @@ public class ChatActivity extends CompatActionBarActivity
 			public void onOutputCleared(Window window) {
 				notifyDataSetChanged();
 			}
+		}
+		
+		private void setNickListVisible(boolean visible) {
+			
+			if(visible) {
+				nickDelim.setVisibility(View.VISIBLE);
+				nickList.setVisibility(View.VISIBLE);
+			}
+			else {
+				nickDelim.setVisibility(View.GONE);
+				nickList.setVisibility(View.GONE);
+			}
+		}
+		
+		private boolean isNickListVisible() {
+			return nickList.getVisibility() == View.VISIBLE;
 		}
 		
 		public class UserListAdapter extends BaseAdapter implements Listener<Bot>{

@@ -43,7 +43,7 @@
     <View
         android:id="@+id/chat_delim"
         android:layout_width="wrap_content"
-        android:layout_height="1px"
+        android:layout_height="1dp"
         android:layout_above="@id/control_layout"
         android:background="?android:attr/listDivider" />
 
@@ -51,7 +51,7 @@
         android:id="@+id/chat_output_container"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_above="@id/control_layout" >
+        android:layout_above="@id/chat_delim" >
 
         <ListView
             android:id="@+id/output_list"
@@ -71,6 +71,7 @@
             android:id="@+id/nick_delim"
             android:layout_width="1px"
             android:layout_height="wrap_content"
+            android:visibility="@string/default_nicklist_visibility"
             android:background="?android:attr/listDivider" />
 
         <ListView
@@ -78,15 +79,8 @@
             android:layout_width="@dimen/nick_list_width"
             android:layout_height="match_parent"
             android:layout_marginTop="4dp"
-            android:dividerHeight="1px"
             android:visibility="@string/default_nicklist_visibility"
             tools:listitem="@layout/nick_line" />
-        
-        <View
-            android:id="@+id/tab_delim"
-            android:layout_width="1px"
-            android:layout_height="wrap_content"
-            android:background="?android:attr/listDivider" />
         
     </LinearLayout>
 
