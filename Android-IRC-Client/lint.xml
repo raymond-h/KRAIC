@@ -1,3 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <lint>
+    <issue id="PxUsage">
+        <ignore path="res/layout/chat_fragment_layout.xml" />
+    </issue>
 </lint>
