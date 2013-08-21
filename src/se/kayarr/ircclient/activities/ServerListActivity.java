@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -31,7 +32,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 
-public class ServerListActivity extends CompatActionBarActivity
+public class ServerListActivity extends ActionBarActivity
 		implements ServiceConnection, OnItemClickListener,
 		
 //					ServerWindowTilesFragment.ServiceRetriever,

@@ -12,9 +12,10 @@ import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 
-public class WindowTilesActivity extends CompatActionBarActivity
+public class WindowTilesActivity extends ActionBarActivity
 		implements ServiceConnection
 //					ServerWindowTilesFragment.ServiceRetriever
 					{
@@ -56,8 +57,8 @@ public class WindowTilesActivity extends CompatActionBarActivity
 		
 		ServerConnection connection = service.getConnections().get( getIntent().getLongExtra(EXTRA_CONN_ID, -1) );
 		
-		getCompatActionBar().setTitle( connection.getSettingsItem().getDisplayName() );
-		getCompatActionBar().setSubtitle( connection.getSettingsItem().getDisplayAddress() );
+		getSupportActionBar().setTitle( connection.getSettingsItem().getDisplayName() );
+		getSupportActionBar().setSubtitle( connection.getSettingsItem().getDisplayAddress() );
 		
 		if(getSupportFragmentManager().findFragmentById(android.R.id.content) == null) {
 			//No fragment is currently shown

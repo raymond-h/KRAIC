@@ -46,6 +46,7 @@ import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.support.v7.app.ActionBarActivity;
 import android.text.InputType;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
@@ -68,7 +69,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.BufferType;
 
-public class ChatActivity extends CompatActionBarActivity
+public class ChatActivity extends ActionBarActivity
 		implements ServiceConnection, OnWindowListListener, OnCurrentWindowChangeListener, OnPageChangeListener {
 	private static final String WINDOW_KEY = "se.kayarr.ircclient.window-key";
 	
@@ -155,8 +156,8 @@ public class ChatActivity extends CompatActionBarActivity
 		long connId = getIntent().getLongExtra(StaticInfo.EXTRA_CONN_ID, -1);
 		connection = service.getConnections().get(connId);
 		
-		getCompatActionBar().setTitle( connection.getSettingsItem().getDisplayName() );
-		getCompatActionBar().setSubtitle( connection.getSettingsItem().getDisplayAddress() );
+		getSupportActionBar().setTitle( connection.getSettingsItem().getDisplayName() );
+		getSupportActionBar().setSubtitle( connection.getSettingsItem().getDisplayAddress() );
 		
 		connection.addOnCurrentWindowChangeListener(this);
 		connection.addOnWindowListListener(this);
