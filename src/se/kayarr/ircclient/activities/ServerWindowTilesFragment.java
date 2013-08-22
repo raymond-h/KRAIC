@@ -85,7 +85,11 @@ public class ServerWindowTilesFragment extends Fragment
 
 	@Override
 	public void onStop() {
+		Log.d(StaticInfo.APP_TAG, "onStop called");
+		
 		if(service != null) getActivity().unbindService(this);
+		
+		currentConnection.removeOnWindowListListener(this);
 		
 		for(GridViewUpdateHelper helper : gridAdapter.helpers) {
 			helper.unregisterFromWindow();
@@ -113,7 +117,7 @@ public class ServerWindowTilesFragment extends Fragment
 	}
 
 	public void onServiceDisconnected(ComponentName name) {
-		currentConnection.removeOnWindowListListener(this);
+		Log.d(StaticInfo.APP_TAG, "onServiceDisconnected");
 		
 		service = null;
 	}
