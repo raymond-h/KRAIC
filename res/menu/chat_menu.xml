@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android" >
-    <item android:id="@+id/menu_disconnect" android:title="@string/chat_disconnect" android:icon="@drawable/ic_action_disconnect" android:showAsAction="ifRoom"></item>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:support="http://schemas.android.com/apk/res-auto" >
+    <item android:id="@+id/menu_disconnect" android:title="@string/chat_disconnect" android:icon="@drawable/ic_action_disconnect" support:showAsAction="ifRoom"></item>
     
 
 </menu>
