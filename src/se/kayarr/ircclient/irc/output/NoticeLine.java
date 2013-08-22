@@ -10,7 +10,7 @@ import android.text.TextUtils;
 public class NoticeLine extends OutputLine {
 	private boolean wasReceived = false;
 	private String sender;
-	private String channel;
+	@SuppressWarnings("unused") private String channel; //Once users can enter custom line formats, this will be used
 	private String message;
 	
 	public NoticeLine(ServerConnectionService context, NoticeEvent<?> event) {

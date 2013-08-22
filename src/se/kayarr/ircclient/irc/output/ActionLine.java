@@ -8,7 +8,7 @@ import se.kayarr.ircclient.shared.Util;
 import android.text.TextUtils;
 
 public class ActionLine extends OutputLine {
-	private String channel;
+	@SuppressWarnings("unused") private String channel; //Once users can enter custom line formats, this will be used
 	private String nick;
 	private String action;
 
