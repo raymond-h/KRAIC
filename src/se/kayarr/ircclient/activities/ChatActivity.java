@@ -294,7 +294,7 @@ public class ChatActivity extends ActionBarActivity
 
 	public static class WindowFragment extends Fragment {
 		
-		private static final String NICKLIST_VISIBILITY_KEY = "se.kayarr.ircclient.NICKLIST_VISIBILITY_KEY";
+		//private static final String NICKLIST_VISIBILITY_KEY = "se.kayarr.ircclient.NICKLIST_VISIBILITY_KEY";
 		
 		private int windowPosition;
 		private Window window;
