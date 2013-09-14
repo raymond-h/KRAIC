@@ -33,6 +33,8 @@ import android.widget.TextView;
 public class ServerWindowTilesFragment extends Fragment
 		implements ServiceConnection, OnItemClickListener, ServerConnection.OnWindowListListener {
 	
+	public static final String TAG = ServerWindowTilesFragment.class.getName();
+	
 	public static final String ARGS_CONN_ID = "se.kayarr.ircclient.server_id";
 	
 	private GridView tileGridView;
@@ -57,7 +59,7 @@ public class ServerWindowTilesFragment extends Fragment
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		Log.d(StaticInfo.APP_TAG, "onCreate called");
+		Log.d(TAG, "onCreate called");
 		
 		currentConnectionId = getArguments().getLong(ARGS_CONN_ID);
 	}
@@ -71,7 +73,7 @@ public class ServerWindowTilesFragment extends Fragment
 	public void onStart() {
 		super.onStart();
 		
-		Log.d(StaticInfo.APP_TAG, "onStart called");
+		Log.d(TAG, "onStart called");
 		
 		Intent serviceIntent = new Intent(getActivity().getApplicationContext(), ServerConnectionService.class);
 		getActivity().bindService(serviceIntent, this, 0);
@@ -85,7 +87,7 @@ public class ServerWindowTilesFragment extends Fragment
 
 	@Override
 	public void onStop() {
-		Log.d(StaticInfo.APP_TAG, "onStop called");
+		Log.d(TAG, "onStop called");
 		
 		if(service != null) getActivity().unbindService(this);
 		
@@ -104,7 +106,7 @@ public class ServerWindowTilesFragment extends Fragment
 	}
 	
 	public void onServiceConnected(ComponentName name, IBinder b) {
-		Log.d(StaticInfo.APP_TAG, "onServiceConnected called");
+		Log.d(TAG, "onServiceConnected called");
 		
 		ServerConnectionService.ServiceBinder binder = (ServiceBinder) b;
 		
@@ -117,7 +119,7 @@ public class ServerWindowTilesFragment extends Fragment
 	}
 
 	public void onServiceDisconnected(ComponentName name) {
-		Log.d(StaticInfo.APP_TAG, "onServiceDisconnected");
+		Log.d(TAG, "onServiceDisconnected");
 		
 		service = null;
 	}
@@ -126,7 +128,7 @@ public class ServerWindowTilesFragment extends Fragment
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		
-		Log.d(StaticInfo.APP_TAG, "onCreateView called");
+		Log.d(TAG, "onCreateView called");
 		
 		View layout = inflater.inflate(R.layout.serverlist_tile_grid, container, false);
 		
@@ -148,7 +150,7 @@ public class ServerWindowTilesFragment extends Fragment
 		
 		Window window = currentConnection.getWindows().get(position);
 		
-		Log.d(StaticInfo.APP_TAG, "Item " + position + " " + window.getTitle() + " clicked in grid");
+		Log.d(TAG, "Item " + position + " " + window.getTitle() + " clicked in grid");
 		
 		Intent intent = new Intent( getActivity().getApplicationContext(), ChatActivity.class );
 		
@@ -168,7 +170,7 @@ public class ServerWindowTilesFragment extends Fragment
 	public void onWindowListChanged(final ServerConnection connection) {
 		getActivity().runOnUiThread(new Runnable() {
 			public void run() {
-				Log.d(StaticInfo.APP_TAG, "*************** UPDATING GRIDADAPTER IN FRAGMENT");
+				Log.d(TAG, "*************** UPDATING GRIDADAPTER IN FRAGMENT");
 				gridAdapter.updateWindowList(connection != null ? connection.getWindows() : null);
 				gridAdapter.notifyDataSetChanged();
 			}
@@ -212,7 +214,7 @@ public class ServerWindowTilesFragment extends Fragment
 //			Window window = getItem(position);
 //			helper.update(window);
 //			
-//			//Log.d(StaticInfo.APP_TAG, "Pos #" + position + ": Window " + window.getTitle() + " assoc. with " + convertView);
+//			//Log.d(TAG, "Pos #" + position + ": Window " + window.getTitle() + " assoc. with " + convertView);
 //			
 //			switch(window.getType()) {
 //				case CHANNEL:
@@ -234,7 +236,7 @@ public class ServerWindowTilesFragment extends Fragment
 //			
 //			List<OutputLine> lines = window.getLines();
 //			
-//			//Log.d(StaticInfo.APP_TAG, "There are " + lines.size() + " lines for " + window.getTitle());
+//			//Log.d(TAG, "There are " + lines.size() + " lines for " + window.getTitle());
 //			
 //			if(lines.size() >= 1) {
 //				line2.setText( lines.get(lines.size()-1).getOutput() );
@@ -292,14 +294,14 @@ public class ServerWindowTilesFragment extends Fragment
 //		}
 //		
 //		public void onOutputLineAdded(Window window, OutputLine line) {
-//			//Log.d(StaticInfo.APP_TAG, "View " + view + ", window " + window.getTitle() + " got line " + line);
+//			//Log.d(TAG, "View " + view + ", window " + window.getTitle() + " got line " + line);
 //			
 //			line1.setText(line2.getText());
 //			line2.setText(line.getOutput());
 //		}
 //
 //		public void onOutputCleared(Window window) {
-//			//Log.d(StaticInfo.APP_TAG, "View " + view + ", window " + window.getTitle() + " was cleared");
+//			//Log.d(TAG, "View " + view + ", window " + window.getTitle() + " was cleared");
 //			
 //			line1.setText("");
 //			line2.setText("");
@@ -343,7 +345,7 @@ public class ServerWindowTilesFragment extends Fragment
 			Window window = getItem(position);
 			helper.update(window);
 			
-			//Log.d(StaticInfo.APP_TAG, "Pos #" + position + ": Window " + window.getTitle() + " assoc. with " + convertView);
+			//Log.d(TAG, "Pos #" + position + ": Window " + window.getTitle() + " assoc. with " + convertView);
 			
 			switch(window.getType()) {
 				case CHANNEL: 
@@ -366,7 +368,7 @@ public class ServerWindowTilesFragment extends Fragment
 			helper.linesLayout.clearLines();
 			helper.linesLayout.addExistingLines(lines);
 			
-			//Log.d(StaticInfo.APP_TAG, "There are " + lines.size() + " lines for " + window.getTitle());
+			//Log.d(TAG, "There are " + lines.size() + " lines for " + window.getTitle());
 			
 			/*
 			if(lines.size() >= 1) {
@@ -424,13 +426,13 @@ public class ServerWindowTilesFragment extends Fragment
 		}
 		
 		public void onOutputLineAdded(Window window, OutputLine line) {
-			//Log.d(StaticInfo.APP_TAG, "View " + view + ", window " + window.getTitle() + " got line " + line);
+			//Log.d(TAG, "View " + view + ", window " + window.getTitle() + " got line " + line);
 			
 			linesLayout.addLine(line);
 		}
 
 		public void onOutputCleared(Window window) {
-			//Log.d(StaticInfo.APP_TAG, "View " + view + ", window " + window.getTitle() + " was cleared");
+			//Log.d(TAG, "View " + view + ", window " + window.getTitle() + " was cleared");
 			
 			linesLayout.clearLines();
 		}

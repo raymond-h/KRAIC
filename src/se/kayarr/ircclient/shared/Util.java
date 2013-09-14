@@ -25,6 +25,9 @@ import android.util.SparseIntArray;
 import android.view.KeyEvent;
 
 public class Util {
+	
+	public static final String TAG = Util.class.getName();
+	
 	/**
 	 * Formats a {@link Date} object using the global timestamp format used for chat lines.
 	 * 
@@ -77,7 +80,7 @@ public class Util {
 				ownPackageInfo = context.getPackageManager().getPackageInfo(context.getPackageName(), 0);
 			}
 			catch (NameNotFoundException e) {
-				Log.e(StaticInfo.APP_TAG, "Unable to find my own package...?", e);
+				Log.e(TAG, "Unable to find my own package...?", e);
 			}
 		}
 		
@@ -281,7 +284,7 @@ public class Util {
 					i--;
 				}
 				catch(IndexOutOfBoundsException e) {
-					Log.v(StaticInfo.APP_TAG, "Reached the end of the string, it seems!");
+					Log.v(TAG, "Reached the end of the string, it seems!");
 				}
 				finally {
 					//Incase of IndexOutOfBoundsException in charAt(), because we reached the end,

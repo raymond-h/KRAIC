@@ -29,10 +29,12 @@ import se.kayarr.ircclient.irc.output.PartLine;
 import se.kayarr.ircclient.irc.output.QuitLine;
 import se.kayarr.ircclient.irc.output.TopicLine;
 import se.kayarr.ircclient.services.ServerConnectionService;
-import se.kayarr.ircclient.shared.StaticInfo;
 import android.util.Log;
 
 public class BotListener extends ListenerAdapter<Bot> {
+	
+	public static final String TAG = BotListener.class.getName();
+	
 	private ServerConnectionService context;
 	private ServerConnection connection;
 	
@@ -47,7 +49,7 @@ public class BotListener extends ListenerAdapter<Bot> {
 			super.onEvent(event);
 		}
 		catch (Exception e) {
-			Log.e(StaticInfo.APP_TAG, "An error has occured!", e);
+			Log.e(TAG, "An error has occured!", e);
 		}
 		
 		try {
@@ -64,7 +66,7 @@ public class BotListener extends ListenerAdapter<Bot> {
 			}
 		}
 		catch(Exception e) {
-			Log.e(StaticInfo.APP_TAG, "Exception when delegating event", e);
+			Log.e(TAG, "Exception when delegating event", e);
 		}
 	}
 	
@@ -106,8 +108,8 @@ public class BotListener extends ListenerAdapter<Bot> {
 
 	@Override
 	public void onNickChange(NickChangeEvent<Bot> event) throws Exception {
-		Log.d(StaticInfo.APP_TAG, "Got event " + event);
-		Log.d(StaticInfo.APP_TAG, "User is " + event.getUser());
+		Log.d(TAG, "Got event " + event);
+		Log.d(TAG, "User is " + event.getUser());
 		
 		for(Channel channel : event.getUser().getChannels())
 			connection.output(channel.getName(), new NickChangeLine(context, event));
@@ -139,8 +141,8 @@ public class BotListener extends ListenerAdapter<Bot> {
 			
 			//This is a WTF error if it ever happens
 			else {
-				Log.e(StaticInfo.APP_TAG, "Tried outputting QuitLine to channel without corresponding window");
-				Log.e(StaticInfo.APP_TAG, "^ user: " + user.getNick() + ", channel: " + channel.getName());
+				Log.e(TAG, "Tried outputting QuitLine to channel without corresponding window");
+				Log.e(TAG, "^ user: " + user.getNick() + ", channel: " + channel.getName());
 			}
 		}
 		

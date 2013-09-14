@@ -12,7 +12,6 @@ import se.kayarr.ircclient.services.ServerConnectionService;
 import se.kayarr.ircclient.services.ServerConnectionService.ServiceBinder;
 import se.kayarr.ircclient.shared.ServerEditDialogHelper;
 import se.kayarr.ircclient.shared.SettingsDatabaseHelper;
-import se.kayarr.ircclient.shared.StaticInfo;
 import android.app.AlertDialog;
 import android.content.ComponentName;
 import android.content.Intent;
@@ -41,6 +40,8 @@ public class ServerListActivity extends ActionBarActivity
 					
 					ServerListDialogFragment.OnServerListClickedListener,
 					ServerEditDialogHelper.OnServerItemEditedListener {
+	
+	public static final String TAG = ServerListActivity.class.getName();
 	
 	@Getter private ServerConnectionService service;
 	
@@ -92,7 +93,7 @@ public class ServerListActivity extends ActionBarActivity
 				currentConnPos = savedInstanceState.getInt(SAVED_BUNDLE_CURR_SELECTION, ListView.INVALID_POSITION);
 			}
 			
-			Log.d(StaticInfo.APP_TAG, "CurrentConnPos is " + currentConnPos);
+			Log.d(TAG, "CurrentConnPos is " + currentConnPos);
 		}
 	}
 	
@@ -101,7 +102,7 @@ public class ServerListActivity extends ActionBarActivity
 		super.onSaveInstanceState(outState);
 		
 		if(dualPane) {
-			Log.d(StaticInfo.APP_TAG, "Saving currentConnPos as " + currentConnPos);
+			Log.d(TAG, "Saving currentConnPos as " + currentConnPos);
 			
 			outState.putInt(SAVED_BUNDLE_CURR_SELECTION, currentConnPos);
 		}
@@ -216,7 +217,7 @@ public class ServerListActivity extends ActionBarActivity
 	public void onServerListItemClicked(ServerListDialogFragment dialogFragment, int position) {
 		if(position == 0) {
 			//This is where we show "manual connect" dialog
-			Log.v(StaticInfo.APP_TAG, "Manual connect goes here!");
+			Log.v(TAG, "Manual connect goes here!");
 			
 			currentDialog = ServerEditDialogHelper.createDialog(this, null,
 					
@@ -234,12 +235,12 @@ public class ServerListActivity extends ActionBarActivity
 	public void onServerItemEdited(ServerSettingsItem settingsItem,
 			boolean added) {
 		
-		Log.d(StaticInfo.APP_TAG, "MANUAL CONNECT TO: " + settingsItem);
+		Log.d(TAG, "MANUAL CONNECT TO: " + settingsItem);
 		this.service.connectTo(settingsItem);
 	}
 
 	public void onServerItemEditCancel(ServerSettingsItem settingsItem) {
-		Log.d(StaticInfo.APP_TAG, "Cancelled manual connect");
+		Log.d(TAG, "Cancelled manual connect");
 	}
 	
 	public void onConnectionListChanged() {
@@ -282,7 +283,7 @@ public class ServerListActivity extends ActionBarActivity
 	}
 	
 	private void setShownWindows(int position) {
-		Log.d(StaticInfo.APP_TAG, "*** Showing windows for pos " + position);
+		Log.d(TAG, "*** Showing windows for pos " + position);
 		
 		currentConnPos = position;
 		currentConn = listAdapter.getItem(position);
@@ -326,9 +327,9 @@ public class ServerListActivity extends ActionBarActivity
 		}
 		
 		if(currentConn != null)
-			Log.d(StaticInfo.APP_TAG, "Showing windows for " + currentConn.getStatus().getTitle() + ","
+			Log.d(TAG, "Showing windows for " + currentConn.getStatus().getTitle() + ","
 				+ " it has " + currentConn.getWindows().size());
-		else Log.d(StaticInfo.APP_TAG, "Showing no windows");
+		else Log.d(TAG, "Showing no windows");
 	}
 	
 	private void updateNoneSelectedView() {
@@ -346,7 +347,7 @@ public class ServerListActivity extends ActionBarActivity
 			connections.addAll(connectionsMap.values());
 			
 			notifyDataSetChanged();
-			Log.v(StaticInfo.APP_TAG, "Dataset changed! Connections: " + connections.size());
+			Log.v(TAG, "Dataset changed! Connections: " + connections.size());
 		}
 		
 		public int getCount() {

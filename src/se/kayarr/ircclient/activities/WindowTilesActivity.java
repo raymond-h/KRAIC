@@ -5,7 +5,6 @@ import se.kayarr.ircclient.irc.ServerConnection;
 import se.kayarr.ircclient.services.ServerConnectionService;
 import se.kayarr.ircclient.services.ServerConnectionService.ServiceBinder;
 import se.kayarr.ircclient.shared.SettingsDatabaseHelper;
-import se.kayarr.ircclient.shared.StaticInfo;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -19,6 +18,8 @@ public class WindowTilesActivity extends ActionBarActivity
 		implements ServiceConnection
 //					ServerWindowTilesFragment.ServiceRetriever
 					{
+	
+	public static final String TAG = WindowTilesActivity.class.getName();
 	
 	public static final String EXTRA_CONN_ID = "se.kayarr.ircclient.extra_connection_id";
 	
@@ -79,7 +80,7 @@ public class WindowTilesActivity extends ActionBarActivity
 	
 	@Override
 	public void onAttachFragment(Fragment fragment) {
-		Log.d(StaticInfo.APP_TAG, getClass().getSimpleName() + ".onAttachFragment called with " + fragment);
+		Log.d(TAG, getClass().getSimpleName() + ".onAttachFragment called with " + fragment);
 		
 		super.onAttachFragment(fragment);
 	}

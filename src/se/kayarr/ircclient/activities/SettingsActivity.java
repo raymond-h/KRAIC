@@ -7,7 +7,6 @@ import se.kayarr.ircclient.irc.ServerSettingsItem;
 import se.kayarr.ircclient.shared.DeviceInfo;
 import se.kayarr.ircclient.shared.ServerEditDialogHelper;
 import se.kayarr.ircclient.shared.SettingsDatabaseHelper;
-import se.kayarr.ircclient.shared.StaticInfo;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -25,6 +24,9 @@ import android.view.MenuItem;
 
 @TargetApi(11)
 public class SettingsActivity extends PreferenceActivity {
+	
+	public static final String TAG = SettingsActivity.class.getName();
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -202,19 +204,19 @@ public class SettingsActivity extends PreferenceActivity {
 				ServerItemPreference pref = new ServerItemPreference(getActivity(), settingsItem);
 				getPreferenceScreen().addPreference(pref);
 				
-				Log.d(StaticInfo.APP_TAG, "Added item " + settingsItem);
+				Log.d(TAG, "Added item " + settingsItem);
 			}
 			else {
 				dbHelper.serverItems().updateServer(settingsItem);
 				
 				findPreferenceByItem(settingsItem).update();
 				
-				Log.d(StaticInfo.APP_TAG, "Updated item " + settingsItem);
+				Log.d(TAG, "Updated item " + settingsItem);
 			}
 		}
 
 		public void onServerItemEditCancel(ServerSettingsItem settingsItem) {
-			Log.d(StaticInfo.APP_TAG, "Cancelled item edit " + settingsItem);
+			Log.d(TAG, "Cancelled item edit " + settingsItem);
 		}
 		
 		private ServerItemPreference findPreferenceByItem(ServerSettingsItem item) {

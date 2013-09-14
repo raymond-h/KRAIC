@@ -17,12 +17,14 @@ import se.kayarr.ircclient.irc.Window.Type;
 import se.kayarr.ircclient.irc.output.OutputLine;
 import se.kayarr.ircclient.irc.output.SimpleStringLine;
 import se.kayarr.ircclient.services.ServerConnectionService;
-import se.kayarr.ircclient.shared.StaticInfo;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class ServerConnection {
+	
+	public static final String TAG = ServerConnection.class.getName();
+	
 	@Getter private ServerConnectionService context;
 	@Getter private long id;
 	
@@ -87,11 +89,11 @@ public class ServerConnection {
 		if(!reconnect) bot.setName(getDefaultNick());
 
 		try {
-			Log.d(StaticInfo.APP_TAG, "Connecting to " + settingsItem.getDisplayName());
+			Log.d(TAG, "Connecting to " + settingsItem.getDisplayName());
 			
 			bot.connect(settingsItem.getAddress(), settingsItem.getPort());
 			
-			Log.d(StaticInfo.APP_TAG, "Connected, joining channel...");
+			Log.d(TAG, "Connected, joining channel...");
 
 			bot.joinChannel("#krprivate42");
 		}
@@ -141,7 +143,7 @@ public class ServerConnection {
 		int oldindex = currentWindowIndex;
 		currentWindowIndex = index;
 		
-		Log.d(StaticInfo.APP_TAG, "Current window changed from " + oldindex + " to " + index +
+		Log.d(TAG, "Current window changed from " + oldindex + " to " + index +
 				", notifying: " + (triggerListeners ? "yes" : "no"));
 		
 		if(triggerListeners) {

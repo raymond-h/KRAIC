@@ -71,6 +71,9 @@ import android.widget.TextView.BufferType;
 
 public class ChatActivity extends ActionBarActivity
 		implements ServiceConnection, OnWindowListListener, OnCurrentWindowChangeListener, OnPageChangeListener {
+	
+	public static final String TAG = ChatActivity.class.getName();
+	
 	private static final String WINDOW_KEY = "se.kayarr.ircclient.window-key";
 	
 	private ServerConnectionService service;
@@ -177,31 +180,31 @@ public class ChatActivity extends ActionBarActivity
 		
 		Intent serviceIntent = new Intent(getApplicationContext(), ServerConnectionService.class);
 		if(!bindService(serviceIntent, this, 0)) {
-			Log.e(StaticInfo.APP_TAG, "ChatActivity: Unable to bind to ServerConnectionService");
+			Log.e(TAG, "ChatActivity: Unable to bind to ServerConnectionService");
 			finish();
 		}
 	}
 
 	@Override
 	protected void onStop() {
-		//Log.d(StaticInfo.APP_TAG, "onStop " + this + " begin");
+		//Log.d(TAG, "onStop " + this + " begin");
 		
 		if(service != null) {
 			connection.removeOnCurrentWindowChangeListener(this);
 			connection.removeOnWindowListListener(this);
 			
-			//Log.d(StaticInfo.APP_TAG, "onStop " + this + " midway");
+			//Log.d(TAG, "onStop " + this + " midway");
 			
 			unbindService(this);
 		}
 		
 		super.onStop();
 		
-		//Log.d(StaticInfo.APP_TAG, "onStop " + this + " end");
+		//Log.d(TAG, "onStop " + this + " end");
 	}
 	
 	public void onServiceConnected(ComponentName name, IBinder b) {
-		//Log.d(StaticInfo.APP_TAG, "onServiceConnected begin");
+		//Log.d(TAG, "onServiceConnected begin");
 		
 		ServerConnectionService.ServiceBinder binder = (ServiceBinder) b;
 		
@@ -226,7 +229,7 @@ public class ChatActivity extends ActionBarActivity
 		
 		notifyWindowsAvailable();
 		
-		//Log.d(StaticInfo.APP_TAG, "onServiceConnected end");
+		//Log.d(TAG, "onServiceConnected end");
 	}
 
 	public void onServiceDisconnected(ComponentName name) {
@@ -285,7 +288,7 @@ public class ChatActivity extends ActionBarActivity
 			int oldindex) {
 		if(index == oldindex) return;
 		
-		//Log.d(StaticInfo.APP_TAG, "ChatActivity: Current window changed from " + oldindex + " to " + index);
+		//Log.d(TAG, "ChatActivity: Current window changed from " + oldindex + " to " + index);
 		
 		runOnUiThread(new Runnable() {
 			public void run() {
@@ -387,7 +390,7 @@ public class ChatActivity extends ActionBarActivity
 		
 		@Override
 		public void onCreate(Bundle savedInstanceState) {
-			//Log.d(StaticInfo.APP_TAG, toString() + " onCreate begin " + savedInstanceState);
+			//Log.d(TAG, toString() + " onCreate begin " + savedInstanceState);
 			
 			super.onCreate(savedInstanceState);
 			
@@ -406,7 +409,7 @@ public class ChatActivity extends ActionBarActivity
 				}
 			}
 			
-			//Log.d(StaticInfo.APP_TAG, toString() + " onCreate end " + savedInstanceState);
+			//Log.d(TAG, toString() + " onCreate end " + savedInstanceState);
 		}
 
 		
@@ -432,14 +435,14 @@ public class ChatActivity extends ActionBarActivity
 		
 		@Override
 		public void onDestroy() {
-			//Log.d(StaticInfo.APP_TAG, toString() + " onDestroy begin");
+			//Log.d(TAG, toString() + " onDestroy begin");
 			
 			window.removeOnOutputListener(outputAdapter);
 			window = null;
 			
 			super.onDestroy();
 			
-			//Log.d(StaticInfo.APP_TAG, toString() + " onDestroy end");
+			//Log.d(TAG, toString() + " onDestroy end");
 		}
 
 		@Override
@@ -460,7 +463,7 @@ public class ChatActivity extends ActionBarActivity
 				@Override
 				public boolean onDoubleTap(MotionEvent e)
 				{
-					Log.d(StaticInfo.APP_TAG, "onDoubleTap: double tap detected");
+					Log.d(TAG, "onDoubleTap: double tap detected");
 					if(window.getType() == Window.Type.CHANNEL)
 					{
 						setNickListVisible( !isNickListVisible() );

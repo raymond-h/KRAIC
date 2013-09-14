@@ -26,6 +26,8 @@ import android.util.SparseIntArray;
 
 public class ServerConnectionService extends Service {
 	
+	public static final String TAG = ServerConnectionService.class.getName();
+	
 	private Map<Long, ServerConnection> connections = new HashMap<Long, ServerConnection>();
 	
 	private SettingsDatabaseHelper dbHelper;
@@ -95,7 +97,7 @@ public class ServerConnectionService extends Service {
 	}
 	
 	public ServerConnection connectTo(ServerSettingsItem item) {
-		Log.d(StaticInfo.APP_TAG, "Connecting to: "+item);
+		Log.d(TAG, "Connecting to: "+item);
 
 		long id = ++idCounter;
 		final ServerConnection conn = new ServerConnection(this, id, item);

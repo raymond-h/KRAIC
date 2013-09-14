@@ -92,7 +92,7 @@ public class SettingsDatabaseHelper extends SQLiteOpenHelper {
 			
 			long id = db.insert(NAME, null, values);
 			
-			//Log.d(StaticInfo.APP_TAG, "Inserted " + id + " database");
+			//Log.d(TAG, "Inserted " + id + " database");
 			
 			return new ServerSettingsItem(id, name, address, port);
 		}
@@ -109,7 +109,7 @@ public class SettingsDatabaseHelper extends SQLiteOpenHelper {
 			}
 			item.setId( db.insert(NAME, null, values) );
 			
-			//Log.d(StaticInfo.APP_TAG, "Inserted " + id + " database");
+			//Log.d(TAG, "Inserted " + id + " database");
 			
 			return item;
 		}
@@ -118,7 +118,7 @@ public class SettingsDatabaseHelper extends SQLiteOpenHelper {
 			SQLiteDatabase db = dbHelper.getWritableDatabase();
 			db.delete(NAME, COLUMN_ID +  "=?", new String[] { Long.toString(item.getId()) });
 			
-			//Log.d(StaticInfo.APP_TAG, "Deleted " + item.getId() + " from database");
+			//Log.d(TAG, "Deleted " + item.getId() + " from database");
 		}
 		
 		public void updateServer(ServerSettingsItem item) {
@@ -131,7 +131,7 @@ public class SettingsDatabaseHelper extends SQLiteOpenHelper {
 			
 			db.update(NAME, values, COLUMN_ID +  "=?", new String[] { Long.toString(item.getId()) });
 			
-			//Log.d(StaticInfo.APP_TAG, "Updated database for ID " + item.getId() + " (" + affected + " affected)");
+			//Log.d(TAG, "Updated database for ID " + item.getId() + " (" + affected + " affected)");
 		}
 		
 		public List<ServerSettingsItem> getAllServers() {
@@ -154,7 +154,7 @@ public class SettingsDatabaseHelper extends SQLiteOpenHelper {
 				while(dataCursor.moveToNext());
 			}
 			
-			//Log.d(StaticInfo.APP_TAG, "Fetched " + servers.size() + " server items");
+			//Log.d(TAG, "Fetched " + servers.size() + " server items");
 			
 			return servers;
 		}

@@ -11,11 +11,13 @@ import se.kayarr.ircclient.irc.Window.Type;
 import se.kayarr.ircclient.irc.output.ActionLine;
 import se.kayarr.ircclient.irc.output.MessageLine;
 import se.kayarr.ircclient.irc.output.NoticeLine;
-import se.kayarr.ircclient.shared.StaticInfo;
 import se.kayarr.ircclient.shared.Util;
 import android.util.Log;
 
 public class Bot extends PircBotX {
+	
+	public static final String TAG = Bot.class.getName();
+	
 	private ServerConnection connection;
 	
 	public ServerConnection getConnectionContext() {
@@ -130,7 +132,7 @@ public class Bot extends PircBotX {
 	@Override
 	public void log(String line) {
 		if(isVerbose()) {
-			Log.v(StaticInfo.APP_TAG, line);
+			Log.v(TAG, line);
 		}
 	}
 }

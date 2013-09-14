@@ -3,7 +3,6 @@ package se.kayarr.ircclient.shared;
 import java.util.regex.Pattern;
 
 public class StaticInfo {
-	static final public String APP_TAG = "KRAIC";
 	
 	static final public int SERVICE_NOTIFICATION_ID = 7558;
 	
