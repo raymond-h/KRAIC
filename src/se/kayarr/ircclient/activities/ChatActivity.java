@@ -326,7 +326,8 @@ public class ChatActivity extends ActionBarActivity
 			if(!CommandManager.getInstance().executeCommand(connection, cmdParams[0],
 					(cmdParams.length > 1) ? cmdParams[1] : "")) {
 				
-				connection.getCurrentWindow().output(Colors.RED + "There is no command called \"" + cmdParams[0] + "\"!"); //TODO Externalize
+				connection.getCurrentWindow()
+					.output(Colors.RED + "There is no command called \"" + cmdParams[0] + "\"!"); //TODO Externalize
 			}
 		}
 		else {
