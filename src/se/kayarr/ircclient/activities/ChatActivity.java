@@ -80,6 +80,11 @@ public class ChatActivity extends ActionBarActivity
 	private ViewPager fragmentPager;
 	private WindowPagerAdapter pagerAdapter;
 	
+	private ImageButton sendButton;
+	
+	private EditText inputField;
+	private boolean ctrlPressed = false;
+	
 	private List<WeakReference<WindowFragment>> windowFragments = new LinkedList<WeakReference<WindowFragment>>();
 	
 	
@@ -108,6 +113,55 @@ public class ChatActivity extends ActionBarActivity
 		
 		PagerTabStrip titleStrip = (PagerTabStrip) fragmentPager.findViewById(R.id.fragment_pager_titlestrip);
 		titleStrip.setTabIndicatorColor( getResources().getColor(R.color.holo_blue) );
+		
+		sendButton = (ImageButton) findViewById(R.id.send_btn);
+		
+		sendButton.setOnClickListener(new OnClickListener() {
+			public void onClick(View v) {
+				onSend(!ctrlPressed);
+			}
+		});
+		
+		inputField = (EditText) findViewById(R.id.input_field);
+		
+		inputField.setOnKeyListener(new OnKeyListener() {
+			public boolean onKey(View v, int keyCode, KeyEvent event) {
+				ctrlPressed = Util.ctrlPressed(event);
+				
+				if(keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
+					onSend(!ctrlPressed);
+					return true;
+				}
+				if(Util.ctrlPressed(event) && event.getAction() == KeyEvent.ACTION_DOWN) {
+					if(keyCode == KeyEvent.KEYCODE_B) inputField.append(Colors.BOLD);
+					if(keyCode == KeyEvent.KEYCODE_U) inputField.append(Colors.UNDERLINE);
+					if(keyCode == KeyEvent.KEYCODE_O) inputField.append(Colors.NORMAL);
+					if(keyCode == KeyEvent.KEYCODE_I) inputField.append("\u001d"); //Italic
+					if(keyCode == KeyEvent.KEYCODE_K) inputField.append("\u0003"); //Color
+				}
+				
+				return false;
+			}
+		});
+		
+		inputField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+			public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+				if(actionId == EditorInfo.IME_ACTION_SEND) {
+					sendButton.performClick();
+					return true;
+				}
+				
+				return false;
+			}
+		});
+		
+		SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+		inputField.setInputType(InputType.TYPE_CLASS_TEXT | 
+				(prefs.getBoolean("auto_correct", true)?InputType.TYPE_TEXT_FLAG_AUTO_CORRECT:0) |
+				(prefs.getBoolean("auto_capitalize", true)?InputType.TYPE_TEXT_FLAG_CAP_SENTENCES:0)
+						);
+		
+		inputField.requestFocus();
 		
 		hasSavedInstanceState = (savedInstanceState != null);
 	}
@@ -258,6 +312,29 @@ public class ChatActivity extends ActionBarActivity
 		});
 	}
 	
+	private void onSend(boolean runCommands) {
+		String input = inputField.getText().toString();
+		if(input.length() == 0) return;
+		
+		inputField.setText("");
+		
+		if(runCommands && input.startsWith("/")) {
+			String[] cmdParams = input.substring(1).split(" ", 2);
+			if(!CommandManager.getInstance().executeCommand(connection, cmdParams[0],
+					(cmdParams.length > 1) ? cmdParams[1] : "")) {
+				
+				connection.getCurrentWindow().output(Colors.RED + "There is no command called \"" + cmdParams[0] + "\"!"); //TODO Externalize
+			}
+		}
+		else {
+			try {
+				connection.getCurrentWindow().sendMessage(input);
+			} catch (InvalidWindowTypeException e) {
+				connection.getCurrentWindow().output(Colors.RED + "You can't send messages to this window!"); //TODO Externalize
+			}
+		}
+	}
+	
 	private List<Window> cachedWindowsList;
 	
 	public class WindowPagerAdapter extends FragmentStatePagerAdapter {
@@ -301,11 +378,6 @@ public class ChatActivity extends ActionBarActivity
 		
 		private ListView outputList;
 		private OutputLinesAdapter outputAdapter;
-		
-		private ImageButton sendButton;
-		
-		private EditText inputField;
-		private boolean ctrlPressed = false;
 
 		private ListView nickList;
 		private UserListAdapter userAdapter;
@@ -405,47 +477,6 @@ public class ChatActivity extends ActionBarActivity
 				}
 			});
 			
-			sendButton = (ImageButton) view.findViewById(R.id.send_btn);
-			
-			sendButton.setOnClickListener(new OnClickListener() {
-				public void onClick(View v) {
-					onSend(!ctrlPressed);
-				}
-			});
-			
-			inputField = (EditText) view.findViewById(R.id.input_field);
-			
-			inputField.setOnKeyListener(new OnKeyListener() {
-				public boolean onKey(View v, int keyCode, KeyEvent event) {
-					ctrlPressed = Util.ctrlPressed(event);
-					
-					if(keyCode == KeyEvent.KEYCODE_ENTER && event.getAction() == KeyEvent.ACTION_DOWN) {
-						onSend(!ctrlPressed);
-						return true;
-					}
-					if(Util.ctrlPressed(event) && event.getAction() == KeyEvent.ACTION_DOWN) {
-						if(keyCode == KeyEvent.KEYCODE_B) inputField.append(Colors.BOLD);
-						if(keyCode == KeyEvent.KEYCODE_U) inputField.append(Colors.UNDERLINE);
-						if(keyCode == KeyEvent.KEYCODE_O) inputField.append(Colors.NORMAL);
-						if(keyCode == KeyEvent.KEYCODE_I) inputField.append("\u001d"); //Italic
-						if(keyCode == KeyEvent.KEYCODE_K) inputField.append("\u0003"); //Color
-					}
-					
-					return false;
-				}
-			});
-			
-			inputField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-				public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-					if(actionId == EditorInfo.IME_ACTION_SEND) {
-						sendButton.performClick();
-						return true;
-					}
-					
-					return false;
-				}
-			});
-			
 			nickDelim = view.findViewById(R.id.nick_delim);
 			
 			nickList = (ListView) view.findViewById(R.id.nick_list);
@@ -458,12 +489,6 @@ public class ChatActivity extends ActionBarActivity
 			else
 				setNickListVisible(false);
 			
-			SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this.getActivity());
-			inputField.setInputType(InputType.TYPE_CLASS_TEXT | 
-					(prefs.getBoolean("auto_correct", true)?InputType.TYPE_TEXT_FLAG_AUTO_CORRECT:0) |
-					(prefs.getBoolean("auto_capitalize", true)?InputType.TYPE_TEXT_FLAG_CAP_SENTENCES:0)
-							);
-			
 			return view;
 		}
 		
@@ -475,30 +500,6 @@ public class ChatActivity extends ActionBarActivity
 //			if(nickList != null && nickList.visib)
 //			outState.putBoolean(NICKLIST_VISIBILITY_KEY,)
 		}
-		
-		private void onSend(boolean runCommands) {
-			String input = inputField.getText().toString();
-			if(input.length() == 0) return;
-			
-			inputField.setText("");
-			
-			if(runCommands && input.startsWith("/")) {
-				String[] cmdParams = input.substring(1).split(" ", 2);
-				if(!CommandManager.getInstance().executeCommand(window.getConnection(), cmdParams[0],
-						(cmdParams.length > 1) ? cmdParams[1] : "")) {
-					window.output(Colors.RED + "There is no command called \"" + cmdParams[0] + "\"!"); //TODO Externalize
-				}
-			}
-			else {
-				try {
-					window.sendMessage(input);
-				} catch (InvalidWindowTypeException e) {
-					window.output(Colors.RED + "You can't send messages to this window!"); //TODO Externalize
-				}
-			}
-		}
-		
-		
 		
 		public String toString() {
 			return "WindowFragment (" + hashCode() + ") [Window #" + windowPosition + " " + (window != null ? window.getTitle() : "NONE") + "]";

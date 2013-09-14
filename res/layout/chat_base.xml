@@ -7,15 +7,53 @@
     <android.support.v4.view.ViewPager
         android:id="@+id/fragment_pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-        
+        android:layout_height="0dip"
+        android:layout_weight="1" >
+
         <android.support.v4.view.PagerTabStrip
             android:id="@+id/fragment_pager_titlestrip"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="top"
-            />
-        
+            android:layout_gravity="top" >
+        </android.support.v4.view.PagerTabStrip>
     </android.support.v4.view.ViewPager>
+
+    <View
+        android:id="@+id/chat_delim"
+        android:layout_width="wrap_content"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
+
+    <RelativeLayout
+        android:id="@+id/control_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="48dp"
+        android:nextFocusUp="@+id/output_list" >
+
+        <ImageButton
+            android:id="@+id/send_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_alignParentRight="true"
+            android:background="@color/borderless_button_bg"
+            android:contentDescription="@string/chat_send"
+            android:padding="8dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_btn_send" />
+
+        <EditText
+            android:id="@+id/input_field"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/send_btn"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_toLeftOf="@id/send_btn"
+            android:ems="10"
+            android:imeOptions="actionSend"
+            android:inputType="text" />
+    </RelativeLayout>
 
 </LinearLayout>
