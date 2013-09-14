@@ -79,6 +79,7 @@ public class ChatActivity extends ActionBarActivity
 	private ServerConnectionService service;
 	
 	private ServerConnection connection;
+	private int windowIndex = -1;
 	
 	private ViewPager fragmentPager;
 	private WindowPagerAdapter pagerAdapter;
@@ -167,6 +168,20 @@ public class ChatActivity extends ActionBarActivity
 		inputField.requestFocus();
 		
 		hasSavedInstanceState = (savedInstanceState != null);
+		
+		if(hasSavedInstanceState) {
+			windowIndex = savedInstanceState.getInt("window_index");
+		}
+		else {
+			windowIndex = getIntent().getIntExtra(StaticInfo.EXTRA_CONN_WINDOW, -1);
+		}
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		
+		outState.putInt("window_index", windowIndex);
 	}
 
 	@Override
@@ -220,12 +235,15 @@ public class ChatActivity extends ActionBarActivity
 		connection.addOnWindowListListener(this);
 		onWindowListChanged(connection);
 		
-		int windowIndex = getIntent().getIntExtra(StaticInfo.EXTRA_CONN_WINDOW, -1);
-		if(!hasSavedInstanceState && windowIndex >= 0) {
+		Log.v(TAG, "Setting current window index to " + windowIndex);
+		if(windowIndex < 0) {
+			windowIndex = connection.getCurrentWindowIndex();
+		}
+		else {
+			Log.v(TAG, "Setting current window of connection to " + windowIndex);
 			connection.setCurrentWindowIndex(windowIndex);
 		}
-		
-		fragmentPager.setCurrentItem(connection.getCurrentWindowIndex(), false);
+		fragmentPager.setCurrentItem(windowIndex);
 		
 		notifyWindowsAvailable();
 		
@@ -286,7 +304,11 @@ public class ChatActivity extends ActionBarActivity
 
 	public void onCurrentWindowChanged(ServerConnection connection, final int index,
 			int oldindex) {
+		Log.v(TAG, "current window changed from " + oldindex + " to " + index);
+		
 		if(index == oldindex) return;
+		
+		windowIndex = index;
 		
 		//Log.d(TAG, "ChatActivity: Current window changed from " + oldindex + " to " + index);
 		
