@@ -1,13 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent" >
 
     <LinearLayout
-        android:id="@+id/chat_output_container"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent" >
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:baselineAligned="false"
+        android:layout_marginBottom="8dp"
+    	android:layout_marginLeft="16dp"
+    	android:layout_marginRight="16dp"
+    	android:layout_marginTop="8dp" >
 
         <ListView
             android:id="@+id/output_list"
@@ -17,27 +21,31 @@
             android:divider="@android:color/transparent"
             android:dividerHeight="0px"
             android:nextFocusDown="@id/input_field"
-            android:paddingBottom="8dp"
             android:stackFromBottom="true"
             android:transcriptMode="normal"
             tools:listitem="@layout/chat_line" >
         </ListView>
 
-        <View
-            android:id="@+id/nick_delim"
-            android:layout_width="1px"
-            android:layout_height="wrap_content"
-            android:visibility="@string/default_nicklist_visibility"
-            android:background="?android:attr/listDivider" />
-
-        <ListView
-            android:id="@+id/nick_list"
-            android:layout_width="@dimen/nick_list_width"
+        <LinearLayout
+            android:id="@+id/nick_list_container"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginTop="4dp"
-            android:visibility="@string/default_nicklist_visibility"
-            tools:listitem="@layout/nick_line" />
-        
+            android:layout_marginLeft="8dp"
+            android:visibility="@string/default_nicklist_visibility" >
+
+            <View
+                android:layout_width="1px"
+                android:layout_height="wrap_content"
+                android:background="?android:attr/listDivider" />
+
+            <ListView
+                android:id="@+id/nick_list"
+                android:layout_width="@dimen/nick_list_width"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="8dp"
+                tools:listitem="@layout/nick_line" >
+            </ListView>
+        </LinearLayout>
     </LinearLayout>
 
-</RelativeLayout>
+</FrameLayout>

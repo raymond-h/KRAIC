@@ -112,9 +112,6 @@ public class ChatActivity extends ActionBarActivity
 		fragmentPager.setAdapter(pagerAdapter);
 		fragmentPager.setOnPageChangeListener(this);
 		
-		fragmentPager.setPageMarginDrawable( R.drawable.divider );
-		fragmentPager.setPageMargin(1);
-		
 		PagerTabStrip titleStrip = (PagerTabStrip) fragmentPager.findViewById(R.id.fragment_pager_titlestrip);
 		titleStrip.setTabIndicatorColor( getResources().getColor(R.color.holo_blue) );
 		
@@ -407,7 +404,7 @@ public class ChatActivity extends ActionBarActivity
 
 		private ListView nickList;
 		private UserListAdapter userAdapter;
-		private View nickDelim;
+		private View nickListContainer;
 		
 		private GestureDetectorCompat gestureDetector;
 		
@@ -503,7 +500,7 @@ public class ChatActivity extends ActionBarActivity
 				}
 			});
 			
-			nickDelim = view.findViewById(R.id.nick_delim);
+			nickListContainer = view.findViewById(R.id.nick_list_container);
 			
 			nickList = (ListView) view.findViewById(R.id.nick_list);
 			
@@ -576,18 +573,11 @@ public class ChatActivity extends ActionBarActivity
 		
 		private void setNickListVisible(boolean visible) {
 			
-			if(visible) {
-				nickDelim.setVisibility(View.VISIBLE);
-				nickList.setVisibility(View.VISIBLE);
-			}
-			else {
-				nickDelim.setVisibility(View.GONE);
-				nickList.setVisibility(View.GONE);
-			}
+			nickListContainer.setVisibility( visible ? View.VISIBLE : View.GONE );
 		}
 		
 		private boolean isNickListVisible() {
-			return nickList.getVisibility() == View.VISIBLE;
+			return nickListContainer.getVisibility() == View.VISIBLE;
 		}
 		
 		public class UserListAdapter extends BaseAdapter implements Listener<Bot>{
