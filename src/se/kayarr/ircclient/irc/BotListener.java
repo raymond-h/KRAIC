@@ -9,6 +9,7 @@ import org.pircbotx.hooks.Event;
 import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ActionEvent;
 import org.pircbotx.hooks.events.ConnectEvent;
+import org.pircbotx.hooks.events.DisconnectEvent;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.MessageEvent;
 import org.pircbotx.hooks.events.NickChangeEvent;
@@ -46,6 +47,7 @@ public class BotListener extends ListenerAdapter<Bot> {
 	@Override
 	public void onEvent(final Event<Bot> event) {
 		try {
+			Log.v(TAG, "*** " + event.getClass().getSimpleName() + " received");
 			super.onEvent(event);
 		}
 		catch (Exception e) {
@@ -129,24 +131,47 @@ public class BotListener extends ListenerAdapter<Bot> {
 		
 		super.onPart(event);
 	}
+	
+	private boolean hasQuit = false;
 
 	@Override
 	public void onQuit(QuitEvent<Bot> event) throws Exception {
 		UserSnapshot user = event.getUser();
-		for(Channel channel : user.getChannels()) {
-			Window window = connection.getWindowIgnoreCase(channel.getName(), false);
+		
+		if(event.getBot().getUserBot().getNick().equals(user.getNick())) {
+			String quitMessage = event.getReason();
+			connection.updateInfo("Disconnected from " + connection.getSettingsItem().getDisplayName() +
+					((quitMessage != null && quitMessage.length() > 0) ? " ( " + quitMessage + " )" : ""));
 			
-			if(window != null) //This should be guaranteed
-				window.output(new QuitLine(context, event));
+			hasQuit = true;
+		}
+		else {
 			
-			//This is a WTF error if it ever happens
-			else {
-				Log.e(TAG, "Tried outputting QuitLine to channel without corresponding window");
-				Log.e(TAG, "^ user: " + user.getNick() + ", channel: " + channel.getName());
+			for(Channel channel : user.getChannels()) {
+				Window window = connection.getWindowIgnoreCase(channel.getName(), false);
+				
+				if(window != null) //This should be guaranteed
+					window.output(new QuitLine(context, event));
+				
+				//This is a WTF error if it ever happens
+				else {
+					Log.e(TAG, "Tried outputting QuitLine to channel without corresponding window");
+					Log.e(TAG, "^ user: " + user.getNick() + ", channel: " + channel.getName());
+				}
 			}
 		}
 		
 		super.onQuit(event);
+	}
+	
+	@Override
+	public void onDisconnect(DisconnectEvent<Bot> event) throws Exception {
+		if(!hasQuit) {
+			connection.updateInfo("Disconnected");
+			connection.outputAll("Disconnected from " + connection.getSettingsItem().getDisplayName());
+		}
+		
+		super.onDisconnect(event);
 	}
 
 	@Override

@@ -116,7 +116,6 @@ public class ServerConnection {
 			String message = "Disconnected from " + settingsItem.getDisplayName() +
 					((quitMessage != null && quitMessage.length() > 0) ? " ( " + quitMessage + " )" : "");
 			outputAll(message);
-			updateInfo(message);
 			bot.quitServer(quitMessage);
 		}
 	}
